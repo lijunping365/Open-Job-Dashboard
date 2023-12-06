@@ -1,19 +1,20 @@
 import React from 'react';
 import '@/styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, theme } from 'antd';
 import { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
-import theme from '@/theme/themeConfig';
 import {AuthProvider} from "@/components/Provider/AuthProvider";
+import useTheme from "@/hooks/useTheme";
 
 export default function App({
   Component,
   pageProps: { ...pageProps },
 }: AppProps) {
+  const [value] = useTheme();
   return (
     <>
-      <ConfigProvider theme={theme}>
+      <ConfigProvider theme={{algorithm: value === "default" ? theme.defaultAlgorithm : theme.darkAlgorithm}}>
         <AuthProvider>
           <ToastContainer closeButton={false} pauseOnFocusLoss={false}
             toastClassName={() =>
