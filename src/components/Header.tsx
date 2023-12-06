@@ -22,17 +22,21 @@ const menus = [
 ];
 
 interface Props {
-  data?: any;
+  theme: string;
+  setTheme: (theme: string) => void;
 }
 
-const Header: React.FC<Props> = ({ data }) => {
+const Header: React.FC<Props> = ({ theme, setTheme }: Props) => {
   const { user } = useAuthContext();
   const [menu, setMenu] = useState<boolean>(false);
 
   return (
     <header className='sticky inset-x-0 top-0 z-40 h-16 w-full border-b bg-white dark:border-border-dark dark:bg-wash-dark'>
       <div className='mx-auto flex items-center justify-between gap-4 px-4 py-3'>
-        <ThemeSwitch classes={'h-10 w-10'} />
+        <ThemeSwitch
+          theme={theme}
+          setTheme={setTheme}
+        />
       </div>
     </header>
   );

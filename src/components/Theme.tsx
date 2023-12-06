@@ -4,19 +4,20 @@ import { IconLight } from '@/components/Icon/IconLight';
 import { IconDark } from '@/components/Icon/IconDark';
 import useTheme from '@/hooks/useTheme';
 
-const ThemeSwitch = ({ classes }: any) => {
+interface Props {
+  theme: string;
+  setTheme: (theme: string) => void;
+}
+
+const ThemeSwitch = ({ theme, setTheme }: Props) => {
   const [mounted, setMounted] = useState(false);
-  const [theme, setTheme] = useTheme();
 
   // When mounted on client, now we can show the UI
   useEffect(() => setMounted(true), []);
 
   return (
     <button
-      className={cn(
-        classes,
-        'flex items-center justify-center rounded-full text-2xl text-link transition-colors duration-200 hover:bg-highlight focus:outline-none dark:text-link-dark dark:hover:bg-highlight-dark md:text-3xl'
-      )}
+      className='h-10 w-10 flex items-center justify-center rounded-full text-2xl text-link transition-colors duration-200 hover:bg-highlight focus:outline-none dark:text-link-dark dark:hover:bg-highlight-dark md:text-3xl'
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       <span className='sr-only'>Enable dark mode</span>
