@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { IconLight } from '@/components/Icon/IconLight';
 import { IconDark } from '@/components/Icon/IconDark';
-import useTheme from "@/hooks/useTheme";
+import useTheme from '@/hooks/useTheme';
 
 const ThemeSwitch = ({ classes }: any) => {
   const [mounted, setMounted] = useState(false);
@@ -17,14 +17,10 @@ const ThemeSwitch = ({ classes }: any) => {
         classes,
         'flex items-center justify-center rounded-full text-2xl text-link transition-colors duration-200 hover:bg-highlight focus:outline-none dark:text-link-dark dark:hover:bg-highlight-dark md:text-3xl'
       )}
-      onClick={() =>
-        setTheme(
-          theme === 'dark' || resolvedTheme === 'dark' ? 'light' : 'dark'
-        )
-      }
+      onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       <span className='sr-only'>Enable dark mode</span>
-      {mounted && (theme === 'dark' || resolvedTheme === 'dark') ? (
+      {mounted && theme === 'dark' ? (
         <IconDark className='h-5 w-5' />
       ) : (
         <IconLight className='h-7 w-7' />
