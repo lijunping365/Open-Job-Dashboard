@@ -7,12 +7,10 @@ import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
 
 const { Content, Footer, Sider } = Layout;
 
-const KnowledgeLayout = ({ children }: any) => {
+const BaseLayout = ({ children }: any) => {
   const router = useRouter();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
-
-  const baseClassName = `open-job-sider`;
 
   // 收起的宽度
   const collapsedWidth = 64;
@@ -20,7 +18,7 @@ const KnowledgeLayout = ({ children }: any) => {
   const siderWidth = 208;
 
   return (
-    <div className={className}>
+    <div>
       <Layout
         style={{
           minHeight: '100%',
@@ -43,15 +41,6 @@ const KnowledgeLayout = ({ children }: any) => {
             collapsedWidth={collapsedWidth}
             width={siderWidth}
             onCollapse={(value) => setCollapsed(value)}
-            style={{
-              overflow: 'auto',
-              height: '100vh',
-              position: 'fixed',
-              backgroundColor: '#F2F8FF',
-              left: 0,
-              top: 65,
-              bottom: 0,
-            }}
             trigger={
               <div className='hover:text-blue-500 text-left pl-6 bg-[#F2F8FF]'>
                 {collapsed ? (
@@ -65,8 +54,8 @@ const KnowledgeLayout = ({ children }: any) => {
             <Menu
               selectedKeys={[cleanedPath]}
               mode='inline'
-              items={items}
-              onClick={({ keyPath }) => handlerChangeRoute(keyPath[0])}
+              // items={items}
+              // onClick={({ keyPath }) => handlerChangeRoute(keyPath[0])}
               style={{
                 border: 'none',
                 padding: '10px 0',
@@ -78,13 +67,6 @@ const KnowledgeLayout = ({ children }: any) => {
 
         <Layout style={{ backgroundColor: '#F2F8FF' }}>
           <Content className='p-4'>
-            <div
-              className='flex flex-col py-4 px-8 text-base'
-              style={{
-                backgroundImage: 'url("https://ew6.cn/251701348090_.pic.png")',
-                backgroundSize: 'cover',
-              }}
-            ></div>
             {children}
           </Content>
         </Layout>
@@ -93,4 +75,4 @@ const KnowledgeLayout = ({ children }: any) => {
   );
 };
 
-export default KnowledgeLayout;
+export default BaseLayout;
