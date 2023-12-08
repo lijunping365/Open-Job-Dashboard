@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
 import ThemeSwitch from '@/components/Theme';
+import { Button, Layout } from 'antd';
+import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
+import { IconCollapsed } from '@/components/Icon/IconCollapsed';
 
 const menus = [
   {
@@ -22,23 +25,39 @@ const menus = [
 ];
 
 interface Props {
+  collapsed: boolean;
+  setCollapsed: (collapsed: boolean) => void;
   theme: string;
   setTheme: (theme: string) => void;
 }
 
-const Header: React.FC<Props> = ({ theme, setTheme }: Props) => {
+const Header: React.FC<Props> = ({
+  collapsed,
+  setCollapsed,
+  theme,
+  setTheme,
+}: Props) => {
   const { user } = useAuthContext();
-  const [menu, setMenu] = useState<boolean>(false);
 
   return (
-    <header className='sticky inset-x-0 top-0 z-40 h-16 w-full border-b bg-white dark:border-border-dark dark:bg-wash-dark'>
-      <div className='mx-auto flex items-center justify-between gap-4 px-4 py-3'>
+    <Layout.Header className='flex items-center justify-between gap-4'>
+      <Button
+        type='text'
+        icon={collapsed ? <IconUnCollapsed /> : <IconCollapsed />}
+        onClick={() => setCollapsed(!collapsed)}
+        style={{
+          fontSize: '16px',
+          width: 64,
+          height: 64,
+        }}
+      />
+      <div>
         <ThemeSwitch
           theme={theme}
           setTheme={setTheme}
         />
       </div>
-    </header>
+    </Layout.Header>
   );
 };
 

@@ -1,11 +1,28 @@
-import { Layout, Menu, ConfigProvider, theme } from 'antd';
+import { Layout, Menu, ConfigProvider, theme, Button } from 'antd';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { IconCollapsed } from '@/components/Icon/IconCollapsed';
 import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
 import useTheme from '@/hooks/useTheme';
 import cn from 'classnames';
+
+import { MenuProps } from 'antd';
+import menuItems from '@/config/menus';
+import { IconFolder } from '@/components/Icon/IconFolder';
+import ThemeSwitch from '@/components/Theme';
 import Header from '@/components/Header';
+
+type MenuItem = Required<MenuProps>['items'][number];
+
+function getItem(item: any): MenuItem {
+  return {
+    key: item.path,
+    icon: <IconFolder className='w-6 h-6' />,
+    label: item.name,
+  } as MenuItem;
+}
+
+const items: MenuItem[] = menuItems.map((item) => getItem(item));
 
 const { Content, Footer, Sider } = Layout;
 
@@ -21,72 +38,64 @@ const BaseLayout = ({ children }: any) => {
   const siderWidth = 208;
 
   return (
-    <div>
-      <ConfigProvider
-        theme={{
-          algorithm:
-            value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
-        }}
-      >
-        <Layout
+    <ConfigProvider
+      theme={{
+        algorithm:
+          value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
+      }}
+    >
+      <Layout style={{ minHeight: '100%' }}>
+        <div
           style={{
-            minHeight: '100%',
+            width: collapsed ? collapsedWidth : siderWidth,
+            overflow: 'hidden',
+            flex: `0 0 ${collapsed ? collapsedWidth : siderWidth}px`,
+            maxWidth: collapsed ? collapsedWidth : siderWidth,
+            minWidth: collapsed ? collapsedWidth : siderWidth,
+            transition: 'all 0.2s ease 0s',
           }}
         >
-          <div
+          <Sider
+            theme='light'
+            collapsible
+            collapsed={collapsed}
+            collapsedWidth={collapsedWidth}
+            width={siderWidth}
+            onCollapse={(value) => setCollapsed(value)}
             style={{
-              width: collapsed ? collapsedWidth : siderWidth,
-              overflow: 'hidden',
-              flex: `0 0 ${collapsed ? collapsedWidth : siderWidth}px`,
-              maxWidth: collapsed ? collapsedWidth : siderWidth,
-              minWidth: collapsed ? collapsedWidth : siderWidth,
-              transition: 'all 0.2s ease 0s',
+              overflow: 'auto',
+              height: '100vh',
+              position: 'fixed',
+              left: 0,
+              top: 0,
+              bottom: 0,
             }}
+            trigger={null}
           >
-            <Sider
-              theme='light'
-              collapsible
-              collapsed={collapsed}
-              collapsedWidth={collapsedWidth}
-              width={siderWidth}
-              onCollapse={(value) => setCollapsed(value)}
-              trigger={
-                <div className='hover:text-blue-500 text-left pl-6 bg-[#F2F8FF]'>
-                  {collapsed ? (
-                    <IconCollapsed className='w-7 h-7' />
-                  ) : (
-                    <IconUnCollapsed className='w-7 h-7' />
-                  )}
-                </div>
-              }
-            >
-              <Menu
-                selectedKeys={[cleanedPath]}
-                mode='inline'
-                // items={items}
-                // onClick={({ keyPath }) => handlerChangeRoute(keyPath[0])}
-                style={{
-                  border: 'none',
-                  padding: '10px 0',
-                  backgroundColor: '#F2F8FF',
-                }}
-              />
-            </Sider>
-          </div>
-
-          <div>
-            <Content className='p-4'>
-              <Header
-                theme={value}
-                setTheme={setValue}
-              />
-              {children}
-              <Footer />
-            </Content>
-          </div>
+            <div className='demo-logo-vertical'>Open-Job</div>
+            <Menu
+              selectedKeys={[cleanedPath]}
+              mode='inline'
+              items={items}
+              onClick={({ keyPath }) => router.push(keyPath[0])}
+              style={{
+                border: 'none',
+                padding: '5px 0',
+              }}
+            />
+          </Sider>
+        </div>
+        <Layout>
+          <Header
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
+            theme={value}
+            setTheme={setValue}
+          />
+          <Content className='p-6'>{children}</Content>
         </Layout>
-      </ConfigProvider>
-    </div>
+      </Layout>
+    </ConfigProvider>
   );
 };
 
