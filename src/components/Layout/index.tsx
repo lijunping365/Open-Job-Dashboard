@@ -1,15 +1,10 @@
-import { Layout, Menu, ConfigProvider, theme, Button } from 'antd';
+import { Layout, Menu, ConfigProvider, theme } from 'antd';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { IconCollapsed } from '@/components/Icon/IconCollapsed';
-import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
 import useTheme from '@/hooks/useTheme';
-import cn from 'classnames';
-
 import { MenuProps } from 'antd';
 import menuItems from '@/config/menus';
 import { IconFolder } from '@/components/Icon/IconFolder';
-import ThemeSwitch from '@/components/Theme';
 import Header from '@/components/Header';
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -87,12 +82,17 @@ const BaseLayout = ({ children }: any) => {
         </div>
         <Layout>
           <Header
-            collapsed={collapsed}
-            setCollapsed={setCollapsed}
             theme={value}
             setTheme={setValue}
+            collapsed={collapsed}
+            setCollapsed={setCollapsed}
           />
-          <Content className='p-6'>{children}</Content>
+          <Content
+            className='p-6'
+            style={{ background: value === 'light' ? '#fff' : '#141414' }}
+          >
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </ConfigProvider>

@@ -4,6 +4,7 @@ import ThemeSwitch from '@/components/Theme';
 import { Button, Layout } from 'antd';
 import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
 import { IconCollapsed } from '@/components/Icon/IconCollapsed';
+import cn from 'classnames';
 
 const menus = [
   {
@@ -42,7 +43,9 @@ const Header: React.FC<Props> = ({
   return (
     <Layout.Header
       style={{ padding: 0, background: theme === 'light' ? '#fff' : '#141414' }}
-      className='flex items-center justify-between gap-4'
+      className={cn('flex items-center justify-between gap-4', {
+        'border-b border-stone-600 shadow-xl': theme !== 'light',
+      })}
     >
       <Button
         type='text'
@@ -54,7 +57,7 @@ const Header: React.FC<Props> = ({
           height: 64,
         }}
       />
-      <div>
+      <div className='px-4'>
         <ThemeSwitch
           theme={theme}
           setTheme={setTheme}
