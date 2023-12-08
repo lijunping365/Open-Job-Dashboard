@@ -12,7 +12,7 @@ type MenuItem = Required<MenuProps>['items'][number];
 function getItem(item: any): MenuItem {
   return {
     key: item.path,
-    icon: <IconFolder className='w-6 h-6' />,
+    icon: <IconFolder style={{ width: 24, height: 24 }} />,
     label: item.name,
   } as MenuItem;
 }

@@ -22,9 +22,9 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
     >
       <span className='sr-only'>Enable dark mode</span>
       {mounted && theme === 'dark' ? (
-        <IconDark className='h-5 w-5' />
+        <IconDark style={{ height: 28, width: 28 }} />
       ) : (
-        <IconLight className='h-7 w-7' />
+        <IconLight style={{ height: 28, width: 28 }} />
       )}
     </button>
   );

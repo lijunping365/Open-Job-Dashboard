@@ -42,7 +42,11 @@ const Header: React.FC<Props> = ({
 
   return (
     <Layout.Header
-      style={{ padding: 0, background: theme === 'light' ? '#fff' : '#141414' }}
+      style={{
+        display: 'flex',
+        padding: 0,
+        background: theme === 'light' ? '#fff' : '#141414',
+      }}
       className={cn('flex items-center justify-between gap-4', {
         'border-b border-stone-600 shadow-xl': theme !== 'light',
       })}
