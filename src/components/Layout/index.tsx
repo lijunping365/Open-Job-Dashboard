@@ -74,7 +74,7 @@ const BaseLayout = ({ children }: any) => {
             </Sider>
           </div>
 
-          <Layout style={{ backgroundColor: '#F2F8FF' }}>
+          <div>
             <Content className='p-4'>
               <Header
                 theme={value}
@@ -83,7 +83,7 @@ const BaseLayout = ({ children }: any) => {
               {children}
               <Footer />
             </Content>
-          </Layout>
+          </div>
         </Layout>
       </ConfigProvider>
     </div>
