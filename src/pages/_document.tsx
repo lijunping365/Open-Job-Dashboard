@@ -7,13 +7,13 @@ const MyDocument = () => {
   return (
     <Html lang='en'>
       <Head />
-      <body>
+      <body style={{ margin: 0 }}>
         <Main />
         <NextScript />
       </body>
     </Html>
   );
-}
+};
 
 Document.getInitialProps = async (ctx: DocumentContext) => {
   const cache = createCache();
