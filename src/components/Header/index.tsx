@@ -40,7 +40,10 @@ const Header: React.FC<Props> = ({
   const { user } = useAuthContext();
 
   return (
-    <Layout.Header className='flex items-center justify-between gap-4'>
+    <Layout.Header
+      style={{ padding: 0, background: theme === 'light' ? '#fff' : '#141414' }}
+      className='flex items-center justify-between gap-4'
+    >
       <Button
         type='text'
         icon={collapsed ? <IconUnCollapsed /> : <IconCollapsed />}

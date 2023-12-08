@@ -17,7 +17,7 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
 
   return (
     <button
-      className='h-10 w-10 flex items-center justify-center rounded-full text-2xl text-link transition-colors duration-200 hover:bg-highlight focus:outline-none dark:text-link-dark dark:hover:bg-highlight-dark md:text-3xl'
+      className='h-10 w-10 flex items-center justify-center rounded-full text-2xl transition-colors duration-200'
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
       <span className='sr-only'>Enable dark mode</span>
