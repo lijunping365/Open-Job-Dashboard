@@ -114,3 +114,54 @@ function getBreadcrumbs(
 
   return [];
 }
+
+export const handlerTokData = (res: any) => {
+  const d1 = res.map((item: any) => {
+    return {
+      key: item.key,
+      value: Number(item.totalCount),
+      name: '执行总次数',
+    };
+  });
+  const d2 = res.map((item: any) => {
+    return {
+      key: item.key,
+      value: Number(item.successCount),
+      name: '执行成功次数',
+    };
+  });
+
+  return d1.concat(d2);
+};
+
+export const handlerChartData = (res: any) => {
+  const d1 = res.map((item: any) => {
+    return {
+      date: item.date,
+      value: Number(item.totalCount),
+      name: '执行总次数',
+    };
+  });
+  const d2 = res.map((item: any) => {
+    return {
+      date: item.date,
+      value: Number(item.successCount),
+      name: '执行成功次数',
+    };
+  });
+
+  return d1.concat(d2);
+};
+
+export const getTopCount = (timeType: API.TimeType) => {
+  switch (timeType) {
+    case 'today':
+      return 1;
+    case 'week':
+      return 7;
+    case 'month':
+      return 30;
+    default:
+      return 30;
+  }
+};

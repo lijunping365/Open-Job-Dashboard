@@ -1,7 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Button, Col, Form, Input, message, Modal, Row, Select} from 'antd';
-import CronModal from "@/components/CronModel";
-import {fetchAllInstance, fetchOpenJobAppList, validateCronExpress} from "@/services/open-job/api";
+import React, { useCallback, useEffect, useState } from 'react';
+import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
+import CronModal from '@/components/CronModel';
+import {
+  fetchAllInstance,
+  fetchOpenJobAppList,
+  validateCronExpress,
+} from '@/services/api';
 
 interface CreateFormProps {
   modalVisible: boolean;
@@ -22,8 +26,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   /** 新建窗口的弹窗 */
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [cronExpressValue, setCronExpressValue] = useState<string>();
-  const [openJobAppOptions, setOpenJobAppOptions] = useState<React.ReactNode[]>([]);
-  const [openJobNodeOptions, setOpenJobNodeOptions] = useState<React.ReactNode[]>([]);
+  const [openJobAppOptions, setOpenJobAppOptions] = useState<React.ReactNode[]>(
+    []
+  );
+  const [openJobNodeOptions, setOpenJobNodeOptions] = useState<
+    React.ReactNode[]
+  >([]);
   const [form] = Form.useForm();
 
   const {
@@ -34,21 +42,23 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result: API.OpenJobApp[] = await fetchOpenJobAppList();
-    if (result){
-      const options = result.map(app=>{
-        return <Option value={app.id}>{app.appName}</Option>
+    if (result) {
+      const options = result.map((app) => {
+        return <Option value={app.id}>{app.appName}</Option>;
       });
       setOpenJobAppOptions(options);
     }
   }, []);
 
-  useEffect(()=>{onFetchOpenJobAppList().then();},[]);
+  useEffect(() => {
+    onFetchOpenJobAppList().then();
+  }, []);
 
   const handleSelectApp = async (op: any) => {
     const result: API.Instance[] = await fetchAllInstance(op);
-    if (result){
-      const options = result.map(instance=>{
-        return <Option value={instance.serverId}>{instance.serverId}</Option>
+    if (result) {
+      const options = result.map((instance) => {
+        return <Option value={instance.serverId}>{instance.serverId}</Option>;
       });
       setOpenJobNodeOptions(options);
     }
@@ -56,26 +66,26 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
-    if(!cronExpressValue || cronExpressValue.length === 0){
-      message.error("cron 表达式不能为空");
+    if (!cronExpressValue || cronExpressValue.length === 0) {
+      message.error('cron 表达式不能为空');
       return;
     }
     const result = await validateCronExpress(cronExpressValue);
-    if(!result){
+    if (!result) {
       return;
     }
 
-    const {routeStrategy} =  fieldsValue;
-    const {shardingNodes} =  fieldsValue;
-    if (routeStrategy === 1 && (!shardingNodes || shardingNodes.length === 0)){
-      message.error("分片执行时分片节点不能为空")
+    const { routeStrategy } = fieldsValue;
+    const { shardingNodes } = fieldsValue;
+    if (routeStrategy === 1 && (!shardingNodes || shardingNodes.length === 0)) {
+      message.error('分片执行时分片节点不能为空');
       return;
     }
 
     handleCreate({
       ...fieldsValue,
       cronExpression: cronExpressValue,
-      shardingNodes: shardingNodes.join(","),
+      shardingNodes: shardingNodes.join(','),
     });
   };
 
@@ -83,7 +93,10 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleCreateModalVisible(false)}>取消</Button>
-        <Button type="primary" onClick={() => handleFinish()}>
+        <Button
+          type='primary'
+          onClick={() => handleFinish()}
+        >
           保存
         </Button>
       </>
@@ -93,7 +106,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   return (
     <Modal
       destroyOnClose
-      title="新建任务"
+      title='新建任务'
       width={900}
       visible={modalVisible}
       footer={renderFooter()}
@@ -107,20 +120,20 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="jobName"
-              label="任务名称"
+              name='jobName'
+              label='任务名称'
               rules={[{ required: true, message: '请输入任务名称！' }]}
             >
-              <Input placeholder="请输入任务名称" />
+              <Input placeholder='请输入任务名称' />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem
-              name="handlerName"
-              label="jobHandler"
+              name='handlerName'
+              label='jobHandler'
               rules={[{ required: true, message: '请输入jobHandler！' }]}
             >
-              <Input placeholder="请输入jobHandler" />
+              <Input placeholder='请输入jobHandler' />
             </FormItem>
           </Col>
         </Row>
@@ -128,8 +141,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="appId"
-              label="选择应用"
+              name='appId'
+              label='选择应用'
               hasFeedback
               rules={[{ required: true, message: '请选择应用!' }]}
             >
@@ -146,13 +159,20 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
           </Col>
           <Col span={12}>
             <FormItem
-              name="cronExpression"
-              label="Cron 表达式"
+              name='cronExpression'
+              label='Cron 表达式'
             >
-              <Input.Group compact style={{display: 'flex'}}>
-                <Input placeholder="请输入Cron 表达式"  value={cronExpressValue} onChange={(e)=>setCronExpressValue(e.target.value)}/>
+              <Input.Group
+                compact
+                style={{ display: 'flex' }}
+              >
+                <Input
+                  placeholder='请输入Cron 表达式'
+                  value={cronExpressValue}
+                  onChange={(e) => setCronExpressValue(e.target.value)}
+                />
                 <Button
-                  type="primary"
+                  type='primary'
                   onClick={() => handleCronModalVisible(true)}
                 >
                   Cron 工具
@@ -165,8 +185,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="routeStrategy"
-              label="路由策略"
+              name='routeStrategy'
+              label='路由策略'
             >
               <Select defaultValue={0}>
                 <Option value={0}>负载均衡</Option>
@@ -177,14 +197,14 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
 
           <Col span={12}>
             <FormItem
-              name="shardingNodes"
-              label="选择节点"
+              name='shardingNodes'
+              label='选择节点'
             >
               <Select
-                mode="multiple"
+                mode='multiple'
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="请选择节点"
+                placeholder='请选择节点'
               >
                 {openJobNodeOptions}
               </Select>
@@ -195,28 +215,38 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="params"
-              label="任务参数"
+              name='params'
+              label='任务参数'
             >
-              <TextArea rows={4}  placeholder="请输入任务参数" />
+              <TextArea
+                rows={4}
+                placeholder='请输入任务参数'
+              />
             </FormItem>
           </Col>
 
           <Col span={12}>
             <FormItem
-              name="script"
-              label="调度脚本"
+              name='script'
+              label='调度脚本'
             >
-              <TextArea rows={4}  placeholder="请输入调度脚本" />
+              <TextArea
+                rows={4}
+                placeholder='请输入调度脚本'
+              />
             </FormItem>
           </Col>
         </Row>
 
         <CronModal
-          cronExpressValue={cronExpressValue && cronExpressValue.length !== 0 ? cronExpressValue : "* * * * * ? *"}
+          cronExpressValue={
+            cronExpressValue && cronExpressValue.length !== 0
+              ? cronExpressValue
+              : '* * * * * ? *'
+          }
           modalVisible={cronModalVisible}
           onCancel={() => handleCronModalVisible(false)}
-          onSubmit={(value)=>{
+          onSubmit={(value) => {
             setCronExpressValue(value);
             handleCronModalVisible(false);
           }}

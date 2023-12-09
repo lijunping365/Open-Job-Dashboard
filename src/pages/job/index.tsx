@@ -1,12 +1,19 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Divider, message } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import {
+  Alert,
+  Button,
+  Card,
+  Divider,
+  Form,
+  Input,
+  message,
+  Table,
+} from 'antd';
 import React, { useRef, useState } from 'react';
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
 import {
   addScheduleTask,
+  fetchInstancePage,
   fetchOpenJobAppList,
   fetchScheduleTaskPage,
   removeScheduleTask,
@@ -14,11 +21,15 @@ import {
   startScheduleTask,
   stopScheduleTask,
   updateScheduleTask,
-} from '@/services/open-job/api';
+} from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import CreateForm from './components/CreateForm';
-import { Link } from '@umijs/preset-dumi/lib/theme';
+import BaseLayout from '@/components/Layout';
+import { TableParams } from '@/types/LoginTyping';
+import { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
 
+const FormItem = Form.Item;
 /**
  * 添加节点
  *
@@ -138,79 +149,103 @@ const handleStop = async (jobId: number) => {
 };
 
 const TableList: React.FC = () => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [tableData, setTableData] = useState([]);
   /** 新建窗口的弹窗 */
-  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
+  const [createModalVisible, handleCreateModalVisible] =
+    useState<boolean>(false);
   /** 更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
-  const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.OpenJob[]>([]);
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
 
-  const columns: ProColumns<API.OpenJob>[] = [
+  const fetchData = async () => {
+    const name = form.getFieldValue('name');
+    let order = 1;
+    if (tableParams?.order) {
+      order = tableParams?.order === 'descend' ? 1 : 0;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchScheduleTaskPage({
+        current: tableParams.pagination?.current,
+        pageSize: tableParams.pagination?.pageSize,
+      });
+
+      setTableData(response.records);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: response.total,
+        },
+      });
+    } catch (error) {
+      message.error('服务繁忙，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const searchApp = async () => {
+    const res = await fetchOpenJobAppList();
+    if (res) {
+      return res.map((item: any) => {
+        return { label: item.appName, value: item.id };
+      });
+    }
+  };
+
+  const columns: ColumnsType<API.OpenJob> = [
     {
       title: '任务编号',
       dataIndex: 'id',
-      valueType: 'text',
-      search: false,
     },
     {
       title: '应用名称',
       dataIndex: 'appId',
-      valueType: 'select',
-      hideInTable: true,
-      request: async () => {
-        const res = await fetchOpenJobAppList();
-        if (res) {
-          return res.map((item: any) => {
-            return { label: item.appName, value: item.id };
-          });
-        }
-        return null;
-      },
     },
     {
       title: '任务名称',
       dataIndex: 'jobName',
-      valueType: 'text',
     },
     {
       title: 'Cron 表达式',
       dataIndex: 'cronExpression',
-      valueType: 'text',
-      search: false,
     },
     {
       title: 'Handler 名称',
       dataIndex: 'handlerName',
-      valueType: 'text',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        0: { text: '停止', status: 'Error' },
-        1: { text: '启动', status: 'Success' },
-      },
+      render: (_, record) => (
+        <span>{record.status === 1 ? '启动' : '停止'}</span>
+      ),
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '创建人',
       dataIndex: 'createUser',
-      valueType: 'text',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
-      valueType: 'option',
       render: (_, record) => (
         <>
           <a
@@ -225,7 +260,7 @@ const TableList: React.FC = () => {
           >
             {record.status === 0 ? '启动' : '停止'}
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={async () => {
               await handleRun(record.id);
@@ -233,7 +268,7 @@ const TableList: React.FC = () => {
           >
             运行
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
@@ -242,7 +277,7 @@ const TableList: React.FC = () => {
           >
             修改
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={async () => {
               const confirm = await confirmModal();
@@ -254,24 +289,22 @@ const TableList: React.FC = () => {
           >
             删除
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <Link
-            to={{
+            href={{
               pathname: '/logger',
               search: `?id=${record.id}`,
               hash: '#the-hash',
-              state: { fromDashboard: true },
             }}
           >
             查看日志
           </Link>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <Link
-            to={{
+            href={{
               pathname: '/job/monitor',
               search: `?appId=${record.appId}&jobId=${record.id}`,
               hash: '#the-hash',
-              state: { fromDashboard: true },
             }}
           >
             任务监控
@@ -282,62 +315,78 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable<API.OpenJob>
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleCreateModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={async (params) => {
-          const response = await fetchScheduleTaskPage({ ...params });
-          return {
-            data: response.records,
-            total: response.total,
-            success: true,
-            pageSize: response.pages,
-            current: response.current,
-          };
-        }}
+    <BaseLayout>
+      <Card
+        bordered={false}
+        className='mt-4'
+      >
+        <Form
+          layout='inline'
+          form={form}
+          onValuesChange={() => fetchData()}
+        >
+          <div className='w-full p-2'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-2xl'>报警记录</h2>
+              <div className='flex gap-4'>
+                <FormItem name='name'>
+                  <Input
+                    placeholder='查询'
+                    prefix={<SearchOutlined />}
+                  />
+                </FormItem>
+                <Button
+                  type='primary'
+                  icon={<SearchOutlined />}
+                  onClick={fetchData}
+                >
+                  查询
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Form>
+      </Card>
+
+      {selectedRowsState?.length > 0 && (
+        <Alert
+          type='info'
+          showIcon
+          message={
+            <div>
+              已选择{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              项&nbsp;&nbsp;
+            </div>
+          }
+          action={
+            <Button
+              onClick={async () => {
+                await handleRemove(selectedRowsState.map((e) => e.id));
+                setSelectedRows([]);
+                fetchData().then();
+              }}
+            >
+              批量删除
+            </Button>
+          }
+        />
+      )}
+
+      <Table
+        loading={loading}
         columns={columns}
+        rowKey={(record) => record.id}
+        dataSource={tableData}
+        pagination={tableParams.pagination}
+        //@ts-ignore
+        onChange={onTableChange}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState ? selectedRowsState.map((e) => e.id) : []);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
-
       <CreateForm
         onSubmit={async (value) => {
           const success = await handleAdd(value);
@@ -372,7 +421,7 @@ const TableList: React.FC = () => {
           values={updateFormValues}
         />
       ) : null}
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

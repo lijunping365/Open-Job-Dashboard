@@ -1,20 +1,21 @@
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, message, Divider } from 'antd';
+import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { Button, message, Divider, Form, Input, Card, Table } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
 import {
   fetchOpenJobAppPage,
   addOpenJobApp,
   updateOpenJobApp,
   removeOpenJobApp,
-} from '@/services/open-job/api';
+} from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import CreateForm from './components/CreateForm';
-import { Link } from '@umijs/preset-dumi/lib/theme';
+import { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
+import BaseLayout from '@/components/Layout';
+import { TableParams } from '@/types/LoginTyping';
 
+const FormItem = Form.Item;
 /**
  * 添加节点
  *
@@ -75,48 +76,77 @@ const handleRemove = async (selectedRows: any[]) => {
 };
 
 const TableList: React.FC = () => {
-  /** 新建窗口的弹窗 */
-  const [createModalVisible, handleCreateModalVisible] = useState<boolean>(false);
-  /** 更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [tableData, setTableData] = useState([]);
+  const [createModalVisible, handleCreateModalVisible] =
+    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
-  const actionRef = useRef<ActionType>();
   const [selectedRowsState, setSelectedRows] = useState<API.OpenJobApp[]>([]);
-  const columns: ProColumns<API.OpenJobApp>[] = [
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  const fetchData = async () => {
+    const name = form.getFieldValue('name');
+    let order = 1;
+    if (tableParams?.order) {
+      order = tableParams?.order === 'descend' ? 1 : 0;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchOpenJobAppPage({
+        current: tableParams.pagination?.current,
+        pageSize: tableParams.pagination?.pageSize,
+      });
+
+      setTableData(response.records);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: response.total,
+        },
+      });
+    } catch (error) {
+      message.error('服务繁忙，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const columns: ColumnsType<API.OpenJobApp> = [
     {
       title: '应用编号',
       dataIndex: 'id',
-      valueType: 'text',
-      search: false,
     },
     {
       title: '应用名称',
       dataIndex: 'appName',
-      valueType: 'text',
     },
     {
       title: '应用描述',
       dataIndex: 'appDesc',
-      valueType: 'text',
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '创建人',
       dataIndex: 'createUser',
-      valueType: 'text',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
-      valueType: 'option',
       render: (_, record) => (
         <>
           <a
@@ -127,7 +157,7 @@ const TableList: React.FC = () => {
           >
             修改
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={async () => {
               const confirm = await confirmModal();
@@ -139,24 +169,22 @@ const TableList: React.FC = () => {
           >
             删除
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <Link
-            to={{
+            href={{
               pathname: '/executor',
               search: `?id=${record.id}`,
               hash: '#the-hash',
-              state: { fromDashboard: true },
             }}
           >
             查看集群
           </Link>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <Link
-            to={{
+            href={{
               pathname: '/app/monitor',
               search: `?id=${record.id}`,
               hash: '#the-hash',
-              state: { fromDashboard: true },
             }}
           >
             应用监控
@@ -167,61 +195,62 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable<API.OpenJobApp>
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => [
-          <Button
-            type="primary"
-            key="primary"
-            onClick={() => {
-              handleCreateModalVisible(true);
-            }}
-          >
-            <PlusOutlined /> 新建
-          </Button>,
-        ]}
-        request={async (params) => {
-          const response = await fetchOpenJobAppPage({ ...params });
-          return {
-            data: response.records,
-            total: response.total,
-            success: true,
-            pageSize: response.pages,
-            current: response.current,
-          };
-        }}
+    <BaseLayout>
+      <Card
+        bordered={false}
+        className='mt-4'
+      >
+        <Form
+          layout='inline'
+          form={form}
+          onValuesChange={() => fetchData()}
+        >
+          <div className='w-full p-2'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-2xl'>报警记录</h2>
+              <div className='flex gap-4'>
+                <FormItem name='name'>
+                  <Input
+                    placeholder='查询'
+                    prefix={<SearchOutlined />}
+                  />
+                </FormItem>
+                <Button
+                  type='primary'
+                  icon={<SearchOutlined />}
+                  onClick={fetchData}
+                >
+                  查询
+                </Button>
+                <Button
+                  type='primary'
+                  key='primary'
+                  onClick={() => {
+                    handleCreateModalVisible(true);
+                  }}
+                >
+                  <PlusOutlined /> 新建
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Form>
+      </Card>
+
+      <Table
+        loading={loading}
         columns={columns}
+        rowKey={(record) => record.id}
+        dataSource={tableData}
+        pagination={tableParams.pagination}
+        //@ts-ignore
+        onChange={onTableChange}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState ? selectedRowsState.map((e) => e.id) : []);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
 
       <CreateForm
         onSubmit={async (value) => {
@@ -256,7 +285,7 @@ const TableList: React.FC = () => {
           values={updateFormValues}
         />
       ) : null}
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

@@ -1,7 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Form, Button, Input, Modal, Row, Col, message, Select} from 'antd';
-import CronModal from "@/components/CronModel";
-import {fetchAllInstance, fetchOpenJobAppList, validateCronExpress} from "@/services/open-job/api";
+import React, { useCallback, useEffect, useState } from 'react';
+import { Form, Button, Input, Modal, Row, Col, message, Select } from 'antd';
+import CronModal from '@/components/CronModel';
+import {
+  fetchAllInstance,
+  fetchOpenJobAppList,
+  validateCronExpress,
+} from '@/services/api';
 
 export interface UpdateFormProps {
   onCancel: (flag?: boolean, formVals?: Partial<API.OpenJob>) => void;
@@ -29,29 +33,35 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
-  const [cronExpressValue, setCronExpressValue] = useState<any>(values.cronExpression);
-  const [openJobAppOptions, setOpenJobAppOptions] = useState<React.ReactNode[]>([]);
-  const [openJobNodeOptions, setOpenJobNodeOptions] = useState<React.ReactNode[]>([]);
+  const [cronExpressValue, setCronExpressValue] = useState<any>(
+    values.cronExpression
+  );
+  const [openJobAppOptions, setOpenJobAppOptions] = useState<React.ReactNode[]>(
+    []
+  );
+  const [openJobNodeOptions, setOpenJobNodeOptions] = useState<
+    React.ReactNode[]
+  >([]);
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result: API.OpenJobApp[] = await fetchOpenJobAppList();
-    if (result){
-      const options = result.map(app=>{
-        return <Option value={app.id}>{app.appName}</Option>
+    if (result) {
+      const options = result.map((app) => {
+        return <Option value={app.id}>{app.appName}</Option>;
       });
       setOpenJobAppOptions(options);
     }
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     onFetchOpenJobAppList().then();
-  },[]);
+  }, []);
 
   const handleSelectApp = async (op: any) => {
     const result: API.Instance[] = await fetchAllInstance(op);
-    if (result){
-      const options = result.map(instance=>{
-        return <Option value={instance.serverId}>{instance.serverId}</Option>
+    if (result) {
+      const options = result.map((instance) => {
+        return <Option value={instance.serverId}>{instance.serverId}</Option>;
       });
       setOpenJobNodeOptions(options);
     }
@@ -59,34 +69,39 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
   const handleSave = async () => {
     const fieldsValue: any = await form.validateFields();
-    if(!cronExpressValue || cronExpressValue.length === 0){
-      message.error("cron 表达式不能为空");
+    if (!cronExpressValue || cronExpressValue.length === 0) {
+      message.error('cron 表达式不能为空');
       return;
     }
     const result = await validateCronExpress(cronExpressValue);
-    if(!result){
+    if (!result) {
       return;
     }
 
-    const {routeStrategy} =  fieldsValue;
-    const {shardingNodes} =  fieldsValue;
-    if (routeStrategy === 1 && (!shardingNodes || shardingNodes.length === 0)){
-      message.error("分片执行时分片节点不能为空")
+    const { routeStrategy } = fieldsValue;
+    const { shardingNodes } = fieldsValue;
+    if (routeStrategy === 1 && (!shardingNodes || shardingNodes.length === 0)) {
+      message.error('分片执行时分片节点不能为空');
       return;
     }
     handleUpdate({
       ...values,
       ...fieldsValue,
       cronExpression: cronExpressValue,
-      shardingNodes: shardingNodes.join(",")
+      shardingNodes: shardingNodes.join(','),
     });
   };
 
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleUpdateModalVisible(false, values)}>取消</Button>
-        <Button type="primary" onClick={() => handleSave()}>
+        <Button onClick={() => handleUpdateModalVisible(false, values)}>
+          取消
+        </Button>
+        <Button
+          type='primary'
+          onClick={() => handleSave()}
+        >
           保存
         </Button>
       </>
@@ -98,7 +113,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
       width={900}
       bodyStyle={{ padding: '32px 40px 48px' }}
       destroyOnClose
-      title="编辑调度任务"
+      title='编辑调度任务'
       visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
@@ -112,7 +127,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           jobName: values.jobName,
           handlerName: values.handlerName,
           routeStrategy: values.routeStrategy,
-          shardingNodes: values.shardingNodes ? values.shardingNodes.split(",") : [],
+          shardingNodes: values.shardingNodes
+            ? values.shardingNodes.split(',')
+            : [],
           params: values.params,
           script: values.script,
         }}
@@ -120,20 +137,20 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="jobName"
-              label="任务名称"
+              name='jobName'
+              label='任务名称'
               rules={[{ required: true, message: '请输入任务名称！' }]}
             >
-              <Input placeholder="请输入任务名称" />
+              <Input placeholder='请输入任务名称' />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem
-              name="handlerName"
-              label="jobHandler"
+              name='handlerName'
+              label='jobHandler'
               rules={[{ required: true, message: '请输入jobHandler！' }]}
             >
-              <Input placeholder="请输入jobHandler" />
+              <Input placeholder='请输入jobHandler' />
             </FormItem>
           </Col>
         </Row>
@@ -141,8 +158,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="appId"
-              label="选择应用"
+              name='appId'
+              label='选择应用'
               hasFeedback
               rules={[{ required: true, message: '请选择应用!' }]}
             >
@@ -159,13 +176,20 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           </Col>
           <Col span={12}>
             <FormItem
-              name="cronExpression"
-              label="Cron 表达式"
+              name='cronExpression'
+              label='Cron 表达式'
             >
-              <Input.Group compact style={{display: 'flex'}}>
-                <Input placeholder="请输入Cron 表达式"  value={cronExpressValue} onChange={(e)=>setCronExpressValue(e.target.value)}/>
+              <Input.Group
+                compact
+                style={{ display: 'flex' }}
+              >
+                <Input
+                  placeholder='请输入Cron 表达式'
+                  value={cronExpressValue}
+                  onChange={(e) => setCronExpressValue(e.target.value)}
+                />
                 <Button
-                  type="primary"
+                  type='primary'
                   onClick={() => handleCronModalVisible(true)}
                 >
                   Cron 工具
@@ -178,8 +202,8 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="routeStrategy"
-              label="路由策略"
+              name='routeStrategy'
+              label='路由策略'
             >
               <Select defaultValue={values.routeStrategy}>
                 <Option value={0}>负载均衡</Option>
@@ -190,14 +214,14 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
           <Col span={12}>
             <FormItem
-              name="shardingNodes"
-              label="选择节点"
+              name='shardingNodes'
+              label='选择节点'
             >
               <Select
-                mode="multiple"
+                mode='multiple'
                 allowClear
                 style={{ width: '100%' }}
-                placeholder="请选择节点"
+                placeholder='请选择节点'
               >
                 {openJobNodeOptions}
               </Select>
@@ -208,28 +232,38 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
-              name="params"
-              label="任务参数"
+              name='params'
+              label='任务参数'
             >
-              <TextArea rows={4}  placeholder="请输入任务参数" />
+              <TextArea
+                rows={4}
+                placeholder='请输入任务参数'
+              />
             </FormItem>
           </Col>
 
           <Col span={12}>
             <FormItem
-              name="script"
-              label="调度脚本"
+              name='script'
+              label='调度脚本'
             >
-              <TextArea rows={4}  placeholder="请输入调度脚本" />
+              <TextArea
+                rows={4}
+                placeholder='请输入调度脚本'
+              />
             </FormItem>
           </Col>
         </Row>
 
         <CronModal
-          cronExpressValue={cronExpressValue && cronExpressValue.length !== 0 ? cronExpressValue : "* * * * * ? *"}
+          cronExpressValue={
+            cronExpressValue && cronExpressValue.length !== 0
+              ? cronExpressValue
+              : '* * * * * ? *'
+          }
           modalVisible={cronModalVisible}
           onCancel={() => handleCronModalVisible(false)}
-          onSubmit={(value)=>{
+          onSubmit={(value) => {
             setCronExpressValue(value);
             handleCronModalVisible(false);
           }}

@@ -1,14 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import {Card, Col, message, Row, Statistic} from 'antd';
-import {fetchAnalysisChart, fetchInstanceAnalysisNumber, fetchJobTok} from '@/services/open-job/api';
-import type { RouteChildrenProps } from 'react-router';
+import { Card, Col, message, Row, Statistic } from 'antd';
+import {
+  fetchAnalysisChart,
+  fetchInstanceAnalysisNumber,
+  fetchJobTok,
+} from '@/services/api';
 import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
 import { ChartCard } from '@/components/ChartCard';
 import { TopCard } from '@/components/TopCard';
-import {getTopCount, handlerChartData, handlerTokData} from '@/utils/utils';
+import { getTopCount, handlerChartData, handlerTokData } from '@/lib/utils';
+import BaseLayout from '@/components/Layout';
 
-const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
+const TableList: React.FC = () => {
   const { query }: any = location;
   const [appId] = useState<number>(query ? query.appId : 1);
   const [serverId] = useState<string>(query ? query.serverId : '');
@@ -61,16 +64,19 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
   }, [appId, serverId]);
 
   return (
-    <PageContainer>
-      <Row gutter={16} style={{ marginTop: '20px' }}>
+    <BaseLayout>
+      <Row
+        gutter={16}
+        style={{ marginTop: '20px' }}
+      >
         <Col span={6}>
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="CPU信息"
-              value={statisticNumber?.cpuInfo  || '-'}
+              title='CPU信息'
+              value={statisticNumber?.cpuInfo || '-'}
               prefix={<DashboardOutlined />}
-              valueStyle={{fontSize: '20px'}}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -78,10 +84,10 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="内存信息"
+              title='内存信息'
               value={statisticNumber?.memoryInfo || '-'}
               prefix={<BarChartOutlined />}
-              valueStyle={{fontSize: '20px'}}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -89,9 +95,9 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="磁盘信息"
+              title='磁盘信息'
               value={statisticNumber?.diskInfo || '-'}
-              valueStyle={{fontSize: '20px'}}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -99,29 +105,37 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="运行时长"
+              title='运行时长'
               value={statisticNumber?.liveTime || '-'}
-              valueStyle={{fontSize: '20px'}}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
       </Row>
 
-      <Row gutter={16} style={{ marginTop: '20px' }}>
+      <Row
+        gutter={16}
+        style={{ marginTop: '20px' }}
+      >
         <Col span={6}>
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="运行状态"
+              title='运行状态'
               prefix={<BarChartOutlined />}
-              value={statisticNumber?.status === 'ON_LINE' ? '运行中' : '已下线'}
-              valueStyle={{fontSize: '20px'}}
+              value={
+                statisticNumber?.status === 'ON_LINE' ? '运行中' : '已下线'
+              }
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
       </Row>
 
-      <ChartCard loading={tokLoading} chartData={chartData} />
+      <ChartCard
+        loading={tokLoading}
+        chartData={chartData}
+      />
 
       <TopCard
         title={'任务调度次数排行榜TOP10'}
@@ -130,7 +144,7 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         selectDate={selectDate}
         onChange={(value) => setSelectDate(value)}
       />
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

@@ -1,5 +1,5 @@
-import { request } from 'umi';
-import { getAccessToken, getRefreshToken } from '@/utils/cache';
+import { getAccessToken } from '@/lib/cache';
+import request from '@/lib/request';
 
 /** 获取当前的用户 GET /user/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
@@ -29,7 +29,6 @@ export async function outLogin() {
 export async function tryRefreshToken() {
   return request('/login/refreshToken', {
     method: 'GET',
-    params: { refreshToken: getRefreshToken() },
   });
 }
 
@@ -53,7 +52,7 @@ export async function getFakeSmsCaptcha(params: Partial<API.CaptchaParams>) {
 
 export async function fetchUserPage(params: {
   /** 当前的页码 */
-  pageNum?: number;
+  current?: number;
   /** 页面的容量 */
   pageSize?: number;
   /** 任务名称 */
@@ -288,7 +287,10 @@ export async function fetchJobAnalysisNumber(appId: number, jobId: number) {
   });
 }
 
-export async function fetchInstanceAnalysisNumber(appId: number, serverId: string) {
+export async function fetchInstanceAnalysisNumber(
+  appId: number,
+  serverId: string
+) {
   return request('/analysis/instanceStatistic', {
     method: 'GET',
     params: {

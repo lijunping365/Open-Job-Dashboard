@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import {Card, Col, Row, Select, Statistic} from 'antd';
+import { Card, Col, Row, Select, Statistic } from 'antd';
 import { Chart, LineAdvance } from 'bizcharts';
-import {fetchAnalysisNumber, fetchAnalysisChart, fetchOpenJobAppList} from '@/services/open-job/api';
-import type { RouteChildrenProps } from 'react-router';
+import {
+  fetchAnalysisNumber,
+  fetchAnalysisChart,
+  fetchOpenJobAppList,
+} from '@/services/api';
 import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
-import {handlerChartData} from "@/utils/utils";
-import {Link} from "@umijs/preset-dumi/lib/theme";
+import Link from 'next/link';
+import BaseLayout from '@/components/Layout';
+import { handlerChartData } from '@/lib/utils';
 
-const TableList: React.FC<RouteChildrenProps> = () => {
+const TableList: React.FC = () => {
   const [appId, setAppId] = useState<number>();
   const [appSet, setAppSet] = useState<API.OpenJobApp[]>([]);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
@@ -34,17 +37,17 @@ const TableList: React.FC<RouteChildrenProps> = () => {
         .then((res: any) => {
           if (res) {
             setAppSet(res);
-            setAppId(res[0].id)
+            setAppId(res[0].id);
           }
         })
         .catch();
-    }
+    };
     getAppSet();
   }, []);
 
   useEffect(() => {
     const getAnalysisChart = () => {
-      if (!appId){
+      if (!appId) {
         return;
       }
       fetchAnalysisChart({ appId })
@@ -60,13 +63,16 @@ const TableList: React.FC<RouteChildrenProps> = () => {
   }, [appId]);
 
   return (
-    <PageContainer>
-      <Row gutter={16} style={{ marginTop: '20px' }}>
+    <BaseLayout>
+      <Row
+        gutter={16}
+        style={{ marginTop: '20px' }}
+      >
         <Col span={6}>
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="应用数量"
+              title='应用数量'
               value={statisticNumber?.appNum}
               prefix={<BarChartOutlined />}
             />
@@ -76,7 +82,7 @@ const TableList: React.FC<RouteChildrenProps> = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="任务总数"
+              title='任务总数'
               value={statisticNumber?.taskRunningNum}
               prefix={<DashboardOutlined />}
               suffix={`/ ${statisticNumber?.taskTotalNum}`}
@@ -87,7 +93,7 @@ const TableList: React.FC<RouteChildrenProps> = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="执行器总数"
+              title='执行器总数'
               value={statisticNumber?.executorOnlineNum}
               prefix={<BarChartOutlined />}
               suffix={`/ ${statisticNumber?.executorTotalNum}`}
@@ -97,15 +103,14 @@ const TableList: React.FC<RouteChildrenProps> = () => {
         <Col span={6}>
           <Card>
             <Link
-              to={{
+              href={{
                 pathname: '/alarm',
                 hash: '#the-hash',
-                state: { fromDashboard: true },
               }}
             >
               <Statistic
                 loading={statisticLoading}
-                title="今日报警次数"
+                title='今日报警次数'
                 value={statisticNumber?.alarmNum}
                 prefix={<BarChartOutlined />}
               />
@@ -117,7 +122,7 @@ const TableList: React.FC<RouteChildrenProps> = () => {
       <Card
         loading={chartLoading}
         bordered={false}
-        title="任务调度次数"
+        title='任务调度次数'
         style={{
           height: '100%',
           marginTop: '20px',
@@ -125,9 +130,9 @@ const TableList: React.FC<RouteChildrenProps> = () => {
         extra={
           <div>
             <Select
-              style={{width: '200px'}}
+              style={{ width: '200px' }}
               defaultValue={appId}
-              onChange={(id:any)=> setAppId(id)}
+              onChange={(id: any) => setAppId(id)}
               options={(appSet || []).map((d) => ({
                 value: d.id,
                 label: d.appName,
@@ -136,11 +141,22 @@ const TableList: React.FC<RouteChildrenProps> = () => {
           </div>
         }
       >
-        <Chart padding={[10, 20, 50, 40]} autoFit height={400} data={chartData}>
-          <LineAdvance shape="smooth" point area position="date*value" color="name" />
+        <Chart
+          padding={[10, 20, 50, 40]}
+          autoFit
+          height={400}
+          data={chartData}
+        >
+          <LineAdvance
+            shape='smooth'
+            point
+            area
+            position='date*value'
+            color='name'
+          />
         </Chart>
       </Card>
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

@@ -1,7 +1,6 @@
 import { Chart, Interval, Tooltip } from 'bizcharts';
 import { Card } from 'antd';
 import React from 'react';
-import styles from './index.less';
 
 interface TopCardProps {
   title: string;
@@ -11,8 +10,13 @@ interface TopCardProps {
   onChange: (type: API.TimeType) => void;
 }
 
-export const TopCard = ({ title, data, loading, selectDate, onChange }: TopCardProps) => {
-
+export const TopCard = ({
+  title,
+  data,
+  loading,
+  selectDate,
+  onChange,
+}: TopCardProps) => {
   return (
     <Card
       loading={loading}
@@ -24,23 +28,40 @@ export const TopCard = ({ title, data, loading, selectDate, onChange }: TopCardP
       extra={
         <div className={styles.salesExtraWrap}>
           <div className={styles.salesExtra}>
-            <a className={(selectDate === 'today' ? styles.currentDate : '')} onClick={() => onChange('today')}>
+            <a
+              className={selectDate === 'today' ? styles.currentDate : ''}
+              onClick={() => onChange('today')}
+            >
               今日
             </a>
-            <a className={(selectDate === 'week' ? styles.currentDate : '')} onClick={() => onChange('week')}>
+            <a
+              className={selectDate === 'week' ? styles.currentDate : ''}
+              onClick={() => onChange('week')}
+            >
               本周
             </a>
-            <a className={(selectDate === 'month' ? styles.currentDate : '')} onClick={() => onChange('month')}>
+            <a
+              className={selectDate === 'month' ? styles.currentDate : ''}
+              onClick={() => onChange('month')}
+            >
               本月
             </a>
-            <a className={(selectDate === 'year' ? styles.currentDate : '')} onClick={() => onChange('year')}>
+            <a
+              className={selectDate === 'year' ? styles.currentDate : ''}
+              onClick={() => onChange('year')}
+            >
               本年
             </a>
           </div>
         </div>
       }
     >
-      <Chart height={400} padding="auto" data={data} autoFit>
+      <Chart
+        height={400}
+        padding='auto'
+        data={data}
+        autoFit
+      >
         <Interval
           adjust={[
             {
@@ -48,8 +69,8 @@ export const TopCard = ({ title, data, loading, selectDate, onChange }: TopCardP
               marginRatio: 0,
             },
           ]}
-          color="name"
-          position="key*value"
+          color='name'
+          position='key*value'
         />
         <Tooltip shared />
       </Chart>

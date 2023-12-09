@@ -1,14 +1,19 @@
-import { message, Divider } from 'antd';
+import { message, Divider, Form, Table } from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
 import { confirmModal } from '@/components/ConfirmModel';
-import { fetchInstancePage, updateInstance, offline, online } from '@/services/open-job/api';
-import type { RouteChildrenProps } from 'react-router';
-import { Link } from '@umijs/preset-dumi/lib/theme';
+import {
+  fetchInstancePage,
+  updateInstance,
+  offline,
+  online,
+} from '@/services/api';
+import { ColumnsType } from 'antd/es/table';
+import Link from 'next/link';
+import BaseLayout from '@/components/Layout';
+import { TableParams } from '@/types/LoginTyping';
 
+const FormItem = Form.Item;
 /**
  * 更新节点
  *
@@ -64,62 +69,95 @@ const handlerChange = async (clientId: string) => {
   }
 };
 
-const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
+const TableList: React.FC = () => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [tableData, setTableData] = useState([]);
   /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
   const { query }: any = location;
   const [appId] = useState<number>(query ? query.id : 1);
-  const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<API.Instance>();
-  const columns: ProColumns<API.Instance>[] = [
+
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  const fetchData = async () => {
+    const name = form.getFieldValue('name');
+    let order = 1;
+    if (tableParams?.order) {
+      order = tableParams?.order === 'descend' ? 1 : 0;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchInstancePage({
+        current: tableParams.pagination?.current,
+        pageSize: tableParams.pagination?.pageSize,
+        appId,
+      });
+
+      setTableData(response.records);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: response.total,
+        },
+      });
+    } catch (error) {
+      message.error('服务繁忙，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const columns: ColumnsType<API.Instance> = [
     {
       title: '实例地址',
       dataIndex: 'serverId',
-      tooltip: '唯一标识',
     },
     {
       title: '最近上线时间',
       dataIndex: 'onlineTime',
-      valueType: 'dateTime',
     },
     {
       title: '运行时长',
       dataIndex: 'liveTime',
-      valueType: 'text',
     },
     {
       title: 'CPU 占用',
       dataIndex: 'cpuInfo',
-      valueType: 'text',
     },
     {
       title: '内存占用',
       dataIndex: 'memoryInfo',
-      valueType: 'text',
     },
     {
       title: '磁盘占用',
       dataIndex: 'diskInfo',
-      valueType: 'text',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      hideInForm: true,
-      valueEnum: {
-        OFF_LINE: { text: '已下线', status: 'Error' },
-        ON_LINE: { text: '已上线', status: 'Success' },
-      },
+      render: (_, record) => (
+        <span>{record.status === 'OFF_LINE' ? '已下线' : '已上线'}</span>
+      ),
     },
     {
       title: '权重',
       dataIndex: 'weight',
-      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
-      valueType: 'option',
       render: (_, record) => (
         <>
           <a
@@ -138,7 +176,7 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           >
             {record.status === 'OFF_LINE' ? '上线' : '下线'}
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
@@ -147,13 +185,12 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           >
             修改权重
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <Link
-            to={{
+            href={{
               pathname: '/executor/monitor',
               search: `?appId=${appId}&serverId=${record.serverId}`,
               hash: '#the-hash',
-              state: { fromDashboard: true },
             }}
           >
             服务监控
@@ -164,27 +201,22 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable<API.Instance, API.PageParams>
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => []}
-        request={async (params) => {
-          const response = await fetchInstancePage({ ...params, appId });
-          return {
-            data: response.records,
-            total: response.total,
-            success: true,
-            pageSize: response.pages,
-            current: response.current,
-          };
-        }}
+    <BaseLayout>
+      <Table
+        loading={loading}
         columns={columns}
+        rowKey={(record) => record.id}
+        dataSource={tableData}
+        pagination={tableParams.pagination}
+        //@ts-ignore
+        onChange={onTableChange}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+          },
+        }}
       />
+
       <UpdateForm
         onSubmit={async (value) => {
           const success = await handleUpdate(value);
@@ -203,7 +235,7 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         updateModalVisible={updateModalVisible}
         values={currentRow || {}}
       />
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

@@ -1,11 +1,23 @@
-import {Button, message, Divider} from 'antd';
+import {
+  Button,
+  message,
+  Divider,
+  Card,
+  Form,
+  Input,
+  Alert,
+  Table,
+} from 'antd';
 import React, { useState, useRef } from 'react';
-import { PageContainer, FooterToolbar } from '@ant-design/pro-layout';
-import type { ProColumns, ActionType } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
 import UpdateForm from './components/UpdateForm';
-import { fetchUserPage, updateUser, removeUser } from '@/services/open-job/api';
-import {confirmModal} from "@/components/ConfirmModel";
+import { fetchUserPage, updateUser, removeUser } from '@/services/api';
+import { confirmModal } from '@/components/ConfirmModel';
+import { ColumnsType } from 'antd/es/table';
+import BaseLayout from '@/components/Layout';
+import { SearchOutlined } from '@ant-design/icons';
+import { TableParams } from '@/types/LoginTyping';
+
+const FormItem = Form.Item;
 
 /**
  * 更新节点
@@ -36,7 +48,7 @@ const handleRemove = async (selectedRows: any[]) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
   try {
-    await removeUser({ids: selectedRows});
+    await removeUser({ ids: selectedRows });
     hide();
     message.success('删除成功，即将刷新');
     return true;
@@ -48,51 +60,82 @@ const handleRemove = async (selectedRows: any[]) => {
 };
 
 const TableList: React.FC = () => {
+  const [form] = Form.useForm();
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [tableData, setTableData] = useState([]);
   /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
-  const actionRef = useRef<ActionType>();
   // const [currentRow, setCurrentRow] = useState<User>();
   const [selectedRowsState, setSelectedRows] = useState<API.User[]>([]);
 
-  const columns: ProColumns<API.User>[] = [
+  const [tableParams, setTableParams] = useState<TableParams>({
+    pagination: {
+      current: 1,
+      pageSize: 10,
+    },
+  });
+
+  const fetchData = async () => {
+    const name = form.getFieldValue('name');
+    let order = 1;
+    if (tableParams?.order) {
+      order = tableParams?.order === 'descend' ? 1 : 0;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetchUserPage({
+        current: tableParams.pagination?.current,
+        pageSize: tableParams.pagination?.pageSize,
+      });
+
+      setTableData(response.records);
+      setTableParams({
+        ...tableParams,
+        pagination: {
+          ...tableParams.pagination,
+          total: response.total,
+        },
+      });
+    } catch (error) {
+      message.error('服务繁忙，请稍后重试');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const columns: ColumnsType<API.User> = [
     {
       title: '用户id',
       dataIndex: 'id',
-      valueType: 'text',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '用户名称',
       dataIndex: 'username',
-      valueType: 'text',
     },
     {
       title: '手机号',
       dataIndex: 'phone',
-      valueType: 'text',
     },
     {
       title: '状态',
       dataIndex: 'status',
-      valueEnum: {
-        0: { text: '启用', status: 'Success'},
-        1: { text: '禁用', status: 'Error' },
-      },
+      render: (_, record) => (
+        <span>{record.status === 1 ? '禁用' : '启用'}</span>
+      ),
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      valueType: 'dateTime',
-      hideInForm: true,
-      search: false,
     },
     {
       title: '操作',
       dataIndex: 'option',
-      valueType: 'option',
       render: (_, record) => (
         <>
           <a
@@ -103,11 +146,11 @@ const TableList: React.FC = () => {
           >
             修改
           </a>
-          <Divider type="vertical" />
+          <Divider type='vertical' />
           <a
             onClick={async () => {
               const confirm = await confirmModal();
-              if (confirm){
+              if (confirm) {
                 await handleRemove([record.id]);
                 actionRef.current?.reloadAndRest?.();
               }
@@ -121,51 +164,79 @@ const TableList: React.FC = () => {
   ];
 
   return (
-    <PageContainer>
-      <ProTable<API.User>
-        headerTitle="查询表格"
-        actionRef={actionRef}
-        rowKey="id"
-        search={{
-          labelWidth: 120,
-        }}
-        toolBarRender={() => []}
-        request={async (params) => {
-          const response = await fetchUserPage({ ...params });
-          return {
-            data: response.records,
-            total: response.total,
-            success: true,
-            pageSize: response.pages,
-            current: response.current,
-          };
-        }}
+    <BaseLayout>
+      <Card
+        bordered={false}
+        className='mt-4'
+      >
+        <Form
+          layout='inline'
+          form={form}
+          onValuesChange={() => fetchData()}
+        >
+          <div className='w-full p-2'>
+            <div className='flex items-center justify-between'>
+              <h2 className='text-2xl'>报警记录</h2>
+              <div className='flex gap-4'>
+                <FormItem name='name'>
+                  <Input
+                    placeholder='查询'
+                    prefix={<SearchOutlined />}
+                  />
+                </FormItem>
+                <Button
+                  type='primary'
+                  icon={<SearchOutlined />}
+                  onClick={fetchData}
+                >
+                  查询
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Form>
+      </Card>
+
+      {selectedRowsState?.length > 0 && (
+        <Alert
+          type='info'
+          showIcon
+          message={
+            <div>
+              已选择{' '}
+              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              项&nbsp;&nbsp;
+            </div>
+          }
+          action={
+            <Button
+              onClick={async () => {
+                await handleRemove(selectedRowsState.map((e) => e.id));
+                setSelectedRows([]);
+                fetchData().then();
+              }}
+            >
+              批量删除
+            </Button>
+          }
+        />
+      )}
+
+      <Table
+        loading={loading}
         columns={columns}
+        rowKey={(record) => record.id}
+        dataSource={tableData}
+        pagination={tableParams.pagination}
+        //@ts-ignore
+        onChange={onTableChange}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);
           },
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择 <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a> 项&nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Button
-            onClick={async () => {
-              await handleRemove(selectedRowsState ? selectedRowsState.map((e) => e.id):[]);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            批量删除
-          </Button>
-        </FooterToolbar>
-      )}
+
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <UpdateForm
           onSubmit={async (value) => {
@@ -186,8 +257,7 @@ const TableList: React.FC = () => {
           values={updateFormValues}
         />
       ) : null}
-
-    </PageContainer>
+    </BaseLayout>
   );
 };
 

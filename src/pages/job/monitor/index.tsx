@@ -1,21 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PageContainer } from '@ant-design/pro-layout';
 import { Card, Col, message, Row, Statistic } from 'antd';
 import {
   fetchJobAnalysisNumber,
   fetchInstanceTok,
   fetchAnalysisChart,
   fetchJobTimeChart,
-} from '@/services/open-job/api';
-import type { RouteChildrenProps } from 'react-router';
+} from '@/services/api';
 import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
 import { ChartCard } from '@/components/ChartCard';
 import { TopCard } from '@/components/TopCard';
-import { getTopCount, handlerChartData, handlerTokData } from '@/utils/utils';
-import { Link } from '@umijs/preset-dumi/lib/theme';
+import { getTopCount, handlerChartData, handlerTokData } from '@/lib/utils';
 import { TimeChartCard } from '@/components/TimeChartCard';
+import Link from 'next/link';
+import BaseLayout from '@/components/Layout';
 
-const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
+const TableList: React.FC = () => {
   const { query }: any = location;
   const [appId] = useState<number>(query ? query.appId : 1);
   const [jobId] = useState<number>(query ? query.jobId : 1);
@@ -49,10 +48,10 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         if (res) {
           res.value = Number(res.value);
           let charts = res.charts;
-          if (charts){
-            charts.forEach((e: any)=>{
-              e.value = Number(e.value)
-            })
+          if (charts) {
+            charts.forEach((e: any) => {
+              e.value = Number(e.value);
+            });
           }
           setJobChartData(res);
         }
@@ -92,13 +91,16 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
   }, [appId, jobId]);
 
   return (
-    <PageContainer>
-      <Row gutter={16} style={{ marginTop: '20px' }}>
+    <BaseLayout>
+      <Row
+        gutter={16}
+        style={{ marginTop: '20px' }}
+      >
         <Col span={6}>
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="上一次执行时间"
+              title='上一次执行时间'
               value={statisticNumber?.lastRunTime || ''}
               prefix={<DashboardOutlined />}
               valueStyle={{ fontSize: '20px' }}
@@ -109,7 +111,7 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="上一次执行耗时"
+              title='上一次执行耗时'
               value={statisticNumber?.taskTakeTime || ''}
               prefix={<BarChartOutlined />}
               suffix={'ms'}
@@ -121,8 +123,10 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title="任务状态"
-              value={statisticNumber?.status === '1' ? '运行中' : '已停止' || ''}
+              title='任务状态'
+              value={
+                statisticNumber?.status === '1' ? '运行中' : '已停止' || ''
+              }
               prefix={<BarChartOutlined />}
               valueStyle={{ fontSize: '20px' }}
             />
@@ -131,16 +135,15 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         <Col span={6}>
           <Card>
             <Link
-              to={{
+              href={{
                 pathname: '/alarm',
                 search: `?appId=${appId}&jobId=${jobId}`,
                 hash: '#the-hash',
-                state: { fromDashboard: true },
               }}
             >
               <Statistic
                 loading={statisticLoading}
-                title="今日报警次数"
+                title='今日报警次数'
                 value={statisticNumber?.alarmNum}
                 prefix={<BarChartOutlined />}
               />
@@ -149,7 +152,10 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         </Col>
       </Row>
 
-      <ChartCard loading={loading} chartData={chartData} />
+      <ChartCard
+        loading={loading}
+        chartData={chartData}
+      />
 
       <TimeChartCard
         loading={jobLoading}
@@ -165,7 +171,7 @@ const TableList: React.FC<RouteChildrenProps> = ({ location }) => {
         selectDate={selectDate}
         onChange={(value) => setSelectDate(value)}
       />
-    </PageContainer>
+    </BaseLayout>
   );
 };
 
