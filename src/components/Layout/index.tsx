@@ -7,13 +7,34 @@ import menuItems from '@/config/menus';
 import { IconFolder } from '@/components/Icon/IconFolder';
 import Header from '@/components/Header';
 import { IconLogo } from '@/components/Icon/IconLogo';
+import {
+  AlertOutlined,
+  AppstoreOutlined,
+  CoffeeOutlined,
+  DashboardOutlined,
+  SmileOutlined,
+} from '@ant-design/icons';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
+function getIcon(icon: string) {
+  switch (icon) {
+    case 'dashboard':
+      return <DashboardOutlined />;
+    case 'user':
+      return <SmileOutlined />;
+    case 'app':
+      return <AppstoreOutlined />;
+    case 'alarm':
+      return <AlertOutlined />;
+    case 'job':
+      return <CoffeeOutlined />;
+  }
+}
 function getItem(item: any): MenuItem {
   return {
     key: item.path,
-    icon: <IconFolder style={{ width: 24, height: 24 }} />,
+    icon: getIcon(item.icon),
     label: item.name,
   } as MenuItem;
 }
@@ -101,6 +122,7 @@ const BaseLayout = ({ children }: any) => {
               style={{
                 border: 'none',
                 padding: '5px 0',
+                fontSize: '16px',
               }}
             />
           </Sider>

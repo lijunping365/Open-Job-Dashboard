@@ -1,27 +1,27 @@
 ﻿export default [
   {
     name: 'Dashboard',
-    icon: 'table',
+    icon: 'dashboard',
     path: './dashboard',
   },
   {
     name: '应用管理',
-    icon: 'table',
+    icon: 'app',
     path: '/app',
   },
   {
     name: '任务管理',
-    icon: 'table',
+    icon: 'job',
     path: '/job',
   },
   {
     name: '报警管理',
-    icon: 'table',
+    icon: 'alarm',
     path: '/alarm',
   },
   {
     name: '用户管理',
-    icon: 'table',
+    icon: 'user',
     path: '/user',
   },
 ];

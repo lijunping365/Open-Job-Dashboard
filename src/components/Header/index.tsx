@@ -50,8 +50,6 @@ const Header: React.FC<Props> = ({
         background: theme === 'light' ? '#fff' : '#141414',
         borderBottom:
           theme !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
-        boxShadow:
-          '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
       }}
     >
       <Button
