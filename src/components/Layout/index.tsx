@@ -6,6 +6,7 @@ import { MenuProps } from 'antd';
 import menuItems from '@/config/menus';
 import { IconFolder } from '@/components/Icon/IconFolder';
 import Header from '@/components/Header';
+import { IconLogo } from '@/components/Icon/IconLogo';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -68,7 +69,23 @@ const BaseLayout = ({ children }: any) => {
             }}
             trigger={null}
           >
-            <div className='demo-logo-vertical'>Open-Job</div>
+            <h1
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <IconLogo style={{ width: 32, height: 32, color: '#149eca' }} />
+              <span
+                style={{
+                  marginLeft: 10,
+                  color: '#080e29',
+                }}
+              >
+                Open-Job
+              </span>
+            </h1>
             <Menu
               selectedKeys={[cleanedPath]}
               mode='inline'

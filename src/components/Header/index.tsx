@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
-import ThemeSwitch from '@/components/Theme';
 import { Button, Layout } from 'antd';
-import { IconUnCollapsed } from '@/components/Icon/IconUnCollapsed';
-import { IconCollapsed } from '@/components/Icon/IconCollapsed';
 import cn from 'classnames';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { IconDark } from '@/components/Icon/IconDark';
+import { IconLight } from '@/components/Icon/IconLight';
 
 const menus = [
   {
@@ -45,30 +45,36 @@ const Header: React.FC<Props> = ({
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: 0,
+        padding: '0 16px',
         justifyContent: 'space-between',
         background: theme === 'light' ? '#fff' : '#141414',
         borderBottom: theme !== 'light' ? '1px solid #343A46' : 'none',
       }}
-      className={cn('flex items-center justify-between gap-4', {
-        'border-b border-stone-600 shadow-xl': theme !== 'light',
-      })}
     >
       <Button
         type='text'
-        icon={collapsed ? <IconUnCollapsed /> : <IconCollapsed />}
+        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         onClick={() => setCollapsed(!collapsed)}
         style={{
-          width: 64,
-          height: 64,
+          width: 36,
+          height: 36,
         }}
       />
-      <div style={{ marginRight: 10 }}>
-        <ThemeSwitch
-          theme={theme}
-          setTheme={setTheme}
-        />
-      </div>
+      <Button
+        type='text'
+        icon={
+          theme === 'dark' ? (
+            <IconDark style={{ height: 20, width: 20 }} />
+          ) : (
+            <IconLight style={{ height: 24, width: 24 }} />
+          )
+        }
+        style={{
+          width: 36,
+          height: 36,
+        }}
+        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+      />
     </Layout.Header>
   );
 };
