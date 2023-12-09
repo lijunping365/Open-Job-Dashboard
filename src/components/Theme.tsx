@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import cn from 'classnames';
 import { IconLight } from '@/components/Icon/IconLight';
 import { IconDark } from '@/components/Icon/IconDark';
-import useTheme from '@/hooks/useTheme';
+import { Button } from 'antd';
 
 interface Props {
   theme: string;
@@ -16,17 +16,17 @@ const ThemeSwitch = ({ theme, setTheme }: Props) => {
   useEffect(() => setMounted(true), []);
 
   return (
-    <button
-      className='h-10 w-10 flex items-center justify-center rounded-full text-2xl transition-colors duration-200'
+    <Button
+      type='text'
+      style={{ display: 'flex', alignItems: 'center', justifyItems: 'center' }}
       onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
     >
-      <span className='sr-only'>Enable dark mode</span>
       {mounted && theme === 'dark' ? (
-        <IconDark style={{ height: 28, width: 28 }} />
+        <IconDark style={{ height: 24, width: 24 }} />
       ) : (
         <IconLight style={{ height: 28, width: 28 }} />
       )}
-    </button>
+    </Button>
   );
 };
 

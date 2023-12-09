@@ -64,6 +64,7 @@ const BaseLayout = ({ children }: any) => {
               left: 0,
               top: 0,
               bottom: 0,
+              borderRight: value !== 'light' ? '1px solid #343A46' : 'none',
             }}
             trigger={null}
           >
@@ -88,8 +89,10 @@ const BaseLayout = ({ children }: any) => {
             setCollapsed={setCollapsed}
           />
           <Content
-            className='p-6'
-            style={{ background: value === 'light' ? '#fff' : '#141414' }}
+            style={{
+              padding: 24,
+              background: value === 'light' ? '#f5f5f5' : '#000',
+            }}
           >
             {children}
           </Content>

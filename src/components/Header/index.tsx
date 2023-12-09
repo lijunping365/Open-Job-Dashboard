@@ -44,8 +44,11 @@ const Header: React.FC<Props> = ({
     <Layout.Header
       style={{
         display: 'flex',
+        alignItems: 'center',
         padding: 0,
+        justifyContent: 'space-between',
         background: theme === 'light' ? '#fff' : '#141414',
+        borderBottom: theme !== 'light' ? '1px solid #343A46' : 'none',
       }}
       className={cn('flex items-center justify-between gap-4', {
         'border-b border-stone-600 shadow-xl': theme !== 'light',
@@ -56,12 +59,11 @@ const Header: React.FC<Props> = ({
         icon={collapsed ? <IconUnCollapsed /> : <IconCollapsed />}
         onClick={() => setCollapsed(!collapsed)}
         style={{
-          fontSize: '16px',
           width: 64,
           height: 64,
         }}
       />
-      <div className='px-4'>
+      <div style={{ marginRight: 10 }}>
         <ThemeSwitch
           theme={theme}
           setTheme={setTheme}
