@@ -74,20 +74,24 @@ const BaseLayout = ({ children }: any) => {
           >
             <h1
               style={{
+                height: '64px',
+                margin: 0,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
               }}
             >
               <IconLogo style={{ width: 32, height: 32, color: '#149eca' }} />
-              <span
-                style={{
-                  marginLeft: 10,
-                  color: '#080e29',
-                }}
-              >
-                Open-Job
-              </span>
+              {!collapsed && (
+                <span
+                  style={{
+                    marginLeft: 10,
+                    color: value === 'light' ? '#080e29' : '#ccc',
+                  }}
+                >
+                  Open-Job
+                </span>
+              )}
             </h1>
             <Menu
               selectedKeys={[cleanedPath]}
