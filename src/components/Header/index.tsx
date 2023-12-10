@@ -1,27 +1,19 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
-import { Button, Layout } from 'antd';
-import cn from 'classnames';
-import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import { Avatar, Button, Dropdown, Layout, MenuProps, Space } from 'antd';
+import {
+  LogoutOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from '@ant-design/icons';
 import { IconDark } from '@/components/Icon/IconDark';
 import { IconLight } from '@/components/Icon/IconLight';
 
-const menus = [
+const items: MenuProps['items'] = [
   {
-    name: 'AI资讯',
-    path: 'https://openbytecode.com/project/open-idea/docs/quick-start',
-  },
-  {
-    name: 'AI应用',
-    path: 'https://openbytecode.com/project/open-idea/docs/quick-start',
-  },
-  {
-    name: 'AI实验室',
-    path: 'https://openbytecode.com/project/open-idea/access',
-  },
-  {
-    name: 'AI工具箱',
-    path: 'https://openbytecode.com/project/open-idea/changelog',
+    key: '2',
+    label: '退出登录',
+    icon: <LogoutOutlined />,
   },
 ];
 
@@ -45,7 +37,7 @@ const Header: React.FC<Props> = ({
       style={{
         display: 'flex',
         alignItems: 'center',
-        padding: '0 16px',
+        padding: '0 24px 0 16px',
         justifyContent: 'space-between',
         background: theme === 'light' ? '#fff' : '#141414',
         borderBottom:
@@ -61,21 +53,34 @@ const Header: React.FC<Props> = ({
           height: 36,
         }}
       />
-      <Button
-        type='text'
-        icon={
-          theme === 'dark' ? (
-            <IconDark style={{ height: 20, width: 20 }} />
-          ) : (
-            <IconLight style={{ height: 24, width: 24 }} />
-          )
-        }
-        style={{
-          width: 36,
-          height: 36,
-        }}
-        onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-      />
+
+      <Space size='middle'>
+        <Button
+          type='text'
+          icon={
+            theme === 'dark' ? (
+              <IconDark style={{ height: 20, width: 20 }} />
+            ) : (
+              <IconLight style={{ height: 24, width: 24 }} />
+            )
+          }
+          style={{
+            width: 36,
+            height: 36,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+        />
+
+        <Dropdown menu={{ items }}>
+          <Avatar
+            src={user?.avatar || 'logo.png'}
+            alt='avatar'
+          />
+        </Dropdown>
+      </Space>
     </Layout.Header>
   );
 };
