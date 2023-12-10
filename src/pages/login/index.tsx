@@ -4,12 +4,22 @@ import {
   LockOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Form, Input, Tabs, Image, message } from 'antd';
+import { Button, Form, Input, Tabs, Image, message, TabsProps } from 'antd';
 import Link from 'next/link';
 import { IconLogo } from '@/components/Icon/IconLogo';
 import { getFakeImageCaptcha } from '@/services/api';
 import { getDeviceId } from '@/lib/cache';
 
+const items: TabsProps['items'] = [
+  {
+    key: 'account',
+    label: '账户密码登录',
+  },
+  {
+    key: 'mobile',
+    label: '手机号登录',
+  },
+];
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<string>('account');
@@ -89,19 +99,11 @@ const Login: React.FC = () => {
             onFinish={onFinish}
           >
             <Tabs
-              activeKey={type}
+              defaultActiveKey='account'
+              items={items}
               onChange={setType}
               centered
-            >
-              <Tabs.TabPane
-                key='account'
-                tab={'账户密码登录'}
-              />
-              <Tabs.TabPane
-                key='mobile'
-                tab={'手机号登录'}
-              />
-            </Tabs>
+            />
 
             {type === 'account' && (
               <>
