@@ -58,7 +58,7 @@ const CronModal: React.FC<CronModalProps> = (props) => {
 
   const handlerChange = (value: string) => {
     nextTriggerTime(value)
-      .then((res) => {
+      .then((res: any) => {
         if (res.errMsg) {
           setErrMsg(res.errMsg);
           setNextTimeList([]);

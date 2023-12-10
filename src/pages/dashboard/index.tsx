@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Select, Statistic } from 'antd';
-import { Chart, LineAdvance } from 'bizcharts';
 import {
   fetchAnalysisNumber,
   fetchAnalysisChart,
@@ -140,22 +139,7 @@ const TableList: React.FC = () => {
             />
           </div>
         }
-      >
-        <Chart
-          padding={[10, 20, 50, 40]}
-          autoFit
-          height={400}
-          data={chartData}
-        >
-          <LineAdvance
-            shape='smooth'
-            point
-            area
-            position='date*value'
-            color='name'
-          />
-        </Chart>
-      </Card>
+      ></Card>
     </BaseLayout>
   );
 };

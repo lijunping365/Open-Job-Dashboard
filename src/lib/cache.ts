@@ -1,5 +1,7 @@
 import Cookies from 'js-cookie';
 
+const domain =
+  process.env.NODE_ENV === 'production' ? 'openbytecode.com' : 'localhost';
 /**
  * 从 Cookie 中获取 accessToken
  */
@@ -13,7 +15,7 @@ export function getAccessToken() {
  */
 export function setAccessToken(accessToken: string) {
   Cookies.set('accessToken', accessToken, {
-    domain: 'openbytecode.com',
+    domain: domain,
     expires: 15,
   });
 }

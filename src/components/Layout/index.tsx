@@ -13,6 +13,7 @@ import {
   DashboardOutlined,
   SmileOutlined,
 } from '@ant-design/icons';
+import Footer from '@/components/Footer';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -40,7 +41,7 @@ function getItem(item: any): MenuItem {
 
 const items: MenuItem[] = menuItems.map((item) => getItem(item));
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Sider } = Layout;
 
 const BaseLayout = ({ children }: any) => {
   const router = useRouter();
@@ -141,6 +142,7 @@ const BaseLayout = ({ children }: any) => {
           >
             {children}
           </Content>
+          <Footer theme={value} />
         </Layout>
       </Layout>
     </ConfigProvider>
