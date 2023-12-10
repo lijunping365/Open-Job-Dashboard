@@ -24,18 +24,3 @@ export function setAccessToken(accessToken: string) {
 export function removeAccessToken() {
   return Cookies.remove('accessToken');
 }
-
-/**
- * 获取 deviceId
- */
-export function getDeviceId() {
-  return Cookies.get('open-official-device-id');
-}
-
-/**
- * 设置 deviceId
- * @param deviceId
- */
-export function setDeviceId(deviceId: string) {
-  Cookies.set('open-official-device-id', deviceId);
-}

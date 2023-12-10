@@ -8,7 +8,7 @@ import { Button, Form, Input, Tabs, Image, message, TabsProps } from 'antd';
 import Link from 'next/link';
 import { IconLogo } from '@/components/Icon/IconLogo';
 import { getFakeImageCaptcha } from '@/services/api';
-import { getDeviceId } from '@/lib/cache';
+import { generateUUID } from '@/lib/utils';
 
 const items: TabsProps['items'] = [
   {
@@ -21,6 +21,7 @@ const items: TabsProps['items'] = [
   },
 ];
 const Login: React.FC = () => {
+  const deviceId = generateUUID();
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<string>('account');
   const [imageUrl, setImageUrl] = useState('');
@@ -29,7 +30,7 @@ const Login: React.FC = () => {
   };
 
   const onGetImageCaptcha = useCallback(async () => {
-    getFakeImageCaptcha({ deviceId: getDeviceId() })
+    getFakeImageCaptcha({ deviceId })
       .then((result: any) => {
         if (result && result.success)
           setImageUrl(`data:image/jpeg;base64,${result.imageCode}`);
@@ -142,18 +143,21 @@ const Login: React.FC = () => {
                       size={'large'}
                       placeholder='验证码'
                       prefix={<HourglassOutlined />}
+                      style={{ marginRight: '8px' }}
                     />
-                    <Image
-                      style={{
-                        marginLeft: '20px',
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      alt='captcha'
-                      preview={false}
-                      src={imageUrl}
-                      onClick={onGetImageCaptcha}
-                    />
+                    <Button
+                      size={'large'}
+                      style={{ padding: 0 }}
+                    >
+                      <div style={{ padding: '4px' }}>
+                        <Image
+                          alt='captcha'
+                          preview={false}
+                          src={imageUrl}
+                          onClick={onGetImageCaptcha}
+                        />
+                      </div>
+                    </Button>
                   </div>
                 </Form.Item>
               </>
@@ -162,8 +166,8 @@ const Login: React.FC = () => {
             <Form.Item>
               <Button
                 type='primary'
+                size={'large'}
                 htmlType='submit'
-                className='login-form-button'
               >
                 登录
               </Button>
