@@ -7,7 +7,7 @@ import {
 import { Button, Form, Input, Tabs, Image, message, TabsProps } from 'antd';
 import Link from 'next/link';
 import { IconLogo } from '@/components/Icon/IconLogo';
-import { getFakeImageCaptcha } from '@/services/api';
+import { getFakeImageCaptcha, getFakeSmsCaptcha } from '@/services/api';
 import { generateUUID } from '@/lib/utils';
 
 const items: TabsProps['items'] = [
@@ -25,8 +25,17 @@ const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [type, setType] = useState<string>('account');
   const [imageUrl, setImageUrl] = useState('');
+  const [phone, setPhone] = useState();
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
+  };
+
+  const onGetSmsCaptcha = async () => {
+    getFakeSmsCaptcha({ mobile: phone, deviceId }).then((result: any) => {
+      if (result && result.success) {
+        message.success('短信验证码已发送！请注意查收');
+      }
+    });
   };
 
   const onGetImageCaptcha = useCallback(async () => {
@@ -163,11 +172,59 @@ const Login: React.FC = () => {
               </>
             )}
 
+            {type === 'mobile' && (
+              <>
+                <Form.Item
+                  name='mobile'
+                  rules={[
+                    { required: true, message: '请输入手机号!' },
+                    {
+                      pattern: /^1\d{10}$/,
+                      message: '手机号格式错误！',
+                    },
+                  ]}
+                >
+                  <Input
+                    size={'large'}
+                    placeholder='手机号'
+                    prefix={<UserOutlined />}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name='captcha'
+                  rules={[{ required: true, message: '请输入验证码!' }]}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <Input
+                      size={'large'}
+                      placeholder='验证码'
+                      prefix={<HourglassOutlined />}
+                      style={{ marginRight: '8px' }}
+                    />
+                    <Button
+                      size={'large'}
+                      onClick={onGetSmsCaptcha}
+                      style={{ fontSize: '14px' }}
+                    >
+                      发送验证码
+                    </Button>
+                  </div>
+                </Form.Item>
+              </>
+            )}
+
             <Form.Item>
               <Button
                 type='primary'
                 size={'large'}
                 htmlType='submit'
+                style={{ width: '100%' }}
               >
                 登录
               </Button>
