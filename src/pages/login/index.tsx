@@ -1,8 +1,14 @@
-import React, { useState } from 'react';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Checkbox, Form, Input, Tabs } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import {
+  HourglassOutlined,
+  LockOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { Button, Form, Input, Tabs, Image, message } from 'antd';
 import Link from 'next/link';
 import { IconLogo } from '@/components/Icon/IconLogo';
+import { getFakeImageCaptcha } from '@/services/api';
+import { getDeviceId } from '@/lib/cache';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -11,6 +17,23 @@ const Login: React.FC = () => {
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
+
+  const onGetImageCaptcha = useCallback(async () => {
+    getFakeImageCaptcha({ deviceId: getDeviceId() })
+      .then((result: any) => {
+        if (result && result.success)
+          setImageUrl(`data:image/jpeg;base64,${result.imageCode}`);
+      })
+      .catch((error) => {
+        message.error(`获取验证码失败: ${error}`);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (type === 'account') {
+      onGetImageCaptcha().then();
+    }
+  }, []);
 
   return (
     <div
@@ -84,42 +107,52 @@ const Login: React.FC = () => {
               <>
                 <Form.Item
                   name='username'
-                  rules={[
-                    { required: true, message: 'Please input your Username!' },
-                  ]}
+                  rules={[{ required: true, message: '请输入用户名!' }]}
                 >
                   <Input
-                    prefix={<UserOutlined className='site-form-item-icon' />}
-                    placeholder='Username'
+                    size={'large'}
+                    placeholder='用户名'
+                    prefix={<UserOutlined />}
                   />
                 </Form.Item>
                 <Form.Item
                   name='password'
-                  rules={[
-                    { required: true, message: 'Please input your Password!' },
-                  ]}
+                  rules={[{ required: true, message: '请输入密码!' }]}
                 >
-                  <Input
-                    prefix={<LockOutlined className='site-form-item-icon' />}
-                    type='password'
-                    placeholder='Password'
+                  <Input.Password
+                    size={'large'}
+                    placeholder='密码'
+                    prefix={<LockOutlined />}
                   />
                 </Form.Item>
-                <Form.Item>
-                  <Form.Item
-                    name='remember'
-                    valuePropName='checked'
-                    noStyle
+                <Form.Item
+                  name='captcha'
+                  rules={[{ required: true, message: '请输入验证码!' }]}
+                >
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
                   >
-                    <Checkbox>Remember me</Checkbox>
-                  </Form.Item>
-
-                  <a
-                    className='login-form-forgot'
-                    href=''
-                  >
-                    Forgot password
-                  </a>
+                    <Input
+                      size={'large'}
+                      placeholder='验证码'
+                      prefix={<HourglassOutlined />}
+                    />
+                    <Image
+                      style={{
+                        marginLeft: '20px',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                      alt='captcha'
+                      preview={false}
+                      src={imageUrl}
+                      onClick={onGetImageCaptcha}
+                    />
+                  </div>
                 </Form.Item>
               </>
             )}
@@ -130,9 +163,8 @@ const Login: React.FC = () => {
                 htmlType='submit'
                 className='login-form-button'
               >
-                Log in
+                登录
               </Button>
-              Or <a href=''>register now!</a>
             </Form.Item>
           </Form>
         </div>

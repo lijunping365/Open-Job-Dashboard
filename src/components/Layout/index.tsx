@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import useTheme from '@/hooks/useTheme';
 import { MenuProps } from 'antd';
 import menuItems from '@/config/menus';
-import { IconFolder } from '@/components/Icon/IconFolder';
 import Header from '@/components/Header';
 import { IconLogo } from '@/components/Icon/IconLogo';
 import {
