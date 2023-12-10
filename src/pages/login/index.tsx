@@ -1,14 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import {
-  HourglassOutlined,
-  LockOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import { Button, Form, Input, Tabs, Image, message, TabsProps } from 'antd';
+import React, { useState } from 'react';
+import { Tabs, TabsProps } from 'antd';
 import Link from 'next/link';
 import { IconLogo } from '@/components/Icon/IconLogo';
-import { getFakeImageCaptcha, getFakeSmsCaptcha } from '@/services/api';
-import { generateUUID } from '@/lib/utils';
+import AccountLogin from '@/components/Login/AccountLogin';
+import MobileLogin from '@/components/Login/MobileLogin';
+import { useLoginRedirect } from '@/hooks/useLoginRedirect';
 
 const items: TabsProps['items'] = [
   {
@@ -21,39 +17,8 @@ const items: TabsProps['items'] = [
   },
 ];
 const Login: React.FC = () => {
-  const deviceId = generateUUID();
-  const [submitting, setSubmitting] = useState(false);
+  const redirect = useLoginRedirect();
   const [type, setType] = useState<string>('account');
-  const [imageUrl, setImageUrl] = useState('');
-  const [phone, setPhone] = useState();
-  const onFinish = (values: any) => {
-    console.log('Received values of form: ', values);
-  };
-
-  const onGetSmsCaptcha = async () => {
-    getFakeSmsCaptcha({ mobile: phone, deviceId }).then((result: any) => {
-      if (result && result.success) {
-        message.success('短信验证码已发送！请注意查收');
-      }
-    });
-  };
-
-  const onGetImageCaptcha = useCallback(async () => {
-    getFakeImageCaptcha({ deviceId })
-      .then((result: any) => {
-        if (result && result.success)
-          setImageUrl(`data:image/jpeg;base64,${result.imageCode}`);
-      })
-      .catch((error) => {
-        message.error(`获取验证码失败: ${error}`);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (type === 'account') {
-      onGetImageCaptcha().then();
-    }
-  }, []);
 
   return (
     <div
@@ -103,133 +68,14 @@ const Login: React.FC = () => {
           </h1>
         </div>
         <div style={{ width: '328px', margin: '0 auto' }}>
-          <Form
-            name='normal_login'
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-          >
-            <Tabs
-              defaultActiveKey='account'
-              items={items}
-              onChange={setType}
-              centered
-            />
-
-            {type === 'account' && (
-              <>
-                <Form.Item
-                  name='username'
-                  rules={[{ required: true, message: '请输入用户名!' }]}
-                >
-                  <Input
-                    size={'large'}
-                    placeholder='用户名'
-                    prefix={<UserOutlined />}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name='password'
-                  rules={[{ required: true, message: '请输入密码!' }]}
-                >
-                  <Input.Password
-                    size={'large'}
-                    placeholder='密码'
-                    prefix={<LockOutlined />}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name='captcha'
-                  rules={[{ required: true, message: '请输入验证码!' }]}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Input
-                      size={'large'}
-                      placeholder='验证码'
-                      prefix={<HourglassOutlined />}
-                      style={{ marginRight: '8px' }}
-                    />
-                    <Button
-                      size={'large'}
-                      style={{ padding: 0 }}
-                    >
-                      <div style={{ padding: '4px' }}>
-                        <Image
-                          alt='captcha'
-                          preview={false}
-                          src={imageUrl}
-                          onClick={onGetImageCaptcha}
-                        />
-                      </div>
-                    </Button>
-                  </div>
-                </Form.Item>
-              </>
-            )}
-
-            {type === 'mobile' && (
-              <>
-                <Form.Item
-                  name='mobile'
-                  rules={[
-                    { required: true, message: '请输入手机号!' },
-                    {
-                      pattern: /^1\d{10}$/,
-                      message: '手机号格式错误！',
-                    },
-                  ]}
-                >
-                  <Input
-                    size={'large'}
-                    placeholder='手机号'
-                    prefix={<UserOutlined />}
-                  />
-                </Form.Item>
-                <Form.Item
-                  name='captcha'
-                  rules={[{ required: true, message: '请输入验证码!' }]}
-                >
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                    }}
-                  >
-                    <Input
-                      size={'large'}
-                      placeholder='验证码'
-                      prefix={<HourglassOutlined />}
-                      style={{ marginRight: '8px' }}
-                    />
-                    <Button
-                      size={'large'}
-                      onClick={onGetSmsCaptcha}
-                      style={{ fontSize: '14px' }}
-                    >
-                      发送验证码
-                    </Button>
-                  </div>
-                </Form.Item>
-              </>
-            )}
-
-            <Form.Item>
-              <Button
-                type='primary'
-                size={'large'}
-                htmlType='submit'
-                style={{ width: '100%' }}
-              >
-                登录
-              </Button>
-            </Form.Item>
-          </Form>
+          <Tabs
+            defaultActiveKey='account'
+            items={items}
+            onChange={setType}
+            centered
+          />
+          {type === 'account' && <AccountLogin redirect={redirect} />}
+          {type === 'mobile' && <MobileLogin redirect={redirect} />}
         </div>
       </div>
     </div>
