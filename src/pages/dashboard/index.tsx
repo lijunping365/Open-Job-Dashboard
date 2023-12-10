@@ -63,10 +63,7 @@ const TableList: React.FC = () => {
 
   return (
     <BaseLayout>
-      <Row
-        gutter={16}
-        style={{ marginTop: '20px' }}
-      >
+      <Row gutter={16}>
         <Col span={6}>
           <Card>
             <Statistic
@@ -123,7 +120,6 @@ const TableList: React.FC = () => {
         bordered={false}
         title='任务调度次数'
         style={{
-          height: '100%',
           marginTop: '20px',
         }}
         extra={

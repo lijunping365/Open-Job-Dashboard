@@ -18,6 +18,8 @@ const Header: React.FC<Props> = ({ theme }: Props) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          gap: 20,
+          fontSize: 16,
         }}
       >
         <Link href='https://github.com/lijunping365/Open-Job'>
@@ -28,7 +30,12 @@ const Header: React.FC<Props> = ({ theme }: Props) => {
         </Link>
       </div>
       <div
-        style={{ marginTop: 10 }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginTop: 10,
+        }}
       >{`Copyright © ${new Date().getFullYear()} OpenByteCode`}</div>
     </Layout.Footer>
   );

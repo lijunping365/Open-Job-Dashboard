@@ -61,7 +61,7 @@ const BaseLayout = ({ children }: any) => {
           value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
-      <Layout style={{ minHeight: '100%' }}>
+      <Layout style={{ minHeight: '100vh' }}>
         <div
           style={{
             width: collapsed ? collapsedWidth : siderWidth,
