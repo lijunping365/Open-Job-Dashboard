@@ -2,6 +2,7 @@ import React from 'react';
 import '@/styles/globals.css';
 import { AppProps } from 'next/app';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
+import NoSSR from '@/components/NoSSR';
 
 export default function App({
   Component,
@@ -9,9 +10,11 @@ export default function App({
 }: AppProps) {
   return (
     <>
-      <AuthProvider>
-        <Component {...pageProps} />
-      </AuthProvider>
+      <NoSSR>
+        <AuthProvider>
+          <Component {...pageProps} />
+        </AuthProvider>
+      </NoSSR>
     </>
   );
 }
