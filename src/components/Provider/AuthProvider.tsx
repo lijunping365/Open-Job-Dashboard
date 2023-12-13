@@ -1,6 +1,7 @@
 import { AuthContext } from '@/components/Provider/AuthContext';
 import React, { useEffect, useState } from 'react';
 import { currentUser } from '@/services/login';
+import { removeAccessToken } from '@/lib/cache';
 
 export interface AuthProviderProps {
   children: React.ReactNode;
@@ -9,16 +10,17 @@ export interface AuthProviderProps {
 export function AuthProvider(props: AuthProviderProps) {
   const [user, setUser] = useState<any>();
 
+  const initUser = async () => {
+    try {
+      const user = await currentUser();
+      if (user) setUser(user);
+    } catch (error) {
+      removeAccessToken();
+    }
+  };
+
   useEffect(() => {
-    const init = async () => {
-      try {
-        const user = await currentUser();
-        if (user) setUser(user);
-      } catch (error) {
-        console.log(`获取用户信息失败:${error}`);
-      }
-    };
-    init().then();
+    initUser().then();
   }, []);
 
   return (
