@@ -273,8 +273,6 @@ const TableList: React.FC = () => {
         rowKey={(record) => record.id}
         dataSource={tableData}
         pagination={tableParams.pagination}
-        //@ts-ignore
-        onChange={onTableChange}
         rowSelection={{
           onChange: (_, selectedRows) => {
             setSelectedRows(selectedRows);

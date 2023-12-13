@@ -438,9 +438,7 @@ const TableList: React.FC = () => {
           const success = await handleAdd(value);
           if (success) {
             handleCreateModalVisible(false);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+            fetchData().then();
           }
         }}
         onCancel={() => handleCreateModalVisible(false)}
@@ -454,9 +452,7 @@ const TableList: React.FC = () => {
             if (success) {
               handleUpdateModalVisible(false);
               setUpdateFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
+              fetchData().then();
             }
           }}
           onCancel={() => {
