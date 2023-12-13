@@ -15,7 +15,7 @@ const MyDocument = () => {
   );
 };
 
-Document.getInitialProps = async (ctx: DocumentContext) => {
+MyDocument.getInitialProps = async (ctx: DocumentContext) => {
   const cache = createCache();
   const originalRenderPage = ctx.renderPage;
   ctx.renderPage = () =>
