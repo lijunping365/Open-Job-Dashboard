@@ -80,7 +80,8 @@ const BaseLayout = ({ children }: any) => {
             width={siderWidth}
             onCollapse={(value) => setCollapsed(value)}
             style={{
-              overflow: 'auto',
+              overflowX: 'hidden',
+              overflowY: 'auto',
               height: '100vh',
               position: 'fixed',
               left: 0,
@@ -137,7 +138,7 @@ const BaseLayout = ({ children }: any) => {
           <Content
             style={{
               padding: 24,
-              background: value === 'light' ? '#f5f5f5' : '#000',
+              backgroundColor: value === 'light' ? '#f5f5f5' : '#000',
             }}
           >
             {children}

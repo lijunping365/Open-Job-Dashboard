@@ -10,7 +10,7 @@ const Header: React.FC<Props> = ({ theme }: Props) => {
   return (
     <Layout.Footer
       style={{
-        background: theme === 'light' ? '#fff' : '#141414',
+        backgroundColor: theme === 'light' ? '#f5f5f5' : '#000',
       }}
     >
       <div
