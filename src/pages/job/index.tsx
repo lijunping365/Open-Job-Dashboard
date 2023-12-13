@@ -1,15 +1,20 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
   Alert,
+  Badge,
   Button,
   Card,
   Divider,
+  Dropdown,
   Form,
   Input,
+  MenuProps,
   message,
+  Space,
   Table,
+  TablePaginationConfig,
 } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import UpdateForm from './components/UpdateForm';
 import {
   addScheduleTask,
@@ -28,6 +33,7 @@ import BaseLayout from '@/components/Layout';
 import { TableParams } from '@/types/LoginTyping';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
+import { FilterValue, SorterResult } from 'antd/es/table/interface';
 
 const FormItem = Form.Item;
 /**
@@ -154,10 +160,8 @@ const TableList: React.FC = () => {
   const [hasMore, setHasMore] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [tableData, setTableData] = useState([]);
-  /** 新建窗口的弹窗 */
   const [createModalVisible, handleCreateModalVisible] =
     useState<boolean>(false);
-  /** 更新窗口的弹窗 */
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
@@ -207,13 +211,79 @@ const TableList: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    fetchData().then();
+  }, [JSON.stringify(tableParams)]);
+
+  const getItems = (record: any): MenuProps['items'] => {
+    return [
+      {
+        key: '1',
+        label: (
+          <a
+            onClick={() => {
+              handleUpdateModalVisible(true);
+              setUpdateFormValues(record);
+            }}
+          >
+            修改
+          </a>
+        ),
+      },
+      {
+        key: '2',
+        label: (
+          <a
+            onClick={async () => {
+              const confirm = await confirmModal();
+              if (confirm) {
+                await handleRemove([record.id]);
+                fetchData().then();
+              }
+            }}
+          >
+            删除
+          </a>
+        ),
+      },
+      {
+        key: '3',
+        label: (
+          <Link
+            href={{
+              pathname: '/logger',
+              search: `?id=${record.id}`,
+              hash: '#the-hash',
+            }}
+          >
+            查看日志
+          </Link>
+        ),
+      },
+      {
+        key: '4',
+        label: (
+          <Link
+            href={{
+              pathname: '/job/monitor',
+              search: `?appId=${record.appId}&jobId=${record.id}`,
+              hash: '#the-hash',
+            }}
+          >
+            任务监控
+          </Link>
+        ),
+      },
+    ];
+  };
+
   const columns: ColumnsType<API.OpenJob> = [
     {
       title: '任务编号',
       dataIndex: 'id',
     },
     {
-      title: '应用名称',
+      title: '应用ID',
       dataIndex: 'appId',
     },
     {
@@ -225,14 +295,12 @@ const TableList: React.FC = () => {
       dataIndex: 'cronExpression',
     },
     {
-      title: 'Handler 名称',
-      dataIndex: 'handlerName',
-    },
-    {
       title: '状态',
       dataIndex: 'status',
       render: (_, record) => (
-        <span>{record.status === 1 ? '启动' : '停止'}</span>
+        <Badge status={record.status === 1 ? 'success' : 'processing'}>
+          {record.status === 1 ? '启动' : '停止'}
+        </Badge>
       ),
     },
     {
@@ -248,67 +316,34 @@ const TableList: React.FC = () => {
       dataIndex: 'option',
       render: (_, record) => (
         <>
-          <a
-            onClick={async () => {
-              if (record.status === 0) {
-                await handleStart(record.id);
-              } else {
-                await handleStop(record.id);
-              }
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            {record.status === 0 ? '启动' : '停止'}
-          </a>
-          <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              await handleRun(record.id);
-            }}
-          >
-            运行
-          </a>
-          <Divider type='vertical' />
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setUpdateFormValues(record);
-            }}
-          >
-            修改
-          </a>
-          <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              const confirm = await confirmModal();
-              if (confirm) {
-                await handleRemove([record.id]);
-                actionRef.current?.reloadAndRest?.();
-              }
-            }}
-          >
-            删除
-          </a>
-          <Divider type='vertical' />
-          <Link
-            href={{
-              pathname: '/logger',
-              search: `?id=${record.id}`,
-              hash: '#the-hash',
-            }}
-          >
-            查看日志
-          </Link>
-          <Divider type='vertical' />
-          <Link
-            href={{
-              pathname: '/job/monitor',
-              search: `?appId=${record.appId}&jobId=${record.id}`,
-              hash: '#the-hash',
-            }}
-          >
-            任务监控
-          </Link>
+          <Space size='middle'>
+            <a
+              onClick={async () => {
+                if (record.status === 0) {
+                  await handleStart(record.id);
+                } else {
+                  await handleStop(record.id);
+                }
+                fetchData().then();
+              }}
+            >
+              {record.status === 0 ? '启动' : '停止'}
+            </a>
+            <Divider type='vertical' />
+            <a
+              onClick={async () => {
+                await handleRun(record.id);
+              }}
+            >
+              运行
+            </a>
+            <Divider type='vertical' />
+            <Dropdown menu={{ items: getItems(record) }}>
+              <a>
+                更多 <DownOutlined />
+              </a>
+            </Dropdown>
+          </Space>
         </>
       ),
     },
@@ -324,69 +359,79 @@ const TableList: React.FC = () => {
           layout='inline'
           form={form}
           onValuesChange={() => fetchData()}
+          style={{ display: 'block', marginBottom: 24 }}
         >
-          <div className='w-full p-2'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-2xl'>报警记录</h2>
-              <div className='flex gap-4'>
-                <FormItem name='name'>
-                  <Input
-                    placeholder='查询'
-                    prefix={<SearchOutlined />}
-                  />
-                </FormItem>
-                <Button
-                  type='primary'
-                  icon={<SearchOutlined />}
-                  onClick={fetchData}
-                >
-                  查询
-                </Button>
-              </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', gap: 4 }}>
+              <FormItem name='name'>
+                <Input
+                  placeholder='查询'
+                  prefix={<SearchOutlined />}
+                />
+              </FormItem>
+              <Button
+                type='primary'
+                icon={<SearchOutlined />}
+                onClick={fetchData}
+              >
+                查询
+              </Button>
             </div>
+            <Button
+              type='primary'
+              icon={<PlusOutlined />}
+              onClick={fetchData}
+            >
+              新建
+            </Button>
           </div>
         </Form>
+
+        {selectedRowsState?.length > 0 && (
+          <Alert
+            type='info'
+            showIcon
+            message={
+              <div>
+                已选择{' '}
+                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+                项&nbsp;&nbsp;
+              </div>
+            }
+            action={
+              <Button
+                onClick={async () => {
+                  await handleRemove(selectedRowsState.map((e) => e.id));
+                  setSelectedRows([]);
+                  fetchData().then();
+                }}
+              >
+                批量删除
+              </Button>
+            }
+          />
+        )}
+
+        <Table
+          loading={loading}
+          columns={columns}
+          rowKey={(record) => record.id}
+          dataSource={tableData}
+          pagination={tableParams.pagination}
+          rowSelection={{
+            onChange: (_, selectedRows) => {
+              setSelectedRows(selectedRows);
+            },
+          }}
+        />
       </Card>
 
-      {selectedRowsState?.length > 0 && (
-        <Alert
-          type='info'
-          showIcon
-          message={
-            <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              项&nbsp;&nbsp;
-            </div>
-          }
-          action={
-            <Button
-              onClick={async () => {
-                await handleRemove(selectedRowsState.map((e) => e.id));
-                setSelectedRows([]);
-                fetchData().then();
-              }}
-            >
-              批量删除
-            </Button>
-          }
-        />
-      )}
-
-      <Table
-        loading={loading}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={tableData}
-        pagination={tableParams.pagination}
-        //@ts-ignore
-        onChange={onTableChange}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
       <CreateForm
         onSubmit={async (value) => {
           const success = await handleAdd(value);
