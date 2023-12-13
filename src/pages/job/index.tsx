@@ -15,7 +15,7 @@ import {
   TablePaginationConfig,
 } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import UpdateForm from './components/UpdateForm';
+import UpdateForm from '../../components/Job/UpdateForm';
 import {
   addScheduleTask,
   fetchInstancePage,
@@ -28,7 +28,7 @@ import {
   updateScheduleTask,
 } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
-import CreateForm from './components/CreateForm';
+import CreateForm from '../../components/Job/CreateForm';
 import BaseLayout from '@/components/Layout';
 import { TableParams } from '@/types/LoginTyping';
 import { ColumnsType } from 'antd/es/table';
@@ -182,12 +182,12 @@ const TableList: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetchScheduleTaskPage({
+      const response: any = await fetchScheduleTaskPage({
         current: tableParams.pagination?.current,
         pageSize: tableParams.pagination?.pageSize,
       });
 
-      setTableData(response.records);
+      setTableData(response?.records);
       setTableParams({
         ...tableParams,
         pagination: {
@@ -279,7 +279,7 @@ const TableList: React.FC = () => {
 
   const columns: ColumnsType<API.OpenJob> = [
     {
-      title: '任务编号',
+      title: '任务ID',
       dataIndex: 'id',
     },
     {
@@ -298,9 +298,10 @@ const TableList: React.FC = () => {
       title: '状态',
       dataIndex: 'status',
       render: (_, record) => (
-        <Badge status={record.status === 1 ? 'success' : 'processing'}>
-          {record.status === 1 ? '启动' : '停止'}
-        </Badge>
+        <Badge
+          status={record.status === 1 ? 'success' : 'processing'}
+          text={record.status === 1 ? '启动' : '停止'}
+        />
       ),
     },
     {
@@ -308,7 +309,7 @@ const TableList: React.FC = () => {
       dataIndex: 'createTime',
     },
     {
-      title: '创建人',
+      title: '创建人ID',
       dataIndex: 'createUser',
     },
     {
@@ -444,7 +445,7 @@ const TableList: React.FC = () => {
         }}
         onCancel={() => handleCreateModalVisible(false)}
         modalVisible={createModalVisible}
-      ></CreateForm>
+      />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <UpdateForm
