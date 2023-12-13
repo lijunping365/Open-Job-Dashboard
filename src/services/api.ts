@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/lib/cache';
-import request from '@/lib/request';
+import request, { API, PageResult } from '@/lib/request';
 
 /** 获取当前的用户 GET /user/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
@@ -206,12 +206,7 @@ export async function fetchScheduleTaskPage(params: {
   /** 任务状态 */
   status?: number;
 }) {
-  return request('/task/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.OpenJob>>('/task/page', params);
 }
 
 export async function updateScheduleTask(params: Partial<API.OpenJob>) {

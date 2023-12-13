@@ -12,13 +12,11 @@ import {
   message,
   Space,
   Table,
-  TablePaginationConfig,
 } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import UpdateForm from '../../components/Job/UpdateForm';
 import {
   addScheduleTask,
-  fetchInstancePage,
   fetchOpenJobAppList,
   fetchScheduleTaskPage,
   removeScheduleTask,
@@ -30,10 +28,9 @@ import {
 import { confirmModal } from '@/components/ConfirmModel';
 import CreateForm from '../../components/Job/CreateForm';
 import BaseLayout from '@/components/Layout';
-import { TableParams } from '@/types/LoginTyping';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import { FilterValue, SorterResult } from 'antd/es/table/interface';
+import usePaginationRequest from '@/hooks/usePagination';
 
 const FormItem = Form.Item;
 /**
@@ -139,7 +136,7 @@ const handleRun = async (jobId: number) => {
  *
  * @param jobId
  */
-const handleStop = async (jobId: number) => {
+const updateStatus = async (jobId: number, status: number) => {
   const hide = message.loading('正在停止');
   if (!jobId) return true;
   try {
@@ -156,51 +153,20 @@ const handleStop = async (jobId: number) => {
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [tableData, setTableData] = useState([]);
   const [createModalVisible, handleCreateModalVisible] =
     useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
   const [selectedRowsState, setSelectedRows] = useState<API.OpenJob[]>([]);
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
 
-  const fetchData = async () => {
-    const name = form.getFieldValue('name');
-    let order = 1;
-    if (tableParams?.order) {
-      order = tableParams?.order === 'descend' ? 1 : 0;
-    }
-
-    setLoading(true);
-    try {
-      const response: any = await fetchScheduleTaskPage({
-        current: tableParams.pagination?.current,
-        pageSize: tableParams.pagination?.pageSize,
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.OpenJob>(async (params) => {
+      return await fetchScheduleTaskPage({
+        current: params.current,
+        pageSize: params.pageSize,
       });
-
-      setTableData(response?.records);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.total,
-        },
-      });
-    } catch (error) {
-      message.error('服务繁忙，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
-  };
+    });
 
   const searchApp = async () => {
     const res = await fetchOpenJobAppList();
@@ -210,10 +176,6 @@ const TableList: React.FC = () => {
       });
     }
   };
-
-  useEffect(() => {
-    fetchData().then();
-  }, [JSON.stringify(tableParams)]);
 
   const getItems = (record: any): MenuProps['items'] => {
     return [
@@ -320,11 +282,7 @@ const TableList: React.FC = () => {
           <Space size='middle'>
             <a
               onClick={async () => {
-                if (record.status === 0) {
-                  await handleStart(record.id);
-                } else {
-                  await handleStop(record.id);
-                }
+                await updateStatus(record.id, record.status);
                 fetchData().then();
               }}
             >
@@ -352,14 +310,10 @@ const TableList: React.FC = () => {
 
   return (
     <BaseLayout>
-      <Card
-        bordered={false}
-        className='mt-4'
-      >
+      <Card bordered={false}>
         <Form
           layout='inline'
           form={form}
-          onValuesChange={() => fetchData()}
           style={{ display: 'block', marginBottom: 24 }}
         >
           <div
@@ -425,6 +379,7 @@ const TableList: React.FC = () => {
           rowKey={(record) => record.id}
           dataSource={tableData}
           pagination={tableParams.pagination}
+          onChange={(pagination) => onTableChange(pagination)}
           rowSelection={{
             onChange: (_, selectedRows) => {
               setSelectedRows(selectedRows);

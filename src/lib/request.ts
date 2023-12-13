@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export interface PageQuery {
-  current: number;
+  current?: number;
   pageSize?: number;
 }
 
@@ -98,7 +98,7 @@ const deleteReq = <T>(url: string, data?: Record<string, any>): Promise<T> => {
   return instance.delete(url, { data });
 };
 
-export const request = {
+export const API = {
   get: getReq,
   post: postReq,
   put: putReq,
