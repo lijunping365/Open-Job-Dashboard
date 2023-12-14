@@ -148,10 +148,8 @@ const updateStatus = async (jobId: number, status: number) => {
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
-  const [createModalVisible, handleCreateModalVisible] =
-    useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
   const request = async (params: PageParams) => {
@@ -173,7 +171,7 @@ const TableList: React.FC = () => {
         label: (
           <a
             onClick={() => {
-              handleUpdateModalVisible(true);
+              setUpdateModalVisible(true);
               setUpdateFormValues(record);
             }}
           >
@@ -315,7 +313,7 @@ const TableList: React.FC = () => {
           <Button
             type='primary'
             icon={<PlusOutlined />}
-            onClick={fetchData}
+            onClick={() => setCreateModalVisible(true)}
           >
             新建
           </Button>
@@ -335,11 +333,11 @@ const TableList: React.FC = () => {
         onSubmit={async (value) => {
           const success = await handleAdd(value);
           if (success) {
-            handleCreateModalVisible(false);
+            setCreateModalVisible(false);
             fetchData().then();
           }
         }}
-        onCancel={() => handleCreateModalVisible(false)}
+        onCancel={() => setCreateModalVisible(false)}
         modalVisible={createModalVisible}
       />
 
@@ -348,13 +346,13 @@ const TableList: React.FC = () => {
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
-              handleUpdateModalVisible(false);
+              setUpdateModalVisible(false);
               setUpdateFormValues({});
               fetchData().then();
             }
           }}
           onCancel={() => {
-            handleUpdateModalVisible(false);
+            setUpdateModalVisible(false);
             setUpdateFormValues({});
           }}
           updateModalVisible={updateModalVisible}
