@@ -1,6 +1,5 @@
 import { DownOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
 import {
-  Alert,
   Badge,
   Button,
   Card,
@@ -11,7 +10,6 @@ import {
   MenuProps,
   message,
   Space,
-  Table,
 } from 'antd';
 import React, { useState } from 'react';
 import UpdateForm from '../../components/Job/UpdateForm';
@@ -31,6 +29,7 @@ import BaseLayout from '@/components/Layout';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import usePaginationRequest from '@/hooks/usePagination';
+import ProTable from '@/components/ProTable';
 
 const FormItem = Form.Item;
 /**
@@ -78,16 +77,13 @@ const handleUpdate = async (fields: Partial<API.OpenJob>) => {
  */
 const handleRemove = async (selectedRows: any[]) => {
   const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
   try {
     await removeScheduleTask({ ids: selectedRows });
     hide();
     message.success('删除成功，即将刷新');
-    return true;
   } catch (error) {
     hide();
     message.error('删除失败，请重试');
-    return false;
   }
 };
 
@@ -158,7 +154,6 @@ const TableList: React.FC = () => {
   const [updateModalVisible, handleUpdateModalVisible] =
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
-  const [selectedRowsState, setSelectedRows] = useState<API.OpenJob[]>([]);
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.OpenJob>(async (params) => {
@@ -348,43 +343,10 @@ const TableList: React.FC = () => {
           </div>
         </Form>
 
-        {selectedRowsState?.length > 0 && (
-          <Alert
-            type='info'
-            showIcon
-            message={
-              <div>
-                已选择{' '}
-                <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-                项&nbsp;&nbsp;
-              </div>
-            }
-            action={
-              <Button
-                onClick={async () => {
-                  await handleRemove(selectedRowsState.map((e) => e.id));
-                  setSelectedRows([]);
-                  fetchData().then();
-                }}
-              >
-                批量删除
-              </Button>
-            }
-          />
-        )}
-
-        <Table
-          loading={loading}
+        <ProTable
           columns={columns}
-          rowKey={(record) => record.id}
-          dataSource={tableData}
-          pagination={tableParams.pagination}
-          onChange={(pagination) => onTableChange(pagination)}
-          rowSelection={{
-            onChange: (_, selectedRows) => {
-              setSelectedRows(selectedRows);
-            },
-          }}
+          request={(params) => request(params)}
+          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
         />
       </Card>
 

@@ -3,6 +3,21 @@ import { message, TablePaginationConfig } from 'antd';
 import { TableParams } from '@/types/LoginTyping';
 import { PageQuery, PageResult } from '@/lib/request';
 
+/**
+ * antd table 分页请求钩子
+ *
+ * <p>
+ *   @param request 你的数据请求 api
+ *   @return [
+ *      data：table 数据，
+ *      loading： 加载状态，
+ *      tableParams：分页参数，
+ *      onTableChange：切换分页事件，
+ *      fetchData：方便外部主动触发数据加载
+ *   ]
+ * </p>
+ *
+ */
 const usePaginationRequest = <T>(
   request: (params: PageQuery) => Promise<PageResult<T>>
 ): [
