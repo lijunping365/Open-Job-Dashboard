@@ -29,7 +29,7 @@ import BaseLayout from '@/components/Layout';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import ProTable from '@/components/ProTable';
-import PageParams = API.PageParams;
+import usePaginationRequest from '@/hooks/usePagination';
 
 const FormItem = Form.Item;
 /**
@@ -155,12 +155,13 @@ const TableList: React.FC = () => {
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
-  const request = async (params: PageParams) => {
-    return await fetchScheduleTaskPage({
-      current: params.current,
-      pageSize: params.pageSize,
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.OpenJob>(async (params) => {
+      return await fetchScheduleTaskPage({
+        current: params.current,
+        pageSize: params.pageSize,
+      });
     });
-  };
 
   const searchApp = async () => {
     const res = await fetchOpenJobAppList();
@@ -342,9 +343,12 @@ const TableList: React.FC = () => {
           </div>
         </Form>
 
-        <ProTable
+        <ProTable<API.OpenJob>
           columns={columns}
-          request={(params) => request(params)}
+          tableData={tableData}
+          loading={loading}
+          tableParams={tableParams}
+          onTableChange={onTableChange}
           onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
         />
       </Card>

@@ -1,44 +1,65 @@
-import usePaginationRequest from '@/hooks/usePagination';
-import { Alert, Button, Table } from 'antd';
+import { Alert, Button, Divider, Table, TablePaginationConfig } from 'antd';
 import React, { useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { PageQuery, PageResult } from '@/lib/request';
+import { TableParams } from '@/types/LoginTyping';
 
 interface Props<T> {
-  columns: ColumnsType<T>;
-  request: (params: PageQuery) => Promise<PageResult<T>>;
-  onBatchDelete: (rows: T[]) => Promise<void>;
+  columns: ColumnsType<any>;
+  tableData: T[];
+  loading: boolean;
+  tableParams: TableParams;
+  onTableChange: (pagination: TablePaginationConfig) => void;
+  onBatchDelete: (rows: any[]) => Promise<void>;
 }
-const ProTable = <T,>({ columns, request, onBatchDelete }: Props<T>) => {
-  const [selectedRowsState, setSelectedRows] = useState<T[]>([]);
-  const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<T>(async (params) => request(params));
+const ProTable = <T,>({
+  columns,
+  tableData,
+  loading,
+  tableParams,
+  onTableChange,
+  onBatchDelete,
+}: Props<T>) => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
   const handlerBatchDelete = async () => {
-    if (!selectedRowsState) return;
-    await onBatchDelete(selectedRowsState);
-    setSelectedRows([]);
-    fetchData().then();
+    if (!selectedRowKeys) return;
+    await onBatchDelete(selectedRowKeys);
+    setSelectedRowKeys([]);
   };
+
+  const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+  const hasSelected = selectedRowKeys.length > 0;
 
   return (
     <>
-      {selectedRowsState?.length > 0 && (
+      {hasSelected && (
         <Alert
           type='info'
+          style={{ marginBottom: 16 }}
           showIcon
           message={
             <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
+              已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a>{' '}
               项&nbsp;&nbsp;
             </div>
           }
           action={
-            <Button onClick={() => handlerBatchDelete()}>批量删除</Button>
+            <>
+              <a onClick={() => setSelectedRowKeys([])}>取消选择</a>
+              <Divider type='vertical' />
+              <a onClick={() => handlerBatchDelete()}>批量删除</a>
+            </>
           }
         />
       )}
+
       <Table
         loading={loading}
         columns={columns}
@@ -46,11 +67,7 @@ const ProTable = <T,>({ columns, request, onBatchDelete }: Props<T>) => {
         dataSource={tableData}
         pagination={tableParams.pagination}
         onChange={(pagination) => onTableChange(pagination)}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
+        rowSelection={rowSelection}
       />
     </>
   );
