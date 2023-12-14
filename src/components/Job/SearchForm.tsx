@@ -34,13 +34,18 @@ const SearchForm = ({ form, fetchData }: Props) => {
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
         <FormItem name='name'>
           <Input
-            placeholder='查询'
+            allowClear
+            placeholder='输入任务名称'
             prefix={<SearchOutlined />}
           />
         </FormItem>
 
         <FormItem name='appId'>
-          <Select options={options} />
+          <Select
+            allowClear
+            placeholder='选择应用'
+            options={options}
+          />
         </FormItem>
 
         <Button
