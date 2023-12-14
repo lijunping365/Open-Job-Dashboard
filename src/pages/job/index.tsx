@@ -1,4 +1,4 @@
-import { DownOutlined, PlusOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Badge,
   Button,
@@ -6,7 +6,6 @@ import {
   Divider,
   Dropdown,
   Form,
-  Input,
   MenuProps,
   message,
   Space,
@@ -15,7 +14,6 @@ import React, { useState } from 'react';
 import UpdateForm from '../../components/Job/UpdateForm';
 import {
   addScheduleTask,
-  fetchOpenJobAppList,
   fetchScheduleTaskPage,
   removeScheduleTask,
   runScheduleTask,
@@ -30,8 +28,9 @@ import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import ProTable from '@/components/ProTable';
 import usePaginationRequest from '@/hooks/usePagination';
+import SearchForm from '@/components/Job/SearchForm';
+import PageParams = API.PageParams;
 
-const FormItem = Form.Item;
 /**
  * 添加节点
  *
@@ -155,22 +154,17 @@ const TableList: React.FC = () => {
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
-  const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJob>(async (params) => {
-      return await fetchScheduleTaskPage({
-        current: params.current,
-        pageSize: params.pageSize,
-      });
+  const request = async (params: PageParams) => {
+    const values = await form.validateFields();
+    return await fetchScheduleTaskPage({
+      ...values,
+      current: params.current,
+      pageSize: params.pageSize,
     });
-
-  const searchApp = async () => {
-    const res = await fetchOpenJobAppList();
-    if (res) {
-      return res.map((item: any) => {
-        return { label: item.appName, value: item.id };
-      });
-    }
   };
+
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.OpenJob>((params) => request(params));
 
   const getItems = (record: any): MenuProps['items'] => {
     return [
@@ -306,42 +300,26 @@ const TableList: React.FC = () => {
   return (
     <BaseLayout>
       <Card bordered={false}>
-        <Form
-          layout='inline'
-          form={form}
-          style={{ display: 'block', marginBottom: 24 }}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
+          <SearchForm
+            form={form}
+            fetchData={fetchData}
+          />
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={fetchData}
           >
-            <div style={{ display: 'flex', gap: 4 }}>
-              <FormItem name='name'>
-                <Input
-                  placeholder='查询'
-                  prefix={<SearchOutlined />}
-                />
-              </FormItem>
-              <Button
-                type='primary'
-                icon={<SearchOutlined />}
-                onClick={fetchData}
-              >
-                查询
-              </Button>
-            </div>
-            <Button
-              type='primary'
-              icon={<PlusOutlined />}
-              onClick={fetchData}
-            >
-              新建
-            </Button>
-          </div>
-        </Form>
+            新建
+          </Button>
+        </div>
 
         <ProTable<API.OpenJob>
           columns={columns}

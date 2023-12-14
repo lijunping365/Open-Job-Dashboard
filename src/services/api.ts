@@ -381,8 +381,5 @@ export async function removeOpenJobApp(params: { ids: number[] }) {
 }
 
 export async function fetchOpenJobAppList(appName?: string) {
-  return request('/app/list', {
-    method: 'GET',
-    params: { appName },
-  });
+  return API.get<API.OpenJobApp[]>('/app/list', { appName });
 }
