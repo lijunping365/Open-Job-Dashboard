@@ -11,6 +11,8 @@ interface Props<T> {
 }
 const ProTable = <T,>({ columns, request, onBatchDelete }: Props<T>) => {
   const [selectedRowsState, setSelectedRows] = useState<T[]>([]);
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<T>(async (params) => request(params));
 
   const handlerBatchDelete = async () => {
     if (!selectedRowsState) return;

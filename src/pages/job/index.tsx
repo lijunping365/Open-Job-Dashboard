@@ -28,8 +28,8 @@ import CreateForm from '../../components/Job/CreateForm';
 import BaseLayout from '@/components/Layout';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import usePaginationRequest from '@/hooks/usePagination';
 import ProTable from '@/components/ProTable';
+import PageParams = API.PageParams;
 
 const FormItem = Form.Item;
 /**
@@ -155,13 +155,12 @@ const TableList: React.FC = () => {
     useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
-  const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJob>(async (params) => {
-      return await fetchScheduleTaskPage({
-        current: params.current,
-        pageSize: params.pageSize,
-      });
+  const request = async (params: PageParams) => {
+    return await fetchScheduleTaskPage({
+      current: params.current,
+      pageSize: params.pageSize,
     });
+  };
 
   const searchApp = async () => {
     const res = await fetchOpenJobAppList();
