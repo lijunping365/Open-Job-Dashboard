@@ -1,23 +1,14 @@
-import {
-  Button,
-  message,
-  Divider,
-  Card,
-  Form,
-  Input,
-  Alert,
-  Table,
-} from 'antd';
+import { message, Divider, Card, Form } from 'antd';
 import React, { useState, useRef } from 'react';
 import UpdateForm from './components/UpdateForm';
 import { fetchUserPage, updateUser, removeUser } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
-import { SearchOutlined } from '@ant-design/icons';
-import { TableParams } from '@/types/LoginTyping';
-
-const FormItem = Form.Item;
+import usePaginationRequest from '@/hooks/usePagination';
+import PageParams = API.PageParams;
+import SearchForm from '@/components/Job/SearchForm';
+import ProTable from '@/components/ProTable';
 
 /**
  * 更新节点
@@ -61,53 +52,18 @@ const handleRemove = async (selectedRows: any[]) => {
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [updateFormValues, setUpdateFormValues] = useState({});
 
-  // const [currentRow, setCurrentRow] = useState<User>();
-  const [selectedRowsState, setSelectedRows] = useState<API.User[]>([]);
-
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-
-  const fetchData = async () => {
-    const name = form.getFieldValue('name');
-    let order = 1;
-    if (tableParams?.order) {
-      order = tableParams?.order === 'descend' ? 1 : 0;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetchUserPage({
-        current: tableParams.pagination?.current,
-        pageSize: tableParams.pagination?.pageSize,
-      });
-
-      setTableData(response.records);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.total,
-        },
-      });
-    } catch (error) {
-      message.error('服务繁忙，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
+  const request = async (params: PageParams) => {
+    const values = await form.validateFields();
+    return await fetchUserPage({
+      ...values,
+      current: params.current,
+      pageSize: params.pageSize,
+    });
   };
+
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.User>((params) => request(params));
 
   const columns: ColumnsType<API.User> = [
     {
@@ -165,96 +121,30 @@ const TableList: React.FC = () => {
 
   return (
     <BaseLayout>
-      <Card
-        bordered={false}
-        className='mt-4'
-      >
-        <Form
-          layout='inline'
-          form={form}
-          onValuesChange={() => fetchData()}
+      <Card bordered={false}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+          }}
         >
-          <div className='w-full p-2'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-2xl'>报警记录</h2>
-              <div className='flex gap-4'>
-                <FormItem name='name'>
-                  <Input
-                    placeholder='查询'
-                    prefix={<SearchOutlined />}
-                  />
-                </FormItem>
-                <Button
-                  type='primary'
-                  icon={<SearchOutlined />}
-                  onClick={fetchData}
-                >
-                  查询
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Form>
+          <SearchForm
+            form={form}
+            fetchData={fetchData}
+          />
+        </div>
+
+        <ProTable<API.User>
+          columns={columns}
+          tableData={tableData}
+          loading={loading}
+          tableParams={tableParams}
+          onTableChange={onTableChange}
+          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
+        />
       </Card>
-
-      {selectedRowsState?.length > 0 && (
-        <Alert
-          type='info'
-          showIcon
-          message={
-            <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              项&nbsp;&nbsp;
-            </div>
-          }
-          action={
-            <Button
-              onClick={async () => {
-                await handleRemove(selectedRowsState.map((e) => e.id));
-                setSelectedRows([]);
-                fetchData().then();
-              }}
-            >
-              批量删除
-            </Button>
-          }
-        />
-      )}
-
-      <Table
-        loading={loading}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={tableData}
-        pagination={tableParams.pagination}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
-
-      {updateFormValues && Object.keys(updateFormValues).length ? (
-        <UpdateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              handleUpdateModalVisible(false);
-              setUpdateFormValues({});
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          onCancel={() => {
-            handleUpdateModalVisible(false);
-            setUpdateFormValues({});
-          }}
-          updateModalVisible={updateModalVisible}
-          values={updateFormValues}
-        />
-      ) : null}
     </BaseLayout>
   );
 };

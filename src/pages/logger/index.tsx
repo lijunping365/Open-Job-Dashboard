@@ -1,14 +1,5 @@
-import {
-  Button,
-  message,
-  Divider,
-  Form,
-  Card,
-  Input,
-  Alert,
-  Table,
-} from 'antd';
-import React, { useState, useRef } from 'react';
+import { message, Divider, Form, Card } from 'antd';
+import React from 'react';
 import {
   fetchTaskLogPage,
   killScheduleTask,
@@ -17,10 +8,10 @@ import {
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
-import { TableParams } from '@/types/LoginTyping';
-import { SearchOutlined } from '@ant-design/icons';
-
-const FormItem = Form.Item;
+import PageParams = API.PageParams;
+import usePaginationRequest from '@/hooks/usePagination';
+import SearchForm from '@/components/Job/SearchForm';
+import ProTable from '@/components/ProTable';
 
 /**
  * 删除节点
@@ -64,54 +55,21 @@ const handleKillTask = async (logId: number) => {
 };
 
 const TableList: React.FC = () => {
+  const jobId = 1;
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  const actionRef = useRef();
-  const [selectedRowsState, setSelectedRows] = useState<API.OpenJobLog[]>([]);
-  const { query }: any = location;
-  const [jobId] = useState<number>(query ? query.id : 0);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.OpenJobLog>();
 
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-
-  const fetchData = async () => {
-    const name = form.getFieldValue('name');
-    let order = 1;
-    if (tableParams?.order) {
-      order = tableParams?.order === 'descend' ? 1 : 0;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetchTaskLogPage({
-        current: tableParams.pagination?.current,
-        pageSize: tableParams.pagination?.pageSize,
-        jobId,
-      });
-
-      setTableData(response.records);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.total,
-        },
-      });
-    } catch (error) {
-      message.error('服务繁忙，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
+  const request = async (params: PageParams) => {
+    const values = await form.validateFields();
+    return await fetchTaskLogPage({
+      ...values,
+      jobId,
+      current: params.current,
+      pageSize: params.pageSize,
+    });
   };
+
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.OpenJobLog>((params) => request(params));
 
   const columns: ColumnsType<API.OpenJobLog> = [
     {
@@ -210,75 +168,30 @@ const TableList: React.FC = () => {
 
   return (
     <BaseLayout>
-      <Card
-        bordered={false}
-        className='mt-4'
-      >
-        <Form
-          layout='inline'
-          form={form}
-          onValuesChange={() => fetchData()}
+      <Card bordered={false}>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            marginBottom: 24,
+          }}
         >
-          <div className='w-full p-2'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-2xl'>报警记录</h2>
-              <div className='flex gap-4'>
-                <FormItem name='name'>
-                  <Input
-                    placeholder='查询'
-                    prefix={<SearchOutlined />}
-                  />
-                </FormItem>
-                <Button
-                  type='primary'
-                  icon={<SearchOutlined />}
-                  onClick={fetchData}
-                >
-                  查询
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Form>
-      </Card>
+          <SearchForm
+            form={form}
+            fetchData={fetchData}
+          />
+        </div>
 
-      {selectedRowsState?.length > 0 && (
-        <Alert
-          type='info'
-          showIcon
-          message={
-            <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              项&nbsp;&nbsp;
-            </div>
-          }
-          action={
-            <Button
-              onClick={async () => {
-                await handleRemove(selectedRowsState.map((e) => e.id));
-                setSelectedRows([]);
-                fetchData().then();
-              }}
-            >
-              批量删除
-            </Button>
-          }
+        <ProTable<API.OpenJobLog>
+          columns={columns}
+          tableData={tableData}
+          loading={loading}
+          tableParams={tableParams}
+          onTableChange={onTableChange}
+          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
         />
-      )}
-
-      <Table
-        loading={loading}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={tableData}
-        pagination={tableParams.pagination}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
+      </Card>
     </BaseLayout>
   );
 };

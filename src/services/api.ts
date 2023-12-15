@@ -58,12 +58,7 @@ export async function fetchUserPage(params: {
   /** 任务名称 */
   name?: string;
 }) {
-  return request('/user/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.User>>('/user/page', params);
 }
 
 export async function updateUser(params: Partial<API.User>) {
@@ -144,12 +139,7 @@ export async function fetchTaskLogPage(params: {
   /** 任务执行时间 */
   createTime?: Date;
 }) {
-  return request('/logger/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.OpenJobLog>>('/logger/page', params);
 }
 
 export async function removeTaskLog(params: { ids: number[] }) {
