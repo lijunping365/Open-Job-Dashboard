@@ -1,7 +1,6 @@
-import { PlusOutlined, SearchOutlined } from '@ant-design/icons';
-import { Button, message, Divider, Form, Input, Card, Table } from 'antd';
-import React, { useState, useRef } from 'react';
-import UpdateForm from './components/UpdateForm';
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, message, Divider, Form, Card } from 'antd';
+import React, { useState } from 'react';
 import {
   fetchOpenJobAppPage,
   addOpenJobApp,
@@ -9,7 +8,7 @@ import {
   removeOpenJobApp,
 } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
-import CreateForm from './components/CreateForm';
+import CreateForm from '@/components/App/CreateForm';
 import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
@@ -210,7 +209,7 @@ const TableList: React.FC = () => {
       />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
-        <UpdateForm
+        <CreateForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -223,7 +222,7 @@ const TableList: React.FC = () => {
             setUpdateModalVisible(false);
             setUpdateFormValues({});
           }}
-          updateModalVisible={updateModalVisible}
+          modalVisible={updateModalVisible}
           values={updateFormValues}
         />
       ) : null}
