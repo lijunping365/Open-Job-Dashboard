@@ -1,20 +1,13 @@
-import {
-  Button,
-  message,
-  Divider,
-  Card,
-  Form,
-  Input,
-  Alert,
-  Table,
-} from 'antd';
+import { Button, message, Divider, Card, Form, Alert, Table } from 'antd';
 import React, { useState } from 'react';
 import { fetchAlarmRecordPage, removeAlarmRecord } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
-import { SearchOutlined } from '@ant-design/icons';
-import { TableParams } from '@/types/LoginTyping';
+import usePaginationRequest from '@/hooks/usePagination';
+import PageParams = API.PageParams;
+import ProTable from '@/components/ProTable';
+import SearchForm from '@/components/Alarm/SearchForm';
 
 const FormItem = Form.Item;
 /**
@@ -38,54 +31,23 @@ const handleRemove = async (selectedRows: any[]) => {
 };
 
 const AlarmTable = () => {
-  const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  const [selectedRowsState, setSelectedRows] = useState<API.OpenJobAlarm[]>([]);
-  const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.OpenJobAlarm>();
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-
   const appId = 1;
   const jobId = 1;
 
-  const fetchData = async () => {
-    const name = form.getFieldValue('name');
-    let order = 1;
-    if (tableParams?.order) {
-      order = tableParams?.order === 'descend' ? 1 : 0;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetchAlarmRecordPage({
-        current: tableParams.pagination?.current,
-        pageSize: tableParams.pagination?.pageSize,
-        appId,
-        jobId,
-      });
-
-      setTableData(response.records);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.total,
-        },
-      });
-    } catch (error) {
-      message.error('服务繁忙，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
+  const [form] = Form.useForm();
+  const request = async (params: PageParams) => {
+    const values = await form.validateFields();
+    return await fetchAlarmRecordPage({
+      ...values,
+      current: params.current,
+      pageSize: params.pageSize,
+      appId,
+      jobId,
+    });
   };
+
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.OpenJobAlarm>((params) => request(params));
 
   const columns: ColumnsType<API.OpenJobAlarm> = [
     {
@@ -159,73 +121,20 @@ const AlarmTable = () => {
         bordered={false}
         className='mt-4'
       >
-        <Form
-          layout='inline'
+        <SearchForm
           form={form}
-          onValuesChange={() => fetchData()}
-        >
-          <div className='w-full p-2'>
-            <div className='flex items-center justify-between'>
-              <h2 className='text-2xl'>报警记录</h2>
-              <div className='flex gap-4'>
-                <FormItem name='name'>
-                  <Input
-                    placeholder='查询'
-                    prefix={<SearchOutlined />}
-                  />
-                </FormItem>
-                <Button
-                  type='primary'
-                  icon={<SearchOutlined />}
-                  onClick={fetchData}
-                >
-                  查询
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Form>
-      </Card>
-
-      {selectedRowsState?.length > 0 && (
-        <Alert
-          type='info'
-          showIcon
-          message={
-            <div>
-              已选择{' '}
-              <a style={{ fontWeight: 600 }}>{selectedRowsState.length}</a>{' '}
-              项&nbsp;&nbsp;
-            </div>
-          }
-          action={
-            <Button
-              onClick={async () => {
-                await handleRemove(selectedRowsState.map((e) => e.id));
-                setSelectedRows([]);
-                fetchData().then();
-              }}
-            >
-              批量删除
-            </Button>
-          }
+          fetchData={fetchData}
         />
-      )}
 
-      <Table
-        loading={loading}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={tableData}
-        pagination={tableParams.pagination}
-        //@ts-ignore
-        onChange={onTableChange}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
+        <ProTable<API.OpenJobAlarm>
+          columns={columns}
+          tableData={tableData}
+          loading={loading}
+          tableParams={tableParams}
+          onTableChange={onTableChange}
+          onBatchDelete={(rows) => handleRemove(rows)}
+        />
+      </Card>
     </BaseLayout>
   );
 };

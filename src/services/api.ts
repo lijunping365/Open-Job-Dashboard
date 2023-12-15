@@ -177,12 +177,7 @@ export async function fetchAlarmRecordPage(params: {
   /** 报警时间 */
   createTime?: Date;
 }) {
-  return request('/alarm/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.OpenJobAlarm>>('/alarm/page', params);
 }
 
 export async function removeAlarmRecord(params: { ids: number[] }) {
