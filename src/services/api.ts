@@ -109,10 +109,7 @@ export async function fetchInstancePage(params: {
 }
 
 export async function fetchAllInstance(appId: any) {
-  return request('/instance/list', {
-    method: 'GET',
-    params: { appId },
-  });
+  return API.get<API.Instance[]>('/instance/list', { appId });
 }
 
 export async function updateInstance(params: Partial<API.Instance>) {

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
 import CronModal from '@/components/CronModel';
 import {
+  addScheduleTask,
   fetchAllInstance,
   fetchOpenJobAppList,
   validateCronExpress,
@@ -23,16 +24,10 @@ const formLayout = {
 };
 
 const CreateForm: React.FC<CreateFormProps> = (props) => {
-  /** 新建窗口的弹窗 */
-  const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
-  const [cronExpressValue, setCronExpressValue] = useState<string>();
-  const [openJobAppOptions, setOpenJobAppOptions] = useState<React.ReactNode[]>(
-    []
-  );
-  const [openJobNodeOptions, setOpenJobNodeOptions] = useState<
-    React.ReactNode[]
-  >([]);
   const [form] = Form.useForm();
+  const [cronExpressValue, setCronExpressValue] = useState<string>();
+  const [appOptions, setAppOptions] = useState<any>([]);
+  const [nodeOptions, setNodeOptions] = useState<any>([]);
 
   const {
     modalVisible,
@@ -41,12 +36,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   } = props;
 
   const onFetchOpenJobAppList = useCallback(async () => {
-    const result: API.OpenJobApp[] = await fetchOpenJobAppList();
+    const result = await fetchOpenJobAppList();
     if (result) {
-      const options = result.map((app) => {
-        return <Option value={app.id}>{app.appName}</Option>;
+      const appList = result.map((item) => {
+        return { label: item.appName, value: item.id };
       });
-      setOpenJobAppOptions(options);
+      setAppOptions(appList);
     }
   }, []);
 
@@ -55,12 +50,12 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
   }, []);
 
   const handleSelectApp = async (op: any) => {
-    const result: API.Instance[] = await fetchAllInstance(op);
+    const result = await fetchAllInstance(op);
     if (result) {
-      const options = result.map((instance) => {
-        return <Option value={instance.serverId}>{instance.serverId}</Option>;
+      const instanceList = result.map((item) => {
+        return { label: item.serverId, value: item.serverId };
       });
-      setOpenJobNodeOptions(options);
+      setNodeOptions(instanceList);
     }
   };
 
@@ -82,11 +77,21 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       return;
     }
 
-    handleCreate({
-      ...fieldsValue,
-      cronExpression: cronExpressValue,
-      shardingNodes: shardingNodes.join(','),
-    });
+    const hide = message.loading('正在添加');
+    try {
+      await addScheduleTask({
+        ...fieldsValue,
+        cronExpression: cronExpressValue,
+        shardingNodes: shardingNodes.join(','),
+      });
+      hide();
+      message.success('添加成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+      return false;
+    }
   };
 
   const renderFooter = () => {
@@ -108,7 +113,7 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       destroyOnClose
       title='新建任务'
       width={900}
-      visible={modalVisible}
+      open={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleCreateModalVisible(false)}
       onOk={() => handleFinish()}
