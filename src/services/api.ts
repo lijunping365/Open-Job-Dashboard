@@ -198,8 +198,8 @@ export async function fetchScheduleTaskPage(params: {
   current?: number;
   /** 页面的容量 */
   pageSize?: number;
-  /** 爬虫id */
-  spiderId?: any;
+  /** 应用id */
+  appId?: any;
   /** 任务状态 */
   status?: number;
 }) {
@@ -343,17 +343,12 @@ export async function fetchOpenJobAppPage(params: {
   current?: number;
   /** 页面的容量 */
   pageSize?: number;
-  /** 爬虫id */
-  spiderId?: any;
+  /** 应用名称 */
+  appName?: any;
   /** 任务状态 */
   status?: number;
 }) {
-  return request('/app/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.OpenJobApp>>('/app/page', params);
 }
 
 export async function updateOpenJobApp(params: Partial<API.OpenJob>) {
