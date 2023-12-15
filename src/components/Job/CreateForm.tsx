@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
 import CronModal from '@/components/CronModel';
 import {
-  addScheduleTask,
   fetchAllInstance,
   fetchOpenJobAppList,
   validateCronExpress,
@@ -10,8 +9,9 @@ import {
 
 interface CreateFormProps {
   modalVisible: boolean;
-  onCancel: (flag?: boolean) => void;
+  onCancel: () => void;
   onSubmit: (values: Partial<API.OpenJob>) => void;
+  values?: Partial<API.OpenJob>;
 }
 
 const FormItem = Form.Item;
@@ -23,17 +23,19 @@ const formLayout = {
   wrapperCol: { span: 13 },
 };
 
-const CreateForm: React.FC<CreateFormProps> = (props) => {
+const CreateForm: React.FC<CreateFormProps> = ({
+  modalVisible,
+  onSubmit,
+  onCancel,
+  values,
+}: CreateFormProps) => {
   const [form] = Form.useForm();
-  const [cronExpressValue, setCronExpressValue] = useState<string>();
-  const [appOptions, setAppOptions] = useState<any>([]);
-  const [nodeOptions, setNodeOptions] = useState<any>([]);
-
-  const {
-    modalVisible,
-    onSubmit: handleCreate,
-    onCancel: handleCreateModalVisible,
-  } = props;
+  const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
+  const [cronExpressValue, setCronExpressValue] = useState<string>(
+    values?.cronExpression || ''
+  );
+  const [appOptions, setAppOptions] = useState<any[]>([]);
+  const [nodeOptions, setNodeOptions] = useState<any[]>([]);
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -45,10 +47,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
     }
   }, []);
 
-  useEffect(() => {
-    onFetchOpenJobAppList().then();
-  }, []);
-
   const handleSelectApp = async (op: any) => {
     const result = await fetchAllInstance(op);
     if (result) {
@@ -58,6 +56,11 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       setNodeOptions(instanceList);
     }
   };
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string }
+  ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
 
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
@@ -77,27 +80,22 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       return;
     }
 
-    const hide = message.loading('正在添加');
-    try {
-      await addScheduleTask({
-        ...fieldsValue,
-        cronExpression: cronExpressValue,
-        shardingNodes: shardingNodes.join(','),
-      });
-      hide();
-      message.success('添加成功');
-      return true;
-    } catch (error) {
-      hide();
-      message.error('添加失败请重试！');
-      return false;
-    }
+    onSubmit({
+      ...values,
+      ...fieldsValue,
+      cronExpression: cronExpressValue,
+      shardingNodes: shardingNodes.join(','),
+    });
   };
+
+  useEffect(() => {
+    onFetchOpenJobAppList().then();
+  }, []);
 
   const renderFooter = () => {
     return (
       <>
-        <Button onClick={() => handleCreateModalVisible(false)}>取消</Button>
+        <Button onClick={() => onCancel()}>取消</Button>
         <Button
           type='primary'
           onClick={() => handleFinish()}
@@ -115,12 +113,13 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
       width={900}
       open={modalVisible}
       footer={renderFooter()}
-      onCancel={() => handleCreateModalVisible(false)}
+      onCancel={() => onCancel()}
       onOk={() => handleFinish()}
     >
       <Form
         {...formLayout}
         form={form}
+        initialValues={{ ...values }}
       >
         <Row>
           <Col span={12}>
@@ -130,36 +129,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               rules={[{ required: true, message: '请输入任务名称！' }]}
             >
               <Input placeholder='请输入任务名称' />
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem
-              name='handlerName'
-              label='jobHandler'
-              rules={[{ required: true, message: '请输入jobHandler！' }]}
-            >
-              <Input placeholder='请输入jobHandler' />
-            </FormItem>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span={12}>
-            <FormItem
-              name='appId'
-              label='选择应用'
-              hasFeedback
-              rules={[{ required: true, message: '请选择应用!' }]}
-            >
-              <Select
-                showSearch
-                onChange={handleSelectApp}
-                filterOption={(inputValue, option) =>
-                  option!.children.indexOf(inputValue) !== -1
-                }
-              >
-                {openJobAppOptions}
-              </Select>
             </FormItem>
           </Col>
           <Col span={12}>
@@ -190,6 +159,33 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
         <Row>
           <Col span={12}>
             <FormItem
+              name='appId'
+              label='选择应用'
+              hasFeedback
+              rules={[{ required: true, message: '请选择应用!' }]}
+            >
+              <Select
+                showSearch
+                onChange={handleSelectApp}
+                filterOption={filterOption}
+                options={appOptions}
+              />
+            </FormItem>
+          </Col>
+          <Col span={12}>
+            <FormItem
+              name='handlerName'
+              label='jobHandler'
+              rules={[{ required: true, message: '请输入jobHandler！' }]}
+            >
+              <Input placeholder='请输入jobHandler' />
+            </FormItem>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span={12}>
+            <FormItem
               name='routeStrategy'
               label='路由策略'
             >
@@ -199,7 +195,6 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
               </Select>
             </FormItem>
           </Col>
-
           <Col span={12}>
             <FormItem
               name='shardingNodes'
@@ -210,9 +205,8 @@ const CreateForm: React.FC<CreateFormProps> = (props) => {
                 allowClear
                 style={{ width: '100%' }}
                 placeholder='请选择节点'
-              >
-                {openJobNodeOptions}
-              </Select>
+                options={nodeOptions}
+              />
             </FormItem>
           </Col>
         </Row>

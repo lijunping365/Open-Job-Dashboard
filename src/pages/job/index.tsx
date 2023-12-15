@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import { DownOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Badge,
@@ -10,8 +11,6 @@ import {
   message,
   Space,
 } from 'antd';
-import React, { useState } from 'react';
-import UpdateForm from '../../components/Job/UpdateForm';
 import {
   addScheduleTask,
   fetchScheduleTaskPage,
@@ -146,7 +145,7 @@ const updateStatus = async (jobId: number, status: number) => {
   }
 };
 
-const TableList: React.FC = () => {
+const JobTableList: React.FC = () => {
   const [form] = Form.useForm();
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
   const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
@@ -342,7 +341,7 @@ const TableList: React.FC = () => {
       />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
-        <UpdateForm
+        <CreateForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
             if (success) {
@@ -355,7 +354,7 @@ const TableList: React.FC = () => {
             setUpdateModalVisible(false);
             setUpdateFormValues({});
           }}
-          updateModalVisible={updateModalVisible}
+          modalVisible={updateModalVisible}
           values={updateFormValues}
         />
       ) : null}
@@ -363,4 +362,4 @@ const TableList: React.FC = () => {
   );
 };
 
-export default TableList;
+export default JobTableList;
