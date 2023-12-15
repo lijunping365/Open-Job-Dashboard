@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
-import { User } from '@/types/UserTyping';
 
 export interface AuthContextValue {
-  user: User | null;
+  user: API.User | null;
   setUser?: any;
 }
 

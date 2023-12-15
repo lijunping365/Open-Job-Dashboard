@@ -1,6 +1,6 @@
 import { AuthContext } from '@/components/Provider/AuthContext';
 import React, { useEffect, useState } from 'react';
-import { currentUser } from '@/services/login';
+import { currentUser } from '@/services/api';
 import { removeAccessToken } from '@/lib/cache';
 
 export interface AuthProviderProps {

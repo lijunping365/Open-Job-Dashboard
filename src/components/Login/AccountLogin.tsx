@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { currentUser, login } from '@/services/login';
-import { getFakeImageCaptcha } from '@/services/captcha';
+import { currentUser, login } from '@/services/api';
+import { getFakeImageCaptcha } from '@/services/api';
 import { Button, Form, Image, Input, message } from 'antd';
 import {
   HourglassOutlined,
