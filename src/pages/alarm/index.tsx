@@ -1,4 +1,4 @@
-import { Button, message, Divider, Card, Form, Alert, Table } from 'antd';
+import { message, Divider, Card, Form, Drawer } from 'antd';
 import React, { useState } from 'react';
 import { fetchAlarmRecordPage, removeAlarmRecord } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
@@ -8,8 +8,7 @@ import usePaginationRequest from '@/hooks/usePagination';
 import PageParams = API.PageParams;
 import ProTable from '@/components/ProTable';
 import SearchForm from '@/components/Alarm/SearchForm';
-
-const FormItem = Form.Item;
+import ProDescriptions from '@/components/ProDescriptions';
 /**
  * 删除节点
  *
@@ -35,6 +34,9 @@ const AlarmTable = () => {
   const jobId = 1;
 
   const [form] = Form.useForm();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<API.OpenJobAlarm>();
+
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
     return await fetchAlarmRecordPage({
@@ -117,10 +119,7 @@ const AlarmTable = () => {
 
   return (
     <BaseLayout>
-      <Card
-        bordered={false}
-        className='mt-4'
-      >
+      <Card bordered={false}>
         <SearchForm
           form={form}
           fetchData={fetchData}
@@ -135,6 +134,22 @@ const AlarmTable = () => {
           onBatchDelete={(rows) => handleRemove(rows)}
         />
       </Card>
+      <Drawer
+        width={400}
+        open={showDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+        closable={false}
+      >
+        {currentRow?.id && (
+          <ProDescriptions<API.OpenJobAlarm>
+            columns={columns}
+            values={currentRow}
+          />
+        )}
+      </Drawer>
     </BaseLayout>
   );
 };

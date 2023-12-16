@@ -95,12 +95,7 @@ export async function fetchInstancePage(params: {
   /** 实例状态 */
   status?: number;
 }) {
-  return request('/instance/page', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+  return API.get<PageResult<API.Instance>>('/instance/page', params);
 }
 
 export async function fetchAllInstance(appId: any) {

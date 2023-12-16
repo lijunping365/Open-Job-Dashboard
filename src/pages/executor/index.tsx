@@ -12,6 +12,8 @@ import { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
 import { TableParams } from '@/types/LoginTyping';
+import usePaginationRequest from '@/hooks/usePagination';
+import PageParams = API.PageParams;
 
 const FormItem = Form.Item;
 /**
@@ -70,54 +72,24 @@ const handlerChange = async (clientId: string) => {
 };
 
 const TableList: React.FC = () => {
+  const appId = 1;
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [tableData, setTableData] = useState([]);
-  /** 分布更新窗口的弹窗 */
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const { query }: any = location;
-  const [appId] = useState<number>(query ? query.id : 1);
-  const [currentRow, setCurrentRow] = useState<API.Instance>();
+  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
+  const [updateFormValues, setUpdateFormValues] = useState({});
 
-  const [tableParams, setTableParams] = useState<TableParams>({
-    pagination: {
-      current: 1,
-      pageSize: 10,
-    },
-  });
-
-  const fetchData = async () => {
-    const name = form.getFieldValue('name');
-    let order = 1;
-    if (tableParams?.order) {
-      order = tableParams?.order === 'descend' ? 1 : 0;
-    }
-
-    setLoading(true);
-    try {
-      const response = await fetchInstancePage({
-        current: tableParams.pagination?.current,
-        pageSize: tableParams.pagination?.pageSize,
-        appId,
-      });
-
-      setTableData(response.records);
-      setTableParams({
-        ...tableParams,
-        pagination: {
-          ...tableParams.pagination,
-          total: response.total,
-        },
-      });
-    } catch (error) {
-      message.error('服务繁忙，请稍后重试');
-    } finally {
-      setLoading(false);
-    }
+  const request = async (params: PageParams) => {
+    const values = await form.validateFields();
+    return await fetchInstancePage({
+      appId,
+      ...values,
+      current: params.current,
+      pageSize: params.pageSize,
+    });
   };
+
+  const [tableData, loading, tableParams, onTableChange, fetchData] =
+    usePaginationRequest<API.Instance>((params) => request(params));
 
   const columns: ColumnsType<API.Instance> = [
     {

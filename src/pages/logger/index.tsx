@@ -1,5 +1,5 @@
-import { message, Divider, Form, Card } from 'antd';
-import React from 'react';
+import { message, Divider, Form, Card, Drawer } from 'antd';
+import React, { useState } from 'react';
 import {
   fetchTaskLogPage,
   killScheduleTask,
@@ -12,6 +12,7 @@ import PageParams = API.PageParams;
 import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Job/SearchForm';
 import ProTable from '@/components/ProTable';
+import ProDescriptions from '@/components/ProDescriptions';
 
 /**
  * 删除节点
@@ -57,6 +58,8 @@ const handleKillTask = async (logId: number) => {
 const TableList: React.FC = () => {
   const jobId = 1;
   const [form] = Form.useForm();
+  const [showDetail, setShowDetail] = useState<boolean>(false);
+  const [currentRow, setCurrentRow] = useState<API.OpenJobLog>();
 
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
@@ -192,6 +195,22 @@ const TableList: React.FC = () => {
           onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
         />
       </Card>
+      <Drawer
+        width={400}
+        open={showDetail}
+        onClose={() => {
+          setCurrentRow(undefined);
+          setShowDetail(false);
+        }}
+        closable={false}
+      >
+        {currentRow?.id && (
+          <ProDescriptions<API.OpenJobLog>
+            columns={columns}
+            values={currentRow}
+          />
+        )}
+      </Drawer>
     </BaseLayout>
   );
 };
