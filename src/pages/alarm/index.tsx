@@ -9,6 +9,7 @@ import PageParams = API.PageParams;
 import ProTable from '@/components/ProTable';
 import SearchForm from '@/components/Alarm/SearchForm';
 import ProDescriptions from '@/components/ProDescriptions';
+import dayjs from 'dayjs';
 /**
  * 删除节点
  *
@@ -39,8 +40,21 @@ const AlarmTable = () => {
 
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
+    const searchForm: any = {};
+    if (values.name) {
+      searchForm.name = values.name;
+    }
+    if (values.timeRange) {
+      searchForm.startTime = dayjs(values.timeRange[0]).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+      searchForm.endTime = dayjs(values.timeRange[1]).format(
+        'YYYY-MM-DD HH:mm:ss'
+      );
+    }
+
     return await fetchAlarmRecordPage({
-      ...values,
+      ...searchForm,
       current: params.current,
       pageSize: params.pageSize,
       appId,
@@ -53,15 +67,15 @@ const AlarmTable = () => {
 
   const columns: ColumnsType<API.OpenJobAlarm> = [
     {
-      title: '编号',
+      title: '报警ID',
       dataIndex: 'id',
     },
     {
-      title: '应用编号',
+      title: '应用ID',
       dataIndex: 'appId',
     },
     {
-      title: '任务编号',
+      title: '任务ID',
       dataIndex: 'jobId',
     },
     {
@@ -79,14 +93,6 @@ const AlarmTable = () => {
     {
       title: '报警接收人',
       dataIndex: 'receiver',
-    },
-    {
-      title: '开始时间',
-      dataIndex: 'beginTime',
-    },
-    {
-      title: '结束时间',
-      dataIndex: 'endTime',
     },
     {
       title: '操作',

@@ -14,6 +14,8 @@ import {
   SmileOutlined,
 } from '@ant-design/icons';
 import Footer from '@/components/Footer';
+import locale from 'antd/locale/zh_CN';
+import 'dayjs/locale/zh-cn';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -56,6 +58,7 @@ const BaseLayout = ({ children }: any) => {
 
   return (
     <ConfigProvider
+      locale={locale}
       theme={{
         algorithm:
           value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,

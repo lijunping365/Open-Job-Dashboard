@@ -1,8 +1,9 @@
-import { Button, Form, Input } from 'antd';
-import { SearchOutlined } from '@ant-design/icons';
 import React from 'react';
+import { Button, Form, Input, DatePicker } from 'antd';
+import { SearchOutlined } from '@ant-design/icons';
 
 const FormItem = Form.Item;
+const { RangePicker } = DatePicker;
 
 interface Props {
   form: any;
@@ -22,6 +23,10 @@ const SearchForm = ({ form, fetchData }: Props) => {
             placeholder='输入应用名称'
             prefix={<SearchOutlined />}
           />
+        </FormItem>
+
+        <FormItem name='timeRange'>
+          <RangePicker showTime />
         </FormItem>
 
         <Button
