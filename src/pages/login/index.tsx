@@ -5,6 +5,7 @@ import { IconLogo } from '@/components/Icon/IconLogo';
 import AccountLogin from '@/components/Login/AccountLogin';
 import MobileLogin from '@/components/Login/MobileLogin';
 import { useLoginRedirect } from '@/hooks/useLoginRedirect';
+import { useThemeContext } from '@/components/Provider/ThemeContext';
 
 const items: TabsProps['items'] = [
   {
@@ -18,6 +19,7 @@ const items: TabsProps['items'] = [
 ];
 const Login: React.FC = () => {
   const redirect = useLoginRedirect();
+  const { theme } = useThemeContext();
   const [type, setType] = useState<string>('account');
 
   return (
@@ -27,7 +29,11 @@ const Login: React.FC = () => {
         flexDirection: 'column',
         height: '100vh',
         overflow: 'auto',
-        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
+        backgroundColor: theme === 'light' ? '#fff' : '#000',
+        backgroundImage:
+          theme === 'light'
+            ? `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(15 23 42 / 0.04)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`
+            : `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgb(51 65 85 / 0.5)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
       }}
     >
       <div style={{ flex: 1, padding: '32px 0' }}>
@@ -48,7 +54,7 @@ const Login: React.FC = () => {
               <span
                 style={{
                   marginLeft: 10,
-                  color: '#080e29',
+                  color: theme === 'light' ? '#080e29' : '#c5c5c5',
                 }}
               >
                 Open-Job
@@ -59,7 +65,7 @@ const Login: React.FC = () => {
               style={{
                 marginTop: '12px',
                 marginBottom: '40px',
-                color: '#5e637a',
+                color: theme === 'light' ? '#5e637a' : '#9b9a9a',
                 fontSize: '16px',
               }}
             >
