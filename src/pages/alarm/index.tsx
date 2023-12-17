@@ -85,6 +85,7 @@ const AlarmTable = () => {
     {
       title: '报警消息',
       dataIndex: 'message',
+      ellipsis: true,
     },
     {
       title: '报警时间',

@@ -109,6 +109,7 @@ const TableList: React.FC = () => {
     {
       title: '异常信息',
       dataIndex: 'cause',
+      ellipsis: true,
     },
     {
       title: '开始时间',
