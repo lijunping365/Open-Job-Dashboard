@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 
 export interface ThemeContextValue {
   theme: string;
-  setTheme?: (theme: string) => void;
+  toggleTheme?: () => void;
 }
 
 export const ThemeContext = React.createContext<ThemeContextValue>({

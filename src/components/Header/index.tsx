@@ -25,7 +25,7 @@ interface Props {
 
 const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
   const { user } = useAuthContext();
-  const { theme, setTheme } = useThemeContext();
+  const { theme, toggleTheme } = useThemeContext();
   return (
     <Layout.Header
       style={{
@@ -65,9 +65,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() =>
-            setTheme && setTheme(theme === 'light' ? 'dark' : 'light')
-          }
+          onClick={() => toggleTheme && toggleTheme()}
         />
 
         <Dropdown menu={{ items }}>

@@ -49,9 +49,9 @@ const { Content, Sider } = Layout;
 
 const BaseLayout = ({ children }: any) => {
   const router = useRouter();
+  const { theme } = useThemeContext();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
-  const { theme, setTheme } = useThemeContext();
 
   return (
     <Layout style={{ minHeight: '100vh' }}>

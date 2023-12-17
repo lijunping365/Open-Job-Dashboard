@@ -10,10 +10,10 @@ export interface ThemeProviderProps {
 }
 
 export function ThemeProvider(props: ThemeProviderProps) {
-  const [value, setValue] = useTheme();
+  const [value, toggleTheme] = useTheme();
 
   return (
-    <ThemeContext.Provider value={{ theme: value, setTheme: setValue }}>
+    <ThemeContext.Provider value={{ theme: value, toggleTheme }}>
       <ConfigProvider
         locale={locale}
         theme={{
