@@ -10,7 +10,7 @@ import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import PageParams = API.PageParams;
 import usePaginationRequest from '@/hooks/usePagination';
-import SearchForm from '@/components/Job/SearchForm';
+import SearchForm from '@/components/Logger/SearchForm';
 import ProTable from '@/components/ProTable';
 import ProDescriptions from '@/components/ProDescriptions';
 
@@ -172,19 +172,10 @@ const TableList: React.FC = () => {
   return (
     <BaseLayout>
       <Card bordered={false}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 24,
-          }}
-        >
-          <SearchForm
-            form={form}
-            fetchData={fetchData}
-          />
-        </div>
+        <SearchForm
+          form={form}
+          fetchData={fetchData}
+        />
 
         <ProTable<API.OpenJobLog>
           columns={columns}

@@ -297,14 +297,7 @@ const JobTableList: React.FC = () => {
   return (
     <BaseLayout>
       <Card bordered={false}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            marginBottom: 24,
-          }}
-        >
+        <div className='search-form-wrapper'>
           <SearchForm
             form={form}
             fetchData={fetchData}
