@@ -82,14 +82,8 @@ const BaseLayout = ({ children }: any) => {
             collapsedWidth={collapsedWidth}
             width={siderWidth}
             onCollapse={(value) => setCollapsed(value)}
+            className='layout-side'
             style={{
-              overflowX: 'hidden',
-              overflowY: 'auto',
-              height: '100vh',
-              position: 'fixed',
-              left: 0,
-              top: 0,
-              bottom: 0,
               borderRight:
                 value !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
               boxShadow:
@@ -97,16 +91,8 @@ const BaseLayout = ({ children }: any) => {
             }}
             trigger={null}
           >
-            <h1
-              style={{
-                height: '64px',
-                margin: 0,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <IconLogo style={{ width: 32, height: 32, color: '#149eca' }} />
+            <h1 className='layout-title'>
+              <IconLogo className='layout-logo' />
               {!collapsed && (
                 <span
                   style={{
@@ -122,12 +108,8 @@ const BaseLayout = ({ children }: any) => {
               selectedKeys={[cleanedPath]}
               mode='inline'
               items={items}
+              className='layout-menu'
               onClick={({ keyPath }) => router.push(keyPath[0])}
-              style={{
-                border: 'none',
-                padding: '5px 0',
-                fontSize: '16px',
-              }}
             />
           </Sider>
         </div>
@@ -139,8 +121,8 @@ const BaseLayout = ({ children }: any) => {
             setCollapsed={setCollapsed}
           />
           <Content
+            className='layout-content'
             style={{
-              padding: 24,
               backgroundColor: value === 'light' ? '#f5f5f5' : '#000',
             }}
           >
