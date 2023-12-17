@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
 import { Avatar, Button, Dropdown, Layout, MenuProps, Space } from 'antd';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@ant-design/icons';
 import { IconDark } from '@/components/Icon/IconDark';
 import { IconLight } from '@/components/Icon/IconLight';
+import { useThemeContext } from '@/components/Provider/ThemeContext';
 
 const items: MenuProps['items'] = [
   {
@@ -20,18 +21,11 @@ const items: MenuProps['items'] = [
 interface Props {
   collapsed: boolean;
   setCollapsed: (collapsed: boolean) => void;
-  theme: string;
-  setTheme: (theme: string) => void;
 }
 
-const Header: React.FC<Props> = ({
-  collapsed,
-  setCollapsed,
-  theme,
-  setTheme,
-}: Props) => {
+const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
   const { user } = useAuthContext();
-
+  const { theme, setTheme } = useThemeContext();
   return (
     <Layout.Header
       style={{
@@ -71,7 +65,9 @@ const Header: React.FC<Props> = ({
             alignItems: 'center',
             justifyContent: 'center',
           }}
-          onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+          onClick={() =>
+            setTheme && setTheme(theme === 'light' ? 'dark' : 'light')
+          }
         />
 
         <Dropdown menu={{ items }}>

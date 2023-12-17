@@ -39,6 +39,10 @@ function getItem(item: any): MenuItem {
   } as MenuItem;
 }
 
+// 收起的宽度
+const collapsedWidth = 64;
+const siderWidth = 208;
+
 const items: MenuItem[] = menuItems.map((item) => getItem(item));
 
 const { Content, Sider } = Layout;
@@ -48,10 +52,6 @@ const BaseLayout = ({ children }: any) => {
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
   const { theme, setTheme } = useThemeContext();
-
-  // 收起的宽度
-  const collapsedWidth = 64;
-  const siderWidth = 208;
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -73,13 +73,13 @@ const BaseLayout = ({ children }: any) => {
         width={siderWidth}
         onCollapse={(value) => setCollapsed(value)}
         className='layout-side'
+        trigger={null}
         style={{
           borderRight:
             theme !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
           boxShadow:
             '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
         }}
-        trigger={null}
       >
         <h1 className='layout-title'>
           {collapsed ? (
@@ -112,8 +112,6 @@ const BaseLayout = ({ children }: any) => {
 
       <Layout>
         <Header
-          theme={theme}
-          setTheme={setTheme}
           collapsed={collapsed}
           setCollapsed={setCollapsed}
         />
