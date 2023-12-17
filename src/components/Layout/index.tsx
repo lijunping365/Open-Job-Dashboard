@@ -64,7 +64,7 @@ const BaseLayout = ({ children }: any) => {
           value === 'light' ? theme.defaultAlgorithm : theme.darkAlgorithm,
       }}
     >
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100%' }}>
         <div
           style={{
             width: collapsed ? collapsedWidth : siderWidth,
@@ -74,45 +74,45 @@ const BaseLayout = ({ children }: any) => {
             minWidth: collapsed ? collapsedWidth : siderWidth,
             transition: 'all 0.2s ease 0s',
           }}
+        />
+        <Sider
+          theme='light'
+          collapsible
+          collapsed={collapsed}
+          collapsedWidth={collapsedWidth}
+          width={siderWidth}
+          onCollapse={(value) => setCollapsed(value)}
+          className='layout-side'
+          style={{
+            borderRight:
+              value !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
+            boxShadow:
+              '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+          }}
+          trigger={null}
         >
-          <Sider
-            theme='light'
-            collapsible
-            collapsed={collapsed}
-            collapsedWidth={collapsedWidth}
-            width={siderWidth}
-            onCollapse={(value) => setCollapsed(value)}
-            className='layout-side'
-            style={{
-              borderRight:
-                value !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
-              boxShadow:
-                '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
-            }}
-            trigger={null}
-          >
-            <h1 className='layout-title'>
-              <IconLogo className='layout-logo' />
-              {!collapsed && (
-                <span
-                  style={{
-                    marginLeft: 10,
-                    color: value === 'light' ? '#080e29' : '#ccc',
-                  }}
-                >
-                  Open-Job
-                </span>
-              )}
-            </h1>
-            <Menu
-              selectedKeys={[cleanedPath]}
-              mode='inline'
-              items={items}
-              className='layout-menu'
-              onClick={({ keyPath }) => router.push(keyPath[0])}
-            />
-          </Sider>
-        </div>
+          <h1 className='layout-title'>
+            <IconLogo className='layout-logo' />
+            {!collapsed && (
+              <span
+                style={{
+                  marginLeft: 10,
+                  color: value === 'light' ? '#080e29' : '#ccc',
+                }}
+              >
+                Open-Job
+              </span>
+            )}
+          </h1>
+          <Menu
+            selectedKeys={[cleanedPath]}
+            mode='inline'
+            items={items}
+            className='layout-menu'
+            onClick={({ keyPath }) => router.push(keyPath[0])}
+          />
+        </Sider>
+
         <Layout>
           <Header
             theme={value}
