@@ -92,16 +92,23 @@ const BaseLayout = ({ children }: any) => {
           trigger={null}
         >
           <h1 className='layout-title'>
-            <IconLogo className='layout-logo' />
-            {!collapsed && (
-              <span
+            {collapsed ? (
+              <IconLogo className='layout-logo' />
+            ) : (
+              <div
                 style={{
-                  marginLeft: 10,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  flex: `0 0 ${collapsed ? collapsedWidth : siderWidth}px`,
                   color: value === 'light' ? '#080e29' : '#ccc',
                 }}
               >
+                <IconLogo
+                  className='layout-logo'
+                  style={{ marginRight: 10 }}
+                />
                 Open-Job
-              </span>
+              </div>
             )}
           </h1>
           <Menu
