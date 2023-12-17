@@ -76,11 +76,11 @@ const TableList: React.FC = () => {
 
   const columns: ColumnsType<API.OpenJobLog> = [
     {
-      title: '编号',
+      title: 'ID',
       dataIndex: 'id',
     },
     {
-      title: '任务编号',
+      title: '任务ID',
       dataIndex: 'jobId',
     },
     {
@@ -110,14 +110,6 @@ const TableList: React.FC = () => {
       title: '异常信息',
       dataIndex: 'cause',
       ellipsis: true,
-    },
-    {
-      title: '开始时间',
-      dataIndex: 'beginTime',
-    },
-    {
-      title: '结束时间',
-      dataIndex: 'endTime',
     },
     {
       title: '操作',

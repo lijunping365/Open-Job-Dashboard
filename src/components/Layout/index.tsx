@@ -8,8 +8,10 @@ import { IconLogo } from '@/components/Icon/IconLogo';
 import {
   AlertOutlined,
   AppstoreOutlined,
+  CloudServerOutlined,
   CoffeeOutlined,
   DashboardOutlined,
+  FileTextOutlined,
   SmileOutlined,
 } from '@ant-design/icons';
 import Footer from '@/components/Footer';
@@ -25,10 +27,14 @@ function getIcon(icon: string) {
       return <SmileOutlined />;
     case 'app':
       return <AppstoreOutlined />;
+    case 'cluster':
+      return <CloudServerOutlined />;
     case 'alarm':
       return <AlertOutlined />;
     case 'job':
       return <CoffeeOutlined />;
+    case 'logger':
+      return <FileTextOutlined />;
   }
 }
 function getItem(item: any): MenuItem {

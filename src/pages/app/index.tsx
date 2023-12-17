@@ -147,16 +147,6 @@ const TableList: React.FC = () => {
           >
             查看集群
           </Link>
-          <Divider type='vertical' />
-          <Link
-            href={{
-              pathname: '/app/monitor',
-              search: `?id=${record.id}`,
-              hash: '#the-hash',
-            }}
-          >
-            应用监控
-          </Link>
         </>
       ),
     },

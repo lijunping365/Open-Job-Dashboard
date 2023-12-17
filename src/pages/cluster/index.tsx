@@ -1,6 +1,6 @@
-import { message, Divider, Form, Table } from 'antd';
-import React, { useState, useRef } from 'react';
-import UpdateForm from './components/UpdateForm';
+import { message, Divider, Form, Card, Button } from 'antd';
+import React, { useState } from 'react';
+import CreateForm from '@/components/Node/CreateForm';
 import { confirmModal } from '@/components/ConfirmModel';
 import {
   fetchInstancePage,
@@ -9,13 +9,12 @@ import {
   online,
 } from '@/services/api';
 import { ColumnsType } from 'antd/es/table';
-import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
-import { TableParams } from '@/types/LoginTyping';
 import usePaginationRequest from '@/hooks/usePagination';
 import PageParams = API.PageParams;
-
-const FormItem = Form.Item;
+import SearchForm from '@/components/Job/SearchForm';
+import { PlusOutlined } from '@ant-design/icons';
+import ProTable from '@/components/ProTable';
 /**
  * 更新节点
  *
@@ -136,37 +135,18 @@ const TableList: React.FC = () => {
             onClick={async () => {
               if (record.status === 'OFF_LINE') {
                 await handlerChange(record.serverId);
-                actionRef.current?.reloadAndRest?.();
+                fetchData().then();
               } else {
                 const confirm = await confirmModal('确定要下线吗？');
                 if (confirm) {
                   await handlerOffline(record.serverId);
-                  actionRef.current?.reloadAndRest?.();
+                  fetchData().then();
                 }
               }
             }}
           >
             {record.status === 'OFF_LINE' ? '上线' : '下线'}
           </a>
-          <Divider type='vertical' />
-          <a
-            onClick={() => {
-              handleUpdateModalVisible(true);
-              setCurrentRow(record);
-            }}
-          >
-            修改权重
-          </a>
-          <Divider type='vertical' />
-          <Link
-            href={{
-              pathname: '/executor/monitor',
-              search: `?appId=${appId}&serverId=${record.serverId}`,
-              hash: '#the-hash',
-            }}
-          >
-            服务监控
-          </Link>
         </>
       ),
     },
@@ -174,39 +154,61 @@ const TableList: React.FC = () => {
 
   return (
     <BaseLayout>
-      <Table
-        loading={loading}
-        columns={columns}
-        rowKey={(record) => record.id}
-        dataSource={tableData}
-        pagination={tableParams.pagination}
-        //@ts-ignore
-        onChange={onTableChange}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
-      />
+      <Card bordered={false}>
+        <div className='search-form-wrapper'>
+          <SearchForm
+            form={form}
+            fetchData={fetchData}
+          />
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalVisible(true)}
+          >
+            新建
+          </Button>
+        </div>
 
-      <UpdateForm
+        <ProTable<API.Instance>
+          columns={columns}
+          tableData={tableData}
+          loading={loading}
+          tableParams={tableParams}
+          onTableChange={onTableChange}
+          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
+        />
+      </Card>
+
+      <CreateForm
         onSubmit={async (value) => {
-          const success = await handleUpdate(value);
+          const success = await handleAdd(value);
           if (success) {
-            handleUpdateModalVisible(false);
-            setCurrentRow(undefined);
-            if (actionRef.current) {
-              actionRef.current.reload();
-            }
+            setCreateModalVisible(false);
+            fetchData().then();
           }
         }}
-        onCancel={() => {
-          handleUpdateModalVisible(false);
-          setCurrentRow(undefined);
-        }}
-        updateModalVisible={updateModalVisible}
-        values={currentRow || {}}
+        onCancel={() => setCreateModalVisible(false)}
+        modalVisible={createModalVisible}
       />
+
+      {updateFormValues && Object.keys(updateFormValues).length ? (
+        <CreateForm
+          onSubmit={async (value) => {
+            const success = await handleUpdate(value);
+            if (success) {
+              setUpdateModalVisible(false);
+              setUpdateFormValues({});
+              fetchData().then();
+            }
+          }}
+          onCancel={() => {
+            setUpdateModalVisible(false);
+            setUpdateFormValues({});
+          }}
+          modalVisible={updateModalVisible}
+          values={updateFormValues}
+        />
+      ) : null}
     </BaseLayout>
   );
 };

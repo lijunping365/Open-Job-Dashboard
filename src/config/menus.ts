@@ -10,9 +10,19 @@
     path: '/app',
   },
   {
+    name: '集群管理',
+    icon: 'cluster',
+    path: '/cluster',
+  },
+  {
     name: '任务管理',
     icon: 'job',
     path: '/job',
+  },
+  {
+    name: '日志管理',
+    icon: 'logger',
+    path: '/logger',
   },
   {
     name: '报警管理',
