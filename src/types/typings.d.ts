@@ -6,7 +6,7 @@ declare namespace API {
     id: number;
     username: string;
     status: number;
-    phone: string;
+    avatar: string;
     createTime: Date;
   };
 
