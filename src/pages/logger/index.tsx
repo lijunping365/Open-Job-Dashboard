@@ -1,4 +1,13 @@
-import { message, Divider, Form, Card, Drawer } from 'antd';
+import {
+  message,
+  Divider,
+  Form,
+  Card,
+  Drawer,
+  MenuProps,
+  Dropdown,
+  Space,
+} from 'antd';
 import React, { useState } from 'react';
 import {
   fetchTaskLogPage,
@@ -13,6 +22,8 @@ import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Logger/SearchForm';
 import ProTable from '@/components/ProTable';
 import ProDescriptions from '@/components/ProDescriptions';
+import Link from 'next/link';
+import { DownOutlined } from '@ant-design/icons';
 
 /**
  * 删除节点
@@ -74,6 +85,56 @@ const TableList: React.FC = () => {
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.OpenJobLog>((params) => request(params));
 
+  const getItems = (record: any): MenuProps['items'] => {
+    return [
+      {
+        key: '1',
+        label: (
+          <a
+            onClick={() => {
+              setShowDetail(true);
+              setCurrentRow(record);
+            }}
+          >
+            实时日志
+          </a>
+        ),
+      },
+      {
+        key: '2',
+        label: (
+          <a
+            onClick={async () => {
+              const confirm = await confirmModal();
+              if (confirm) {
+                await handleKillTask(record.id);
+                fetchData().then();
+              }
+            }}
+          >
+            杀死任务
+          </a>
+        ),
+      },
+      {
+        key: '3',
+        label: (
+          <a
+            onClick={async () => {
+              const confirm = await confirmModal();
+              if (confirm) {
+                await handleRemove([record.id]);
+                fetchData().then();
+              }
+            }}
+          >
+            删除任务
+          </a>
+        ),
+      },
+    ];
+  };
+
   const columns: ColumnsType<API.OpenJobLog> = [
     {
       title: 'ID',
@@ -122,41 +183,14 @@ const TableList: React.FC = () => {
               setCurrentRow(record);
             }}
           >
-            查看详情
+            详情
           </a>
           <Divider type='vertical' />
-          <a
-            onClick={() => {
-              setShowDetail(true);
-              setCurrentRow(record);
-            }}
-          >
-            查看日志
-          </a>
-          <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              const confirm = await confirmModal();
-              if (confirm) {
-                await handleKillTask(record.id);
-                actionRef.current?.reloadAndRest?.();
-              }
-            }}
-          >
-            杀死
-          </a>
-          <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              const confirm = await confirmModal();
-              if (confirm) {
-                await handleRemove([record.id]);
-                actionRef.current?.reloadAndRest?.();
-              }
-            }}
-          >
-            删除
-          </a>
+          <Dropdown menu={{ items: getItems(record) }}>
+            <a>
+              更多 <DownOutlined />
+            </a>
+          </Dropdown>
         </>
       ),
     },

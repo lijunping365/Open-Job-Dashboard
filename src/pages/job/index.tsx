@@ -264,32 +264,30 @@ const JobTableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       render: (_, record) => (
-        <>
-          <Space size='middle'>
-            <a
-              onClick={async () => {
-                await updateStatus(record.id, record.status);
-                fetchData().then();
-              }}
-            >
-              {record.status === 0 ? '启动' : '停止'}
+        <Space size='middle'>
+          <a
+            onClick={async () => {
+              await updateStatus(record.id, record.status);
+              fetchData().then();
+            }}
+          >
+            {record.status === 0 ? '启动' : '停止'}
+          </a>
+          <Divider type='vertical' />
+          <a
+            onClick={async () => {
+              await handleRun(record.id);
+            }}
+          >
+            运行
+          </a>
+          <Divider type='vertical' />
+          <Dropdown menu={{ items: getItems(record) }}>
+            <a>
+              更多 <DownOutlined />
             </a>
-            <Divider type='vertical' />
-            <a
-              onClick={async () => {
-                await handleRun(record.id);
-              }}
-            >
-              运行
-            </a>
-            <Divider type='vertical' />
-            <Dropdown menu={{ items: getItems(record) }}>
-              <a>
-                更多 <DownOutlined />
-              </a>
-            </Dropdown>
-          </Space>
-        </>
+          </Dropdown>
+        </Space>
       ),
     },
   ];
