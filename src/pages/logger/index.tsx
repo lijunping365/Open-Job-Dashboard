@@ -6,7 +6,6 @@ import {
   Drawer,
   MenuProps,
   Dropdown,
-  Space,
 } from 'antd';
 import React, { useState } from 'react';
 import {
@@ -24,47 +23,6 @@ import ProTable from '@/components/ProTable';
 import ProDescriptions from '@/components/ProDescriptions';
 import Link from 'next/link';
 import { DownOutlined } from '@ant-design/icons';
-
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeTaskLog({ ids: selectedRows });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 杀死任务
- *
- * @param logId
- */
-const handleKillTask = async (logId: number) => {
-  const hide = message.loading('正在杀死任务');
-  if (!logId) return true;
-  try {
-    const res = await killScheduleTask(logId);
-    console.log('ddddddddddddd', res);
-    hide();
-    message.success('杀死成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('杀死失败，请重试');
-    return false;
-  }
-};
 
 const TableList: React.FC = () => {
   const jobId = 1;
@@ -84,6 +42,34 @@ const TableList: React.FC = () => {
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.OpenJobLog>((params) => request(params));
+
+  const handleRemove = async (selectedRows: any[]) => {
+    const hide = message.loading('正在删除');
+    try {
+      await removeTaskLog({ ids: selectedRows });
+      hide();
+      message.success('删除成功，即将刷新');
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+    }
+  };
+
+  const handleKillTask = async (logId: number) => {
+    const hide = message.loading('正在杀死任务');
+    if (!logId) return true;
+    try {
+      const res = await killScheduleTask(logId);
+      console.log('ddddddddddddd', res);
+      hide();
+      message.success('杀死成功，即将刷新');
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('杀死失败，请重试');
+    }
+  };
 
   const getItems = (record: any): MenuProps['items'] => {
     return [
@@ -210,7 +196,7 @@ const TableList: React.FC = () => {
           loading={loading}
           tableParams={tableParams}
           onTableChange={onTableChange}
-          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
+          onBatchDelete={(rows) => handleRemove(rows)}
         />
       </Card>
       <Drawer

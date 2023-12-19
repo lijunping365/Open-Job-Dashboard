@@ -17,62 +17,6 @@ import usePaginationRequest from '@/hooks/usePagination';
 import PageParams = API.PageParams;
 import SearchForm from '@/components/Job/SearchForm';
 
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields: Partial<API.OpenJobApp>) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addOpenJobApp(fields);
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新节点
- *
- * @param fields
- */
-const handleUpdate = async (fields: Partial<API.OpenJobApp>) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateOpenJobApp(fields);
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeOpenJobApp({ ids: selectedRows });
-    hide();
-    message.success('删除成功，即将刷新');
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-  }
-};
-
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -90,6 +34,53 @@ const TableList: React.FC = () => {
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.OpenJobApp>((params) => request(params));
+
+  const handleAdd = async (fields: Partial<API.OpenJobApp>) => {
+    const hide = message.loading('正在添加');
+    try {
+      await addOpenJobApp(fields);
+      hide();
+      message.success('添加成功');
+      setCreateModalVisible(false);
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+    }
+  };
+
+  const handleUpdate = async (fields: Partial<API.OpenJobApp>) => {
+    const hide = message.loading('正在配置');
+    try {
+      await updateOpenJobApp(fields);
+      hide();
+      message.success('配置成功');
+      setUpdateModalVisible(false);
+      setUpdateFormValues({});
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('配置失败请重试！');
+    }
+  };
+
+  const handleRemove = async (selectedRows: any[]) => {
+    const hide = message.loading('正在删除');
+    try {
+      await removeOpenJobApp({ ids: selectedRows });
+      hide();
+      message.success('删除成功，即将刷新');
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+    }
+  };
+
+  const handleCancel = () => {
+    setUpdateModalVisible(false);
+    setUpdateFormValues({});
+  };
 
   const columns: ColumnsType<API.OpenJobApp> = [
     {
@@ -180,31 +171,15 @@ const TableList: React.FC = () => {
       </Card>
 
       <CreateForm
-        onSubmit={async (value) => {
-          const success = await handleAdd(value);
-          if (success) {
-            setCreateModalVisible(false);
-            fetchData().then();
-          }
-        }}
+        onSubmit={(value) => handleAdd(value)}
         onCancel={() => setCreateModalVisible(false)}
         modalVisible={createModalVisible}
       />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <CreateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              setUpdateModalVisible(false);
-              setUpdateFormValues({});
-              fetchData().then();
-            }
-          }}
-          onCancel={() => {
-            setUpdateModalVisible(false);
-            setUpdateFormValues({});
-          }}
+          onSubmit={(value) => handleUpdate(value)}
+          onCancel={handleCancel}
           modalVisible={updateModalVisible}
           values={updateFormValues}
         />

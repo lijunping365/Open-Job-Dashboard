@@ -30,121 +30,6 @@ import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Job/SearchForm';
 import PageParams = API.PageParams;
 
-/**
- * 添加节点
- *
- * @param fields
- */
-const handleAdd = async (fields: Partial<API.OpenJob>) => {
-  const hide = message.loading('正在添加');
-  try {
-    await addScheduleTask(fields);
-    hide();
-    message.success('添加成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('添加失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 更新节点
- *
- * @param fields
- */
-const handleUpdate = async (fields: Partial<API.OpenJob>) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateScheduleTask(fields);
-    hide();
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const hide = message.loading('正在删除');
-  try {
-    await removeScheduleTask({ ids: selectedRows });
-    hide();
-    message.success('删除成功，即将刷新');
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-  }
-};
-
-/**
- * 启动任务
- *
- * @param jobId
- */
-const handleStart = async (jobId: number) => {
-  const hide = message.loading('正在启动');
-  if (!jobId) return true;
-  try {
-    await startScheduleTask(jobId);
-    hide();
-    message.success('启动成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('启动失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 运行任务
- *
- * @param jobId
- */
-const handleRun = async (jobId: number) => {
-  const hide = message.loading('正在运行');
-  if (!jobId) return true;
-  try {
-    await runScheduleTask(jobId);
-    hide();
-    message.success('运行完成，请查看');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('运行失败，请重试');
-    return false;
-  }
-};
-
-/**
- * 停止任务
- *
- * @param jobId
- */
-const updateStatus = async (jobId: number, status: number) => {
-  const hide = message.loading('正在停止');
-  if (!jobId) return true;
-  try {
-    await stopScheduleTask(jobId);
-    hide();
-    message.success('停止成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('停止失败，请重试');
-    return false;
-  }
-};
-
 const JobTableList: React.FC = () => {
   const [form] = Form.useForm();
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
@@ -162,6 +47,82 @@ const JobTableList: React.FC = () => {
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.OpenJob>((params) => request(params));
+
+  const handleAdd = async (fields: Partial<API.OpenJob>) => {
+    const hide = message.loading('正在添加');
+    try {
+      await addScheduleTask(fields);
+      hide();
+      message.success('添加成功');
+      setCreateModalVisible(false);
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+    }
+  };
+
+  const handleUpdate = async (fields: Partial<API.OpenJob>) => {
+    const hide = message.loading('正在修改');
+    try {
+      await updateScheduleTask(fields);
+      hide();
+      message.success('修改成功');
+      setUpdateModalVisible(false);
+      setUpdateFormValues({});
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('修改失败请重试！');
+    }
+  };
+
+  const handleRemove = async (selectedRows: any[]) => {
+    const hide = message.loading('正在删除');
+    try {
+      await removeScheduleTask({ ids: selectedRows });
+      hide();
+      message.success('删除成功，即将刷新');
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+    }
+  };
+
+  const handleRun = async (jobId: number) => {
+    const hide = message.loading('正在运行');
+    if (!jobId) return true;
+    try {
+      await runScheduleTask(jobId);
+      hide();
+      message.success('运行完成，请查看');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('运行失败，请重试');
+      return false;
+    }
+  };
+
+  const updateStatus = async (jobId: number, status: number) => {
+    const hide = message.loading('正在停止');
+    if (!jobId) return true;
+    try {
+      await stopScheduleTask(jobId);
+      hide();
+      message.success('停止成功，即将刷新');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('停止失败，请重试');
+      return false;
+    }
+  };
+
+  const handleCancel = () => {
+    setUpdateModalVisible(false);
+    setUpdateFormValues({});
+  };
 
   const getItems = (record: any): MenuProps['items'] => {
     return [
@@ -320,31 +281,15 @@ const JobTableList: React.FC = () => {
       </Card>
 
       <CreateForm
-        onSubmit={async (value) => {
-          const success = await handleAdd(value);
-          if (success) {
-            setCreateModalVisible(false);
-            fetchData().then();
-          }
-        }}
+        onSubmit={(value) => handleAdd(value)}
         onCancel={() => setCreateModalVisible(false)}
         modalVisible={createModalVisible}
       />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <CreateForm
-          onSubmit={async (value) => {
-            const success = await handleUpdate(value);
-            if (success) {
-              setUpdateModalVisible(false);
-              setUpdateFormValues({});
-              fetchData().then();
-            }
-          }}
-          onCancel={() => {
-            setUpdateModalVisible(false);
-            setUpdateFormValues({});
-          }}
+          onSubmit={(value) => handleUpdate(value)}
+          onCancel={handleCancel}
           modalVisible={updateModalVisible}
           values={updateFormValues}
         />

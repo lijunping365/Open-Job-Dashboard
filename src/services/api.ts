@@ -102,9 +102,23 @@ export async function fetchAllInstance(appId: any) {
   return API.get<API.Instance[]>('/instance/list', { appId });
 }
 
+export async function addInstance(params: Partial<API.Instance>) {
+  return request('/instance/update', {
+    method: 'PUT',
+    data: { ...params },
+  });
+}
+
 export async function updateInstance(params: Partial<API.Instance>) {
   return request('/instance/update', {
     method: 'PUT',
+    data: { ...params },
+  });
+}
+
+export async function removeInstance(params: { ids: number[] }) {
+  return request('/app/delete', {
+    method: 'DELETE',
     data: { ...params },
   });
 }

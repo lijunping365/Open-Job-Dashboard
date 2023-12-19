@@ -1,6 +1,5 @@
-import { message, Divider, Card, Form } from 'antd';
-import React, { useState, useRef } from 'react';
-import UpdateForm from './components/UpdateForm';
+import { message, Divider, Card, Form, Button } from 'antd';
+import React, { useState } from 'react';
 import { fetchUserPage, updateUser, removeUser } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
@@ -9,49 +8,12 @@ import usePaginationRequest from '@/hooks/usePagination';
 import PageParams = API.PageParams;
 import SearchForm from '@/components/Job/SearchForm';
 import ProTable from '@/components/ProTable';
-
-/**
- * 更新节点
- *
- * @param fields
- */
-const handleUpdate = async (fields: Partial<API.User>) => {
-  const hide = message.loading('正在配置');
-  try {
-    await updateUser(fields);
-    hide();
-
-    message.success('配置成功');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('配置失败请重试！');
-    return false;
-  }
-};
-
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeUser({ ids: selectedRows });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
+import UpdateForm from '@/components/User/UpdateForm';
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
+  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
+  const [updateFormValues, setUpdateFormValues] = useState({});
 
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
@@ -64,6 +26,39 @@ const TableList: React.FC = () => {
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<API.User>((params) => request(params));
+
+  const handleUpdate = async (fields: Partial<API.User>) => {
+    const hide = message.loading('正在配置');
+    try {
+      await updateUser(fields);
+      hide();
+
+      message.success('配置成功');
+      return true;
+    } catch (error) {
+      hide();
+      message.error('配置失败请重试！');
+      return false;
+    }
+  };
+
+  const handleRemove = async (selectedRows: any[]) => {
+    const hide = message.loading('正在删除');
+    try {
+      await removeUser({ ids: selectedRows });
+      hide();
+      message.success('删除成功，即将刷新');
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+    }
+  };
+
+  const handleCancel = () => {
+    setUpdateModalVisible(false);
+    setUpdateFormValues({});
+  };
 
   const columns: ColumnsType<API.User> = [
     {
@@ -96,7 +91,7 @@ const TableList: React.FC = () => {
         <>
           <a
             onClick={() => {
-              handleUpdateModalVisible(true);
+              setUpdateModalVisible(true);
               setUpdateFormValues(record);
             }}
           >
@@ -108,7 +103,6 @@ const TableList: React.FC = () => {
               const confirm = await confirmModal();
               if (confirm) {
                 await handleRemove([record.id]);
-                actionRef.current?.reloadAndRest?.();
               }
             }}
           >
@@ -122,12 +116,10 @@ const TableList: React.FC = () => {
   return (
     <BaseLayout>
       <Card bordered={false}>
-        <div className='search-form-wrapper'>
-          <SearchForm
-            form={form}
-            fetchData={fetchData}
-          />
-        </div>
+        <SearchForm
+          form={form}
+          fetchData={fetchData}
+        />
 
         <ProTable<API.User>
           columns={columns}
@@ -135,9 +127,18 @@ const TableList: React.FC = () => {
           loading={loading}
           tableParams={tableParams}
           onTableChange={onTableChange}
-          onBatchDelete={(rows) => handleRemove(rows.map((e) => e.id))}
+          onBatchDelete={(rows) => handleRemove(rows)}
         />
       </Card>
+
+      {updateFormValues && Object.keys(updateFormValues).length ? (
+        <UpdateForm
+          onSubmit={(value) => handleUpdate(value)}
+          onCancel={handleCancel}
+          modalVisible={updateModalVisible}
+          values={updateFormValues}
+        />
+      ) : null}
     </BaseLayout>
   );
 };

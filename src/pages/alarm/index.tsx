@@ -10,25 +10,6 @@ import ProTable from '@/components/ProTable';
 import SearchForm from '@/components/Alarm/SearchForm';
 import ProDescriptions from '@/components/ProDescriptions';
 import dayjs from 'dayjs';
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-const handleRemove = async (selectedRows: any[]) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  try {
-    await removeAlarmRecord({ ids: selectedRows });
-    hide();
-    message.success('删除成功，即将刷新');
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-};
 
 const AlarmTable = () => {
   const appId = 1;
@@ -60,6 +41,19 @@ const AlarmTable = () => {
       appId,
       jobId,
     });
+  };
+
+  const handleRemove = async (selectedRows: any[]) => {
+    const hide = message.loading('正在删除');
+    try {
+      await removeAlarmRecord({ ids: selectedRows });
+      hide();
+      message.success('删除成功，即将刷新');
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+    }
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
