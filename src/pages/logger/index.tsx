@@ -16,19 +16,19 @@ import {
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
-import PageParams = API.PageParams;
 import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Logger/SearchForm';
 import ProTable from '@/components/ProTable';
 import ProDescriptions from '@/components/ProDescriptions';
 import Link from 'next/link';
 import { DownOutlined } from '@ant-design/icons';
+import { OpenJobLog, PageParams } from '@/types/typings';
 
 const TableList: React.FC = () => {
   const jobId = 1;
   const [form] = Form.useForm();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.OpenJobLog>();
+  const [currentRow, setCurrentRow] = useState<OpenJobLog>();
 
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
@@ -41,7 +41,7 @@ const TableList: React.FC = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJobLog>((params) => request(params));
+    usePaginationRequest<OpenJobLog>((params) => request(params));
 
   const handleRemove = async (selectedRows: any[]) => {
     const hide = message.loading('正在删除');
@@ -121,7 +121,7 @@ const TableList: React.FC = () => {
     ];
   };
 
-  const columns: ColumnsType<API.OpenJobLog> = [
+  const columns: ColumnsType<OpenJobLog> = [
     {
       title: 'ID',
       dataIndex: 'id',
@@ -190,7 +190,7 @@ const TableList: React.FC = () => {
           fetchData={fetchData}
         />
 
-        <ProTable<API.OpenJobLog>
+        <ProTable<OpenJobLog>
           columns={columns}
           tableData={tableData}
           loading={loading}
@@ -209,7 +209,7 @@ const TableList: React.FC = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.OpenJobLog>
+          <ProDescriptions<OpenJobLog>
             columns={columns}
             values={currentRow}
           />

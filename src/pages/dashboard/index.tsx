@@ -9,14 +9,15 @@ import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
 import { handlerChartData } from '@/lib/utils';
+import { AnalysisChart, OpenJobApp, StatisticNumber } from '@/types/typings';
 
 const TableList: React.FC = () => {
   const [appId, setAppId] = useState<number>();
-  const [appSet, setAppSet] = useState<API.OpenJobApp[]>([]);
+  const [appSet, setAppSet] = useState<OpenJobApp[]>([]);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
-  const [statisticNumber, setStatisticNumber] = useState<API.StatisticNumber>();
-  const [chartData, setChartData] = useState<API.AnalysisChart[]>([]);
+  const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
+  const [chartData, setChartData] = useState<AnalysisChart[]>([]);
 
   useEffect(() => {
     const getAnalysisNumber = () => {

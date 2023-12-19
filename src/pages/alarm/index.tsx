@@ -5,11 +5,11 @@ import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
-import PageParams = API.PageParams;
 import ProTable from '@/components/ProTable';
 import SearchForm from '@/components/Alarm/SearchForm';
 import ProDescriptions from '@/components/ProDescriptions';
 import dayjs from 'dayjs';
+import { OpenJobAlarm, PageParams } from '@/types/typings';
 
 const AlarmTable = () => {
   const appId = 1;
@@ -17,7 +17,7 @@ const AlarmTable = () => {
 
   const [form] = Form.useForm();
   const [showDetail, setShowDetail] = useState<boolean>(false);
-  const [currentRow, setCurrentRow] = useState<API.OpenJobAlarm>();
+  const [currentRow, setCurrentRow] = useState<OpenJobAlarm>();
 
   const request = async (params: PageParams) => {
     const values = await form.validateFields();
@@ -57,9 +57,9 @@ const AlarmTable = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJobAlarm>((params) => request(params));
+    usePaginationRequest<OpenJobAlarm>((params) => request(params));
 
-  const columns: ColumnsType<API.OpenJobAlarm> = [
+  const columns: ColumnsType<OpenJobAlarm> = [
     {
       title: '报警ID',
       dataIndex: 'id',
@@ -126,7 +126,7 @@ const AlarmTable = () => {
           fetchData={fetchData}
         />
 
-        <ProTable<API.OpenJobAlarm>
+        <ProTable<OpenJobAlarm>
           columns={columns}
           tableData={tableData}
           loading={loading}
@@ -145,7 +145,7 @@ const AlarmTable = () => {
         closable={false}
       >
         {currentRow?.id && (
-          <ProDescriptions<API.OpenJobAlarm>
+          <ProDescriptions<OpenJobAlarm>
             columns={columns}
             values={currentRow}
           />

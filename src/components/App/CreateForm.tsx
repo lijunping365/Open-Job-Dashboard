@@ -1,11 +1,12 @@
 import React from 'react';
 import { Button, Form, Input, Modal } from 'antd';
+import { OpenJobApp } from '@/types/typings';
 
 interface CreateFormProps {
   modalVisible: boolean;
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<API.OpenJob>) => void;
-  values?: Partial<API.OpenJobApp>;
+  onSubmit: (values: Partial<OpenJobApp>) => void;
+  values?: Partial<OpenJobApp>;
 }
 
 const FormItem = Form.Item;

@@ -6,12 +6,13 @@ import {
   fetchOpenJobAppList,
   validateCronExpress,
 } from '@/services/api';
+import { OpenJob } from '@/types/typings';
 
 interface CreateFormProps {
   modalVisible: boolean;
   onCancel: () => void;
-  onSubmit: (values: Partial<API.OpenJob>) => void;
-  values?: Partial<API.OpenJob>;
+  onSubmit: (values: Partial<OpenJob>) => void;
+  values?: Partial<OpenJob>;
 }
 
 const FormItem = Form.Item;

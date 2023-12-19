@@ -13,6 +13,12 @@ import { getTopCount, handlerChartData, handlerTokData } from '@/lib/utils';
 import { TimeChartCard } from '@/components/TimeChartCard';
 import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
+import {
+  AnalysisChart,
+  JobTimeChart,
+  StatisticNumber,
+  TimeType,
+} from '@/types/typings';
 
 const TableList: React.FC = () => {
   const { query }: any = location;
@@ -22,11 +28,11 @@ const TableList: React.FC = () => {
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [tokLoading, setTokLoading] = useState<boolean>(true);
   const [jobLoading, setJobLoading] = useState<boolean>(true);
-  const [statisticNumber, setStatisticNumber] = useState<API.StatisticNumber>();
-  const [instanceTok, setInstanceTok] = useState<API.TokChart[]>([]);
-  const [selectDate, setSelectDate] = useState<API.TimeType>('today');
-  const [chartData, setChartData] = useState<API.AnalysisChart[]>([]);
-  const [jobChartData, setJobChartData] = useState<API.JobTimeChart>();
+  const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
+  const [instanceTok, setInstanceTok] = useState<any[]>([]);
+  const [selectDate, setSelectDate] = useState<TimeType>('today');
+  const [chartData, setChartData] = useState<AnalysisChart[]>([]);
+  const [jobChartData, setJobChartData] = useState<JobTimeChart>();
 
   const onFetchInstanceTokData = useCallback(async () => {
     const count = getTopCount(selectDate);

@@ -14,8 +14,8 @@ import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
 import ProTable from '@/components/ProTable';
 import usePaginationRequest from '@/hooks/usePagination';
-import PageParams = API.PageParams;
 import SearchForm from '@/components/Job/SearchForm';
+import { OpenJobApp, PageParams } from '@/types/typings';
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
@@ -33,9 +33,9 @@ const TableList: React.FC = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJobApp>((params) => request(params));
+    usePaginationRequest<OpenJobApp>((params) => request(params));
 
-  const handleAdd = async (fields: Partial<API.OpenJobApp>) => {
+  const handleAdd = async (fields: Partial<OpenJobApp>) => {
     const hide = message.loading('正在添加');
     try {
       await addOpenJobApp(fields);
@@ -49,7 +49,7 @@ const TableList: React.FC = () => {
     }
   };
 
-  const handleUpdate = async (fields: Partial<API.OpenJobApp>) => {
+  const handleUpdate = async (fields: Partial<OpenJobApp>) => {
     const hide = message.loading('正在配置');
     try {
       await updateOpenJobApp(fields);
@@ -82,7 +82,7 @@ const TableList: React.FC = () => {
     setUpdateFormValues({});
   };
 
-  const columns: ColumnsType<API.OpenJobApp> = [
+  const columns: ColumnsType<OpenJobApp> = [
     {
       title: '应用ID',
       dataIndex: 'id',
@@ -160,7 +160,7 @@ const TableList: React.FC = () => {
           </Button>
         </div>
 
-        <ProTable<API.OpenJobApp>
+        <ProTable<OpenJobApp>
           columns={columns}
           tableData={tableData}
           loading={loading}

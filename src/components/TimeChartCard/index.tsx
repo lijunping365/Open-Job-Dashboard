@@ -1,14 +1,15 @@
 import { Chart, Geom, Axis, Tooltip, Guide } from 'bizcharts';
 import { Card } from 'antd';
 import React from 'react';
+import { JobTimeChart, TimeType } from '@/types/typings';
 
 const { Line } = Guide;
 
 interface ChartCardProps {
   loading: boolean;
-  chartData?: API.JobTimeChart;
-  selectDate: API.TimeType;
-  onChange: (type: API.TimeType) => void;
+  chartData?: JobTimeChart;
+  selectDate: TimeType;
+  onChange: (type: TimeType) => void;
 }
 
 export const TimeChartCard = ({

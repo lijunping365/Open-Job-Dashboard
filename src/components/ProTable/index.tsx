@@ -1,7 +1,7 @@
 import { Alert, Button, Divider, Table, TablePaginationConfig } from 'antd';
 import React, { useState } from 'react';
 import { ColumnsType } from 'antd/es/table';
-import { TableParams } from '@/types/LoginTyping';
+import { TableParams } from '@/types/typings';
 
 interface Props<T> {
   columns: ColumnsType<any>;

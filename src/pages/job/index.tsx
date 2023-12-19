@@ -28,7 +28,7 @@ import Link from 'next/link';
 import ProTable from '@/components/ProTable';
 import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Job/SearchForm';
-import PageParams = API.PageParams;
+import { OpenJob, PageParams } from '@/types/typings';
 
 const JobTableList: React.FC = () => {
   const [form] = Form.useForm();
@@ -46,9 +46,9 @@ const JobTableList: React.FC = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.OpenJob>((params) => request(params));
+    usePaginationRequest<OpenJob>((params) => request(params));
 
-  const handleAdd = async (fields: Partial<API.OpenJob>) => {
+  const handleAdd = async (fields: Partial<OpenJob>) => {
     const hide = message.loading('正在添加');
     try {
       await addScheduleTask(fields);
@@ -62,7 +62,7 @@ const JobTableList: React.FC = () => {
     }
   };
 
-  const handleUpdate = async (fields: Partial<API.OpenJob>) => {
+  const handleUpdate = async (fields: Partial<OpenJob>) => {
     const hide = message.loading('正在修改');
     try {
       await updateScheduleTask(fields);
@@ -186,7 +186,7 @@ const JobTableList: React.FC = () => {
     ];
   };
 
-  const columns: ColumnsType<API.OpenJob> = [
+  const columns: ColumnsType<OpenJob> = [
     {
       title: '任务ID',
       dataIndex: 'id',
@@ -270,7 +270,7 @@ const JobTableList: React.FC = () => {
           </Button>
         </div>
 
-        <ProTable<API.OpenJob>
+        <ProTable<OpenJob>
           columns={columns}
           tableData={tableData}
           loading={loading}

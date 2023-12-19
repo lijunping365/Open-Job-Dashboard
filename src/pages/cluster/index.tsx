@@ -11,10 +11,10 @@ import {
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
-import PageParams = API.PageParams;
 import SearchForm from '@/components/Job/SearchForm';
 import { PlusOutlined } from '@ant-design/icons';
 import ProTable from '@/components/ProTable';
+import { Instance, PageParams } from '@/types/typings';
 
 const TableList: React.FC = () => {
   const appId = 1;
@@ -34,9 +34,9 @@ const TableList: React.FC = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.Instance>((params) => request(params));
+    usePaginationRequest<Instance>((params) => request(params));
 
-  const handleAdd = async (fields: Partial<API.Instance>) => {
+  const handleAdd = async (fields: Partial<Instance>) => {
     const hide = message.loading('正在添加');
     try {
       await addInstance(fields);
@@ -50,7 +50,7 @@ const TableList: React.FC = () => {
     }
   };
 
-  const handleUpdate = async (fields: Partial<API.Instance>) => {
+  const handleUpdate = async (fields: Partial<Instance>) => {
     const hide = message.loading('正在修改');
     try {
       await updateInstance(fields);
@@ -65,7 +65,7 @@ const TableList: React.FC = () => {
     }
   };
 
-  const handlerChange = async (record: API.Instance) => {
+  const handlerChange = async (record: Instance) => {
     if (record.status === 'OFF_LINE') {
       await handleUpdate({ ...record });
     } else {
@@ -93,7 +93,7 @@ const TableList: React.FC = () => {
     setUpdateFormValues({});
   };
 
-  const columns: ColumnsType<API.Instance> = [
+  const columns: ColumnsType<Instance> = [
     {
       title: '实例地址',
       dataIndex: 'serverId',
@@ -159,7 +159,7 @@ const TableList: React.FC = () => {
           </Button>
         </div>
 
-        <ProTable<API.Instance>
+        <ProTable<Instance>
           columns={columns}
           tableData={tableData}
           loading={loading}

@@ -5,10 +5,10 @@ import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
-import PageParams = API.PageParams;
 import SearchForm from '@/components/Job/SearchForm';
 import ProTable from '@/components/ProTable';
 import UpdateForm from '@/components/User/UpdateForm';
+import { PageParams, User } from '@/types/typings';
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
@@ -25,9 +25,9 @@ const TableList: React.FC = () => {
   };
 
   const [tableData, loading, tableParams, onTableChange, fetchData] =
-    usePaginationRequest<API.User>((params) => request(params));
+    usePaginationRequest<User>((params) => request(params));
 
-  const handleUpdate = async (fields: Partial<API.User>) => {
+  const handleUpdate = async (fields: Partial<User>) => {
     const hide = message.loading('正在配置');
     try {
       await updateUser(fields);
@@ -60,7 +60,7 @@ const TableList: React.FC = () => {
     setUpdateFormValues({});
   };
 
-  const columns: ColumnsType<API.User> = [
+  const columns: ColumnsType<User> = [
     {
       title: '用户id',
       dataIndex: 'id',
@@ -121,7 +121,7 @@ const TableList: React.FC = () => {
           fetchData={fetchData}
         />
 
-        <ProTable<API.User>
+        <ProTable<User>
           columns={columns}
           tableData={tableData}
           loading={loading}
