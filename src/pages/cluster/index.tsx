@@ -67,10 +67,10 @@ const TableList: React.FC = () => {
 
   const handlerChange = async (record: API.Instance) => {
     if (record.status === 'OFF_LINE') {
-      await handleUpdate({record.id});
+      await handleUpdate({ ...record });
     } else {
       const confirm = await confirmModal('确定要下线吗？');
-      if (confirm) await handleUpdate({record.id});
+      if (confirm) await handleUpdate({ ...record });
     }
     fetchData().then();
   };
