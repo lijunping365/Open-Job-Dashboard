@@ -22,7 +22,11 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/app/:path*',
+    '/cluster/:path*',
     '/job/:path*',
+    '/chat/:path*',
+    '/logger/:path*',
+    '/monitor/:path*',
     '/alarm/:path*',
     '/user/:path*',
   ],
