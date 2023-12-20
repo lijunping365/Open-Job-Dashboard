@@ -14,7 +14,7 @@ import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
 import ProTable from '@/components/ProTable';
 import usePaginationRequest from '@/hooks/usePagination';
-import SearchForm from '@/components/Job/SearchForm';
+import SearchForm from '@/components/App/SearchForm';
 import { OpenJobApp, PageParams } from '@/types/typings';
 
 const TableList: React.FC = () => {
