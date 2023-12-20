@@ -1,3 +1,5 @@
+import { TimeType } from '@/types/typings';
+
 export const generateUUID = () => {
   const s: any[] = [];
   const hexDigits = '0123456789abcdef';
@@ -12,15 +14,6 @@ export const generateUUID = () => {
   s[23] = '-';
   return s.join('');
 };
-
-export function isValidUrl(url: string) {
-  try {
-    new URL(url);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
 
 export const handlerTokData = (res: any) => {
   const d1 = res.map((item: any) => {
@@ -60,7 +53,7 @@ export const handlerChartData = (res: any) => {
   return d1.concat(d2);
 };
 
-export const getTopCount = (timeType: API.TimeType) => {
+export const getTopCount = (timeType: TimeType) => {
   switch (timeType) {
     case 'today':
       return 1;

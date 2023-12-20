@@ -98,11 +98,9 @@ const deleteReq = <T>(url: string, data?: Record<string, any>): Promise<T> => {
   return instance.delete(url, { data });
 };
 
-export const API = {
+export const request = {
   get: getReq,
   post: postReq,
   put: putReq,
   delete: deleteReq,
 };
-
-export default instance;

@@ -1,53 +1,45 @@
 import { getAccessToken } from '@/lib/cache';
-import request, { API, PageResult } from '@/lib/request';
+import { request, PageResult } from '@/lib/request';
+import {
+  CaptchaParams,
+  ChartParam,
+  CurrentUser,
+  Instance,
+  JobChartParam,
+  LoginParams,
+  OpenJob,
+  OpenJobAlarm,
+  OpenJobApp,
+  OpenJobLog,
+  User,
+} from '@/types/typings';
 
 /** 获取当前的用户 GET /user/currentUser */
-export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.CurrentUser>('/user/currentUser', {
-    method: 'GET',
-    ...(options || {}),
-  });
+export async function currentUser() {
+  return request.get<CurrentUser>('/user/currentUser');
 }
 
 /** 登录接口 POST /login/list */
-export async function login(body: API.LoginParams) {
-  return request(`/login/${body.type}`, {
-    method: 'POST',
-    data: body,
-  });
+export async function login(body: LoginParams) {
+  return request.post(`/login/${body.type}`, body);
 }
 
 /** 退出登录接口 POST /login/outLogin */
 export async function outLogin() {
-  return request('/login/outLogin', {
-    method: 'GET',
-    params: { accessToken: getAccessToken() },
-  });
+  return request.get('/login/outLogin', { accessToken: getAccessToken() });
 }
 
 /** 退出登录接口 GET /login/refreshToken */
 export async function tryRefreshToken() {
-  return request('/login/refreshToken', {
-    method: 'GET',
-  });
+  return request.get('/login/refreshToken');
 }
 
-export async function getFakeImageCaptcha(params: Partial<API.CaptchaParams>) {
-  return request('/captcha/create/image', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
+export async function getFakeImageCaptcha(params: Partial<CaptchaParams>) {
+  return request.post('/captcha/create/image', params);
 }
 
-export async function getFakeSmsCaptcha(params: Partial<API.CaptchaParams>) {
-  return request('/captcha/create/sms', {
-    method: 'POST',
-    data: {
-      ...params,
-    },
-  });
+export async function getFakeSmsCaptcha(params: Partial<CaptchaParams>) {
+  return request.post('/captcha/create/sms', params);
 }
 
 export async function fetchUserPage(params: {
@@ -58,28 +50,19 @@ export async function fetchUserPage(params: {
   /** 任务名称 */
   name?: string;
 }) {
-  return API.get<PageResult<API.User>>('/user/page', params);
+  return request.get<PageResult<User>>('/user/page', params);
 }
 
-export async function updateUser(params: Partial<API.User>) {
-  return request('/user/update', {
-    method: 'PUT',
-    data: { ...params },
-  });
+export async function updateUser(params: Partial<User>) {
+  return request.put('/user/update', params);
 }
 
-export async function addUser(params: API.User) {
-  return request('/user/save', {
-    method: 'POST',
-    data: { ...params },
-  });
+export async function addUser(params: User) {
+  return request.post('/user/save', params);
 }
 
 export async function removeUser(params: { ids: number[] }) {
-  return request('/user/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
+  return request.delete('/user/delete', params);
 }
 
 export async function fetchInstancePage(params: {
@@ -95,44 +78,23 @@ export async function fetchInstancePage(params: {
   /** 实例状态 */
   status?: number;
 }) {
-  return API.get<PageResult<API.Instance>>('/instance/page', params);
+  return request.get<PageResult<Instance>>('/instance/page', params);
 }
 
 export async function fetchAllInstance(appId: any) {
-  return API.get<API.Instance[]>('/instance/list', { appId });
+  return request.get<Instance[]>('/instance/list', { appId });
 }
 
-export async function addInstance(params: Partial<API.Instance>) {
-  return request('/instance/update', {
-    method: 'PUT',
-    data: { ...params },
-  });
+export async function addInstance(params: Partial<Instance>) {
+  return request.put('/instance/update', params);
 }
 
-export async function updateInstance(params: Partial<API.Instance>) {
-  return request('/instance/update', {
-    method: 'PUT',
-    data: { ...params },
-  });
+export async function updateInstance(params: Partial<Instance>) {
+  return request.put('/instance/update', params);
 }
 
 export async function removeInstance(params: { ids: number[] }) {
-  return request('/app/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
-}
-
-export async function offline(clientId: string) {
-  return request(`/instance/offline/${clientId}`, {
-    method: 'PUT',
-  });
-}
-
-export async function online(clientId: string) {
-  return request(`/instance/online/${clientId}`, {
-    method: 'PUT',
-  });
+  return request.delete('/app/delete', params);
 }
 
 export async function fetchTaskLogPage(params: {
@@ -148,20 +110,15 @@ export async function fetchTaskLogPage(params: {
   /** 任务执行时间 */
   createTime?: Date;
 }) {
-  return API.get<PageResult<API.OpenJobLog>>('/logger/page', params);
+  return request.get<PageResult<OpenJobLog>>('/logger/page', params);
 }
 
 export async function removeTaskLog(params: { ids: number[] }) {
-  return request('/logger/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
+  return request.delete('/logger/delete', params);
 }
 
 export async function killScheduleTask(id: number) {
-  return request(`/logger/killTask/${id}`, {
-    method: 'PUT',
-  });
+  return request.put(`/logger/killTask/${id}`, {});
 }
 
 export async function fetchAlarmRecordPage(params: {
@@ -176,14 +133,11 @@ export async function fetchAlarmRecordPage(params: {
   /** 报警时间 */
   createTime?: Date;
 }) {
-  return API.get<PageResult<API.OpenJobAlarm>>('/alarm/page', params);
+  return request.get<PageResult<OpenJobAlarm>>('/alarm/page', params);
 }
 
 export async function removeAlarmRecord(params: { ids: number[] }) {
-  return request('/alarm/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
+  return request.delete('/alarm/delete', params);
 }
 
 export async function fetchScheduleTaskPage(params: {
@@ -197,79 +151,53 @@ export async function fetchScheduleTaskPage(params: {
   /** 任务状态 */
   status?: number;
 }) {
-  return API.get<PageResult<API.OpenJob>>('/task/page', params);
+  return request.get<PageResult<OpenJob>>('/task/page', params);
 }
 
-export async function updateScheduleTask(params: Partial<API.OpenJob>) {
-  return request('/task/update', {
-    method: 'PUT',
-    data: { ...params },
-  });
+export async function updateScheduleTask(params: Partial<OpenJob>) {
+  return request.put('/task/update', params);
 }
 
-export async function addScheduleTask(params: Partial<API.OpenJob>) {
-  return request('/task/save', {
-    method: 'POST',
-    data: { ...params },
-  });
+export async function addScheduleTask(params: Partial<OpenJob>) {
+  return request.post('/task/save', params);
 }
 
 export async function removeScheduleTask(params: { ids: number[] }) {
-  return request('/task/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
+  return request.delete('/task/delete', params);
 }
 
 export async function startScheduleTask(id: number) {
-  return request(`/task/start/${id}`, {
-    method: 'PUT',
-  });
+  return request.put(`/task/start/${id}`, {});
 }
 
 export async function stopScheduleTask(id: number) {
-  return request(`/task/stop/${id}`, {
-    method: 'PUT',
-  });
+  return request.put(`/task/stop/${id}`, {});
 }
 
 export async function runScheduleTask(id: number) {
-  return request(`/task/run/${id}`, {
-    method: 'PUT',
-  });
+  return request.put(`/task/run/${id}`, {});
 }
 
 export async function nextTriggerTime(cronExpress: string) {
-  return request(`/task/nextTriggerTime`, {
-    method: 'GET',
-    params: {
-      cronExpress,
-    },
+  return request.get(`/task/nextTriggerTime`, {
+    cronExpress,
   });
 }
 
 export async function fetchAnalysisNumber() {
-  return request('/analysis/statistic', {
-    method: 'GET',
-  });
+  return request.get('/analysis/statistic');
 }
 
 export async function fetchAppAnalysisNumber(appId: number) {
-  return request('/analysis/appStatistic', {
-    method: 'GET',
-    params: {
-      appId,
-    },
+  return request.get('/analysis/appStatistic', {
+    appId,
   });
 }
 
 export async function fetchJobAnalysisNumber(appId: number, jobId: number) {
-  return request('/analysis/jobStatistic', {
-    method: 'GET',
-    params: {
-      appId,
-      jobId,
-    },
+  return request.get('/analysis/jobStatistic', {
+    appId,
+    jobId,
   });
 }
 
@@ -277,57 +205,23 @@ export async function fetchInstanceAnalysisNumber(
   appId: number,
   serverId: string
 ) {
-  return request('/analysis/instanceStatistic', {
-    method: 'GET',
-    params: {
-      appId,
-      serverId,
-    },
+  return request.get('/analysis/instanceStatistic', {
+    appId,
+    serverId,
   });
 }
 
-export async function fetchAnalysisChart(params: API.ChartParam) {
-  return request('/analysis/chart', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+export async function fetchAnalysisChart(params: ChartParam) {
+  return request.get('/analysis/chart', params);
 }
 
-export async function fetchJobTimeChart(params: API.JobChartParam) {
-  return request('/analysis/jobChart', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function fetchJobTok(params: API.JobTokParam) {
-  return request('/analysis/jobTok', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
-}
-
-export async function fetchInstanceTok(params: API.InstanceTokParam) {
-  return request('/analysis/instanceTok', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-  });
+export async function fetchJobTimeChart(params: JobChartParam) {
+  return request.get('/analysis/jobChart', params);
 }
 
 export async function validateCronExpress(cronExpress: string) {
-  return request(`/task/validateCron`, {
-    method: 'GET',
-    params: {
-      cronExpress,
-    },
+  return request.get(`/task/validateCron`, {
+    cronExpress,
   });
 }
 
@@ -342,30 +236,21 @@ export async function fetchOpenJobAppPage(params: {
   /** 任务状态 */
   status?: number;
 }) {
-  return API.get<PageResult<API.OpenJobApp>>('/app/page', params);
+  return request.get<PageResult<OpenJobApp>>('/app/page', params);
 }
 
-export async function updateOpenJobApp(params: Partial<API.OpenJob>) {
-  return request('/app/update', {
-    method: 'PUT',
-    data: { ...params },
-  });
+export async function updateOpenJobApp(params: Partial<OpenJob>) {
+  return request.put('/app/update', params);
 }
 
-export async function addOpenJobApp(params: Partial<API.OpenJob>) {
-  return request('/app/save', {
-    method: 'POST',
-    data: { ...params },
-  });
+export async function addOpenJobApp(params: Partial<OpenJob>) {
+  return request.post('/app/save', params);
 }
 
 export async function removeOpenJobApp(params: { ids: number[] }) {
-  return request('/app/delete', {
-    method: 'DELETE',
-    data: { ...params },
-  });
+  return request.delete('/app/delete', params);
 }
 
 export async function fetchOpenJobAppList(appName?: string) {
-  return API.get<API.OpenJobApp[]>('/app/list', { appName });
+  return request.get<OpenJobApp[]>('/app/list', { appName });
 }
