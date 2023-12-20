@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { message, TablePaginationConfig } from 'antd';
-import { TableParams } from '@/types/LoginTyping';
 import { PageQuery, PageResult } from '@/lib/request';
+import { TableParams } from '@/types/typings';
 
 /**
  * antd table 分页请求钩子
