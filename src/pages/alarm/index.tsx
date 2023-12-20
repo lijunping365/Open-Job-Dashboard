@@ -20,7 +20,7 @@ const AlarmTable = () => {
   const [currentRow, setCurrentRow] = useState<OpenJobAlarm>();
 
   const request = async (params: PageParams) => {
-    const values = await form.validateFields();
+    const values = form.getFieldsValue();
     const searchForm: any = {};
     if (values.name) {
       searchForm.name = values.name;

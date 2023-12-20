@@ -31,7 +31,7 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<OpenJobLog>();
 
   const request = async (params: PageParams) => {
-    const values = await form.validateFields();
+    const values = form.getFieldsValue();
     return await fetchTaskLogPage({
       ...values,
       jobId,

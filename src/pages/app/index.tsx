@@ -24,7 +24,7 @@ const TableList: React.FC = () => {
   const [updateFormValues, setUpdateFormValues] = useState({});
 
   const request = async (params: PageParams) => {
-    const values = await form.validateFields();
+    const values = form.getFieldsValue();
     return await fetchOpenJobAppPage({
       ...values,
       current: params.current,

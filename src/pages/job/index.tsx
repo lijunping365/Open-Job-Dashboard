@@ -37,7 +37,7 @@ const JobTableList: React.FC = () => {
   const [updateFormValues, setUpdateFormValues] = useState({});
 
   const request = async (params: PageParams) => {
-    const values = await form.validateFields();
+    const values = form.getFieldsValue();
     return await fetchScheduleTaskPage({
       ...values,
       current: params.current,
