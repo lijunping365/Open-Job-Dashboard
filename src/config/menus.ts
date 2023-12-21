@@ -2,7 +2,7 @@
   {
     name: 'Dashboard',
     icon: 'dashboard',
-    path: './dashboard',
+    path: '/dashboard',
   },
   {
     name: '应用管理',
