@@ -131,7 +131,7 @@ const TableList: React.FC = () => {
           <Divider type='vertical' />
           <Link
             href={{
-              pathname: '/executor',
+              pathname: '/cluster',
               search: `?id=${record.id}`,
               hash: '#the-hash',
             }}
