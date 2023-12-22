@@ -5,7 +5,14 @@ import {
   fetchAnalysisChart,
   fetchOpenJobAppList,
 } from '@/services/api';
-import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
+import {
+  AlertOutlined,
+  BarChartOutlined,
+  CloudServerOutlined,
+  CoffeeOutlined,
+  DashboardOutlined,
+  FlagOutlined,
+} from '@ant-design/icons';
 import Link from 'next/link';
 import BaseLayout from '@/components/Layout';
 import { handlerChartData } from '@/lib/utils';
@@ -69,9 +76,30 @@ const TableList: React.FC = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title='应用数量'
+              title='任务数量'
+              value={statisticNumber?.taskTotalNum || 0}
+              prefix={<CoffeeOutlined />}
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              loading={statisticLoading}
+              title='调度次数'
               value={statisticNumber?.appNum}
-              prefix={<BarChartOutlined />}
+              prefix={<FlagOutlined />}
+            />
+          </Card>
+        </Col>
+
+        <Col span={6}>
+          <Card>
+            <Statistic
+              loading={statisticLoading}
+              title='执行器数量'
+              value={statisticNumber?.executorTotalNum}
+              prefix={<CloudServerOutlined />}
             />
           </Card>
         </Col>
@@ -79,39 +107,10 @@ const TableList: React.FC = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title='任务总数'
-              value={statisticNumber?.taskRunningNum}
-              prefix={<DashboardOutlined />}
-              suffix={`/ ${statisticNumber?.taskTotalNum}`}
+              title='今日报警次数'
+              value={statisticNumber?.alarmNum}
+              prefix={<AlertOutlined />}
             />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='执行器总数'
-              value={statisticNumber?.executorOnlineNum}
-              prefix={<BarChartOutlined />}
-              suffix={`/ ${statisticNumber?.executorTotalNum}`}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Link
-              href={{
-                pathname: '/alarm',
-                hash: '#the-hash',
-              }}
-            >
-              <Statistic
-                loading={statisticLoading}
-                title='今日报警次数'
-                value={statisticNumber?.alarmNum}
-                prefix={<BarChartOutlined />}
-              />
-            </Link>
           </Card>
         </Col>
       </Row>
@@ -119,7 +118,7 @@ const TableList: React.FC = () => {
       <Card
         loading={chartLoading}
         bordered={false}
-        title='任务调度次数'
+        title='任务调度报表'
         style={{
           marginTop: '20px',
         }}

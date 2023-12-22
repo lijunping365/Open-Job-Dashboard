@@ -16,9 +16,9 @@ import {
   fetchScheduleTaskPage,
   removeScheduleTask,
   runScheduleTask,
+  updateScheduleTask,
   startScheduleTask,
   stopScheduleTask,
-  updateScheduleTask,
 } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import CreateForm from '../../components/Job/CreateForm';
@@ -83,6 +83,7 @@ const JobTableList: React.FC = () => {
       await removeScheduleTask({ ids: selectedRows });
       hide();
       message.success('删除成功，即将刷新');
+      fetchData().then();
     } catch (error) {
       hide();
       message.error('删除失败，请重试');
@@ -91,31 +92,31 @@ const JobTableList: React.FC = () => {
 
   const handleRun = async (jobId: number) => {
     const hide = message.loading('正在运行');
-    if (!jobId) return true;
     try {
       await runScheduleTask(jobId);
       hide();
-      message.success('运行完成，请查看');
-      return true;
+      message.success('运行成功');
     } catch (error) {
       hide();
       message.error('运行失败，请重试');
-      return false;
     }
   };
 
-  const updateStatus = async (jobId: number, status: number) => {
-    const hide = message.loading('正在停止');
-    if (!jobId) return true;
+  const handleStartStop = async (jobId: number, status: number) => {
+    const ms = status === 1 ? '停止' : '启动';
+    const hide = message.loading(`正在${ms}`);
     try {
-      await stopScheduleTask(jobId);
+      if (status === 1) {
+        await stopScheduleTask(jobId);
+      } else {
+        await startScheduleTask(jobId);
+      }
       hide();
-      message.success('停止成功，即将刷新');
-      return true;
+      message.success(`${ms}成功，即将刷新`);
+      fetchData().then();
     } catch (error) {
       hide();
-      message.error('停止失败，请重试');
-      return false;
+      message.error(`${ms}失败，请重试`);
     }
   };
 
@@ -226,22 +227,11 @@ const JobTableList: React.FC = () => {
       dataIndex: 'option',
       render: (_, record) => (
         <Space size='middle'>
-          <a
-            onClick={async () => {
-              await updateStatus(record.id, record.status);
-              fetchData().then();
-            }}
-          >
+          <a onClick={() => handleStartStop(record.id, record.status)}>
             {record.status === 0 ? '启动' : '停止'}
           </a>
           <Divider type='vertical' />
-          <a
-            onClick={async () => {
-              await handleRun(record.id);
-            }}
-          >
-            运行
-          </a>
+          <a onClick={() => handleRun(record.id)}>运行</a>
           <Divider type='vertical' />
           <Dropdown menu={{ items: getItems(record) }}>
             <a>
