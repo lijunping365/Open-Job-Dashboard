@@ -1,6 +1,7 @@
-import React from 'react';
-import { Form, Button, Input, Modal } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
+import { Form, Button, Input, Modal, Select } from 'antd';
 import { Instance } from '@/types/typings';
+import { fetchOpenJobAppList } from '@/services/api';
 
 interface CreateFormProps {
   modalVisible: boolean;
@@ -23,6 +24,17 @@ const CreateForm: React.FC<CreateFormProps> = ({
   values,
 }: CreateFormProps) => {
   const [form] = Form.useForm();
+  const [appOptions, setAppOptions] = useState<any[]>([]);
+
+  const onFetchOpenJobAppList = useCallback(async () => {
+    const result = await fetchOpenJobAppList();
+    if (result) {
+      const appList = result.map((item) => {
+        return { label: item.appName, value: item.id };
+      });
+      setAppOptions(appList);
+    }
+  }, []);
 
   const handleNext = async () => {
     const fieldsValue: any = await form.validateFields();
@@ -31,6 +43,15 @@ const CreateForm: React.FC<CreateFormProps> = ({
       ...fieldsValue,
     });
   };
+
+  const filterOption = (
+    input: string,
+    option?: { label: string; value: string }
+  ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+  useEffect(() => {
+    onFetchOpenJobAppList().then();
+  }, []);
 
   const renderFooter = () => {
     return (
@@ -51,7 +72,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
       width={640}
       style={{ padding: '32px 40px 48px' }}
       destroyOnClose
-      title='编辑实例'
+      title='创建实例'
       open={modalVisible}
       footer={renderFooter()}
       onCancel={() => onCancel()}
@@ -62,16 +83,23 @@ const CreateForm: React.FC<CreateFormProps> = ({
         initialValues={{ ...values }}
       >
         <FormItem
-          name='weight'
-          label='权重'
-          rules={[
-            { required: true, message: '请输入实例权重！', min: 1, max: 100 },
-          ]}
+          name='appId'
+          label='选择应用'
+          rules={[{ required: true, message: '请选择应用!' }]}
         >
-          <Input
-            placeholder='请输入实例权重'
-            type={'number'}
+          <Select
+            showSearch
+            filterOption={filterOption}
+            options={appOptions}
           />
+        </FormItem>
+
+        <FormItem
+          name='serverId'
+          label='节点地址'
+          rules={[{ required: true, message: '例如：127.0.0.1:8080' }]}
+        >
+          <Input placeholder='请输入实例权重' />
         </FormItem>
       </Form>
     </Modal>

@@ -86,7 +86,7 @@ export async function fetchAllInstance(appId: any) {
 }
 
 export async function addInstance(params: Partial<Instance>) {
-  return request.put('/instance/update', params);
+  return request.post('/instance/add', params);
 }
 
 export async function updateInstance(params: Partial<Instance>) {
