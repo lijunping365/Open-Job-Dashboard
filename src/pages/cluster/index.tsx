@@ -11,17 +11,17 @@ import {
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
-import SearchForm from '@/components/Job/SearchForm';
+import SearchForm from '@/components/Node/SearchForm';
 import { PlusOutlined } from '@ant-design/icons';
 import ProTable from '@/components/ProTable';
 import { Instance, PageParams } from '@/types/typings';
+import { InferGetServerSidePropsType } from 'next';
 
-const TableList: React.FC = () => {
-  const appId = 1;
+export default function ClusterPage({
+  appId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [form] = Form.useForm();
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
-  const [updateFormValues, setUpdateFormValues] = useState({});
 
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
@@ -56,8 +56,6 @@ const TableList: React.FC = () => {
       await updateInstance(fields);
       hide();
       message.success('修改成功');
-      setUpdateModalVisible(false);
-      setUpdateFormValues({});
       fetchData().then();
     } catch (error) {
       hide();
@@ -86,11 +84,6 @@ const TableList: React.FC = () => {
       hide();
       message.error('删除失败，请重试');
     }
-  };
-
-  const handleCancel = () => {
-    setUpdateModalVisible(false);
-    setUpdateFormValues({});
   };
 
   const columns: ColumnsType<Instance> = [
@@ -174,17 +167,15 @@ const TableList: React.FC = () => {
         onCancel={() => setCreateModalVisible(false)}
         modalVisible={createModalVisible}
       />
-
-      {updateFormValues && Object.keys(updateFormValues).length ? (
-        <CreateForm
-          onSubmit={(value) => handleUpdate(value)}
-          onCancel={handleCancel}
-          modalVisible={updateModalVisible}
-          values={updateFormValues}
-        />
-      ) : null}
     </BaseLayout>
   );
-};
+}
 
-export default TableList;
+export const getServerSideProps = (context: any) => {
+  const appId = context.query?.appId as string;
+  return {
+    props: {
+      appId: appId || '',
+    },
+  };
+};
