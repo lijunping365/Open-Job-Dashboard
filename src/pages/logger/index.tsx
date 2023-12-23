@@ -20,15 +20,14 @@ import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/Logger/SearchForm';
 import ProTable from '@/components/ProTable';
 import ProDescriptions from '@/components/ProDescriptions';
-import Link from 'next/link';
 import { DownOutlined } from '@ant-design/icons';
 import { OpenJobLog, PageParams } from '@/types/typings';
-import { useSearchParams } from 'next/navigation';
 import { processTime } from '@/lib/utils';
+import { InferGetServerSidePropsType } from 'next';
 
-const TableList: React.FC = () => {
-  const searchParams = useSearchParams();
-  const jobId = searchParams.get('jobId');
+export default function LoggerPage({
+  jobId,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [form] = Form.useForm();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<OpenJobLog>();
@@ -222,6 +221,13 @@ const TableList: React.FC = () => {
       </Drawer>
     </BaseLayout>
   );
-};
+}
 
-export default TableList;
+export const getServerSideProps = (context: any) => {
+  const jobId = context.query?.jobId as string;
+  return {
+    props: {
+      jobId: jobId || '',
+    },
+  };
+};
