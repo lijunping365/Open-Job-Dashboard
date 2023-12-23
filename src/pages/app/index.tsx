@@ -132,8 +132,7 @@ const TableList: React.FC = () => {
           <Link
             href={{
               pathname: '/cluster',
-              search: `?id=${record.id}`,
-              hash: '#the-hash',
+              search: `?appId=${record.id}`,
             }}
           >
             查看集群
