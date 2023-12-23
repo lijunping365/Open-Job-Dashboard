@@ -38,6 +38,7 @@ const SearchForm = ({ form, fetchData }: Props) => {
           <DebounceSelect
             placeholder='输入任务名称'
             fetchOptions={fetchJobList}
+            style={{ minWidth: 200 }}
           />
         </FormItem>
 
