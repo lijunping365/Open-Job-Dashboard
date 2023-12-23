@@ -184,6 +184,12 @@ export async function nextTriggerTime(cronExpress: string) {
   });
 }
 
+export async function fetchByJobName(jobName: string) {
+  return request.get<OpenJob[]>(`/task/fetchByJobName`, {
+    jobName,
+  });
+}
+
 export async function fetchAnalysisNumber() {
   return request.get('/analysis/statistic');
 }

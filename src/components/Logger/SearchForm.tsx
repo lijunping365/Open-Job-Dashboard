@@ -1,14 +1,30 @@
 import React from 'react';
-import { Button, Form, Input, DatePicker } from 'antd';
+import { Button, Form, DatePicker } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
+import DebounceSelect, {
+  SelectOptionsProps,
+} from '@/components/DebounceSelect';
+import { fetchByJobName } from '@/services/api';
 
 const FormItem = Form.Item;
+
 const { RangePicker } = DatePicker;
 
 interface Props {
   form: any;
   fetchData: () => void;
 }
+
+const fetchJobList = async (name: string) => {
+  const res = await fetchByJobName(name);
+  const options: SelectOptionsProps[] = [];
+  if (res) {
+    res.forEach((item) => {
+      options.push({ label: item.jobName, value: item.id });
+    });
+  }
+  return options;
+};
 
 const SearchForm = ({ form, fetchData }: Props) => {
   return (
@@ -19,10 +35,9 @@ const SearchForm = ({ form, fetchData }: Props) => {
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
         <FormItem name='name'>
-          <Input
-            allowClear
+          <DebounceSelect
             placeholder='输入任务名称'
-            prefix={<SearchOutlined />}
+            fetchOptions={fetchJobList}
           />
         </FormItem>
 
