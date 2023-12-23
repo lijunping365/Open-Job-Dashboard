@@ -23,9 +23,11 @@ import ProDescriptions from '@/components/ProDescriptions';
 import Link from 'next/link';
 import { DownOutlined } from '@ant-design/icons';
 import { OpenJobLog, PageParams } from '@/types/typings';
+import { useSearchParams } from 'next/navigation';
 
 const TableList: React.FC = () => {
-  const jobId = 1;
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get('jobId');
   const [form] = Form.useForm();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<OpenJobLog>();
@@ -33,8 +35,8 @@ const TableList: React.FC = () => {
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
     return await fetchTaskLogPage({
-      ...values,
       jobId,
+      ...values,
       current: params.current,
       pageSize: params.pageSize,
     });

@@ -162,8 +162,7 @@ const JobTableList: React.FC = () => {
           <Link
             href={{
               pathname: '/logger',
-              search: `?id=${record.id}`,
-              hash: '#the-hash',
+              search: `?jobId=${record.id}`,
             }}
           >
             查看日志
@@ -175,9 +174,8 @@ const JobTableList: React.FC = () => {
         label: (
           <Link
             href={{
-              pathname: '/job/monitor',
-              search: `?appId=${record.appId}&jobId=${record.id}`,
-              hash: '#the-hash',
+              pathname: '/monitor',
+              search: `?jobId=${record.id}`,
             }}
           >
             任务监控
