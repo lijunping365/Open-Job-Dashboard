@@ -16,7 +16,7 @@ const SearchForm = ({ form, fetchData }: Props) => {
       form={form}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <FormItem name='name'>
+        <FormItem name='appName'>
           <Input
             allowClear
             placeholder='输入应用名称'
