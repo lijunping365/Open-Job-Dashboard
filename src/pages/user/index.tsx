@@ -7,10 +7,9 @@ import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
 import SearchForm from '@/components/User/SearchForm';
 import ProTable from '@/components/ProTable';
-import UpdateForm from '@/components/User/UpdateForm';
+import CreateForm from '@/components/User/CreateForm';
 import { PageParams, User } from '@/types/typings';
 import { PlusOutlined } from '@ant-design/icons';
-import CreateForm from '@/components/Job/CreateForm';
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
@@ -164,7 +163,7 @@ const TableList: React.FC = () => {
       />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
-        <UpdateForm
+        <CreateForm
           onSubmit={(value) => handleUpdate(value)}
           onCancel={handleCancel}
           modalVisible={updateModalVisible}

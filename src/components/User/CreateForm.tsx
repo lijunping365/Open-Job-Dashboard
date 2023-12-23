@@ -6,7 +6,7 @@ export interface UpdateFormProps {
   onCancel: () => void;
   onSubmit: (values: Partial<User>) => void;
   modalVisible: boolean;
-  values: Partial<User>;
+  values?: Partial<User>;
 }
 const FormItem = Form.Item;
 
@@ -15,7 +15,7 @@ const formLayout = {
   wrapperCol: { span: 13 },
 };
 
-const UpdateForm: React.FC<UpdateFormProps> = ({
+const CreateForm: React.FC<UpdateFormProps> = ({
   onCancel,
   onSubmit,
   modalVisible,
@@ -77,4 +77,4 @@ const UpdateForm: React.FC<UpdateFormProps> = ({
   );
 };
 
-export default UpdateForm;
+export default CreateForm;
