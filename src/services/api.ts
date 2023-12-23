@@ -57,7 +57,7 @@ export async function updateUser(params: Partial<User>) {
   return request.put('/user/update', params);
 }
 
-export async function addUser(params: User) {
+export async function addUser(params: Partial<User>) {
   return request.post('/user/save', params);
 }
 

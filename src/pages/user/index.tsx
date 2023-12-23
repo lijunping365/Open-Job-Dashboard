@@ -1,17 +1,20 @@
 import { message, Divider, Card, Form, Button } from 'antd';
 import React, { useState } from 'react';
-import { fetchUserPage, updateUser, removeUser } from '@/services/api';
+import { fetchUserPage, updateUser, removeUser, addUser } from '@/services/api';
 import { confirmModal } from '@/components/ConfirmModel';
 import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
-import SearchForm from '@/components/Job/SearchForm';
+import SearchForm from '@/components/User/SearchForm';
 import ProTable from '@/components/ProTable';
 import UpdateForm from '@/components/User/UpdateForm';
 import { PageParams, User } from '@/types/typings';
+import { PlusOutlined } from '@ant-design/icons';
+import CreateForm from '@/components/Job/CreateForm';
 
 const TableList: React.FC = () => {
   const [form] = Form.useForm();
+  const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
   const [updateModalVisible, setUpdateModalVisible] = useState<boolean>(false);
   const [updateFormValues, setUpdateFormValues] = useState({});
 
@@ -27,18 +30,32 @@ const TableList: React.FC = () => {
   const [tableData, loading, tableParams, onTableChange, fetchData] =
     usePaginationRequest<User>((params) => request(params));
 
+  const handleAdd = async (fields: Partial<User>) => {
+    const hide = message.loading('正在添加');
+    try {
+      await addUser(fields);
+      hide();
+      message.success('添加成功');
+      setCreateModalVisible(false);
+      fetchData().then();
+    } catch (error) {
+      hide();
+      message.error('添加失败请重试！');
+    }
+  };
+
   const handleUpdate = async (fields: Partial<User>) => {
-    const hide = message.loading('正在配置');
+    const hide = message.loading('正在更新');
     try {
       await updateUser(fields);
       hide();
-
-      message.success('配置成功');
-      return true;
+      message.success('更新成功');
+      setUpdateModalVisible(false);
+      setUpdateFormValues({});
+      fetchData().then();
     } catch (error) {
       hide();
-      message.error('配置失败请重试！');
-      return false;
+      message.error('更新失败请重试！');
     }
   };
 
@@ -116,10 +133,19 @@ const TableList: React.FC = () => {
   return (
     <BaseLayout>
       <Card bordered={false}>
-        <SearchForm
-          form={form}
-          fetchData={fetchData}
-        />
+        <div className='search-form-wrapper'>
+          <SearchForm
+            form={form}
+            fetchData={fetchData}
+          />
+          <Button
+            type='primary'
+            icon={<PlusOutlined />}
+            onClick={() => setCreateModalVisible(true)}
+          >
+            新建
+          </Button>
+        </div>
 
         <ProTable<User>
           columns={columns}
@@ -130,6 +156,12 @@ const TableList: React.FC = () => {
           onBatchDelete={(rows) => handleRemove(rows)}
         />
       </Card>
+
+      <CreateForm
+        onSubmit={(value) => handleAdd(value)}
+        onCancel={() => setCreateModalVisible(false)}
+        modalVisible={createModalVisible}
+      />
 
       {updateFormValues && Object.keys(updateFormValues).length ? (
         <UpdateForm
