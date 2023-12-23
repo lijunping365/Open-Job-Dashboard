@@ -6,15 +6,12 @@ import { ColumnsType } from 'antd/es/table';
 import BaseLayout from '@/components/Layout';
 import usePaginationRequest from '@/hooks/usePagination';
 import ProTable from '@/components/ProTable';
-import SearchForm from '@/components/Alarm/SearchForm';
+import SearchForm from '@/components/Logger/SearchForm';
 import ProDescriptions from '@/components/ProDescriptions';
-import dayjs from 'dayjs';
 import { OpenJobAlarm, PageParams } from '@/types/typings';
+import { processTime } from '@/lib/utils';
 
 const AlarmTable = () => {
-  const appId = 1;
-  const jobId = 1;
-
   const [form] = Form.useForm();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<OpenJobAlarm>();
@@ -22,24 +19,14 @@ const AlarmTable = () => {
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
     const searchForm: any = {};
-    if (values.name) {
-      searchForm.name = values.name;
+    if (values.jobId) {
+      searchForm.jobId = values.jobId;
     }
-    if (values.timeRange) {
-      searchForm.startTime = dayjs(values.timeRange[0]).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
-      searchForm.endTime = dayjs(values.timeRange[1]).format(
-        'YYYY-MM-DD HH:mm:ss'
-      );
-    }
-
+    processTime(searchForm, values);
     return await fetchAlarmRecordPage({
       ...searchForm,
       current: params.current,
       pageSize: params.pageSize,
-      appId,
-      jobId,
     });
   };
 

@@ -34,7 +34,7 @@ const SearchForm = ({ form, fetchData }: Props) => {
       style={{ marginBottom: 24 }}
     >
       <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-        <FormItem name='name'>
+        <FormItem name='jobId'>
           <DebounceSelect
             placeholder='输入任务名称'
             fetchOptions={fetchJobList}

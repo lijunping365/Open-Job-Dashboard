@@ -1,4 +1,5 @@
 import { TimeType } from '@/types/typings';
+import dayjs from 'dayjs';
 
 export const generateUUID = () => {
   const s: any[] = [];
@@ -63,5 +64,16 @@ export const getTopCount = (timeType: TimeType) => {
       return 30;
     default:
       return 30;
+  }
+};
+
+export const processTime = (searchForm: any, values: any) => {
+  if (values.timeRange) {
+    searchForm.startTime = dayjs(values.timeRange[0]).format(
+      'YYYY-MM-DD HH:mm:ss'
+    );
+    searchForm.endTime = dayjs(values.timeRange[1]).format(
+      'YYYY-MM-DD HH:mm:ss'
+    );
   }
 };

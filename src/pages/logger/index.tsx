@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { DownOutlined } from '@ant-design/icons';
 import { OpenJobLog, PageParams } from '@/types/typings';
 import { useSearchParams } from 'next/navigation';
+import { processTime } from '@/lib/utils';
 
 const TableList: React.FC = () => {
   const searchParams = useSearchParams();
@@ -34,9 +35,11 @@ const TableList: React.FC = () => {
 
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
+    const searchForm: any = {};
+    searchForm.jobId = values.jobId ? values.jobId : jobId;
+    processTime(searchForm, values);
     return await fetchTaskLogPage({
-      jobId,
-      ...values,
+      ...searchForm,
       current: params.current,
       pageSize: params.pageSize,
     });
