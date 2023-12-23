@@ -17,7 +17,7 @@ export interface Instance {
   cpuInfo: string;
   memoryInfo: string;
   diskInfo: string;
-  status: string;
+  status: number;
   weight: number;
 }
 

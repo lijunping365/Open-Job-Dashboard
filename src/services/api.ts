@@ -72,7 +72,7 @@ export async function fetchInstancePage(params: {
   /** 页面的容量 */
   pageSize?: number;
   /** 实例id */
-  clientId?: any;
+  address?: any;
   /** 应用id */
   appId?: any;
   /** 实例状态 */

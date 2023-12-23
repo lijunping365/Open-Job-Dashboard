@@ -26,8 +26,9 @@ export default function ClusterPage({
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
     return await fetchInstancePage({
-      appId,
-      ...values,
+      appId: values.appId ? values.appId : appId,
+      address: values.address,
+      status: values.status,
       current: params.current,
       pageSize: params.pageSize,
     });
@@ -64,11 +65,11 @@ export default function ClusterPage({
   };
 
   const handlerChange = async (record: Instance) => {
-    if (record.status === 'OFF_LINE') {
-      await handleUpdate({ ...record });
-    } else {
+    if (record.status === 1) {
       const confirm = await confirmModal('确定要下线吗？');
       if (confirm) await handleUpdate({ ...record });
+    } else {
+      await handleUpdate({ ...record });
     }
     fetchData().then();
   };
@@ -115,7 +116,7 @@ export default function ClusterPage({
       title: '状态',
       dataIndex: 'status',
       render: (_, record) => (
-        <span>{record.status === 'OFF_LINE' ? '已下线' : '已上线'}</span>
+        <span>{record.status === 1 ? '已上线' : '已下线'}</span>
       ),
     },
     {
@@ -128,7 +129,7 @@ export default function ClusterPage({
       render: (_, record) => (
         <>
           <a onClick={() => handlerChange(record)}>
-            {record.status === 'OFF_LINE' ? '上线' : '下线'}
+            {record.status === 1 ? '下线' : '上线'}
           </a>
         </>
       ),
