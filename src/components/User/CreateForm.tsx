@@ -55,7 +55,7 @@ const CreateForm: React.FC<UpdateFormProps> = ({
       <Form
         {...formLayout}
         form={form}
-        initialValues={values}
+        initialValues={{ username: values?.username }}
       >
         <FormItem
           name='username'
