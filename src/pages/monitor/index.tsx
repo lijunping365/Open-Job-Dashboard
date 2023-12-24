@@ -5,6 +5,7 @@ import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
 import BaseLayout from '@/components/Layout';
 import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
+import { useThemeContext } from '@/components/Provider/ThemeContext';
 import Chart, {
   BubbleDataPoint,
   ChartTypeRegistry,
@@ -14,12 +15,13 @@ import Chart, {
 export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const { theme } = useThemeContext();
   const [loading, setLoading] = useState<boolean>(true);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
   const [selectDate, setSelectDate] = useState<TimeType>('today');
   const [data, setChartData] = useState<JobTimeChart>();
-
+  const color = theme === 'light' ? '#000' : '#fff';
   const getJobAnalysisNumber = async () => {
     try {
       const res: any = await fetchJobAnalysisNumber(jobId);
@@ -145,25 +147,25 @@ export default function MonitorPage({
         extra={
           <Space split={<Divider type='vertical' />}>
             <a
-              style={{ color: selectDate === 'today' ? '#1677ff' : '#000' }}
+              style={{ color: selectDate === 'today' ? '#1677ff' : color }}
               onClick={() => setSelectDate('today')}
             >
               最近一分钟
             </a>
             <a
-              style={{ color: selectDate === 'week' ? '#1677ff' : '#000' }}
+              style={{ color: selectDate === 'week' ? '#1677ff' : color }}
               onClick={() => setSelectDate('week')}
             >
               最近30分钟
             </a>
             <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : '#000' }}
+              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
               onClick={() => setSelectDate('month')}
             >
               最近1小时
             </a>
             <a
-              style={{ color: selectDate === 'year' ? '#1677ff' : '#000' }}
+              style={{ color: selectDate === 'year' ? '#1677ff' : color }}
               onClick={() => setSelectDate('year')}
             >
               今天

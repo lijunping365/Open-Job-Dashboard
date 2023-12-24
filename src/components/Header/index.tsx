@@ -9,14 +9,7 @@ import {
 import { IconDark } from '@/components/Icon/IconDark';
 import { IconLight } from '@/components/Icon/IconLight';
 import { useThemeContext } from '@/components/Provider/ThemeContext';
-
-const items: MenuProps['items'] = [
-  {
-    key: '2',
-    label: '退出登录',
-    icon: <LogoutOutlined />,
-  },
-];
+import { useRouter } from 'next/router';
 
 interface Props {
   collapsed: boolean;
@@ -24,8 +17,17 @@ interface Props {
 }
 
 const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
+  const router = useRouter();
   const { user } = useAuthContext();
   const { theme, toggleTheme } = useThemeContext();
+
+  const items: MenuProps['items'] = [
+    {
+      key: '2',
+      label: <a onClick={() => router.replace('/login')}>退出登录</a>,
+      icon: <LogoutOutlined />,
+    },
+  ];
   return (
     <Layout.Header
       style={{
