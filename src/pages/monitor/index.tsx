@@ -57,10 +57,10 @@ export default function MonitorPage({
           labels: data.labels,
           datasets: [
             {
-              label: '执行耗时',
-              backgroundColor: '#4c51bf',
+              label: '执行耗时(s)',
               borderColor: '#4c51bf',
               data: data.takeTime,
+              pointRadius: 5,
               fill: false,
             },
           ],
@@ -70,10 +70,6 @@ export default function MonitorPage({
           plugins: {
             legend: {
               position: 'top',
-            },
-            title: {
-              display: true,
-              text: '任务执行耗时统计',
             },
           },
         },
@@ -140,22 +136,16 @@ export default function MonitorPage({
         </Col>
       </Row>
 
-      <Card>
-        <Card
-          loading={loading}
-          bordered={false}
-          title='任务耗时统计'
-          style={{
-            height: '100%',
-            marginTop: '20px',
-            marginBottom: '20px',
-          }}
-        >
-          {/* Chart */}
-          <div className='h-350-px relative'>
-            <canvas id='line-chart'></canvas>
-          </div>
-        </Card>
+      <Card
+        loading={loading}
+        bordered={false}
+        title='任务耗时统计'
+        style={{ marginTop: '20px' }}
+      >
+        {/* Chart */}
+        <div>
+          <canvas id='line-chart'></canvas>
+        </div>
       </Card>
     </BaseLayout>
   );
