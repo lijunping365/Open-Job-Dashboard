@@ -24,6 +24,7 @@ import { DownOutlined } from '@ant-design/icons';
 import { OpenJobLog, PageParams } from '@/types/typings';
 import { processTime } from '@/lib/utils';
 import { InferGetServerSidePropsType } from 'next';
+import Link from 'next/link';
 
 export default function LoggerPage({
   jobId,
@@ -64,8 +65,7 @@ export default function LoggerPage({
     const hide = message.loading('正在杀死任务');
     if (!logId) return true;
     try {
-      const res = await killScheduleTask(logId);
-      console.log('ddddddddddddd', res);
+      await killScheduleTask(logId);
       hide();
       message.success('杀死成功，即将刷新');
       fetchData().then();
@@ -80,14 +80,14 @@ export default function LoggerPage({
       {
         key: '1',
         label: (
-          <a
-            onClick={() => {
-              setShowDetail(true);
-              setCurrentRow(record);
+          <Link
+            href={{
+              pathname: '/rolling',
+              search: `?logId=${record.id}`,
             }}
           >
             实时日志
-          </a>
+          </Link>
         ),
       },
       {

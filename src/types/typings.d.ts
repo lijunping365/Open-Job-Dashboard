@@ -22,19 +22,16 @@ export interface Instance {
 }
 
 export interface StatisticNumber {
-  appNum: number;
   alarmNum: number;
   status: string;
   taskTotalNum: number;
-  taskRunningNum: number;
+  taskStartedNum: number;
   executorTotalNum: number;
   executorOnlineNum: number;
-  lastRunTime: string;
+  taskExecuteTotalNum: number;
+  taskExecuteSuccessNum: number;
+  taskNextExecuteTime: string;
   taskTakeTime: string;
-  liveTime: string;
-  cpuInfo: string;
-  memoryInfo: string;
-  diskInfo: string;
 }
 
 export interface AnalysisChart {
@@ -149,9 +146,7 @@ export interface LoginParams {
 }
 
 export interface ChartParam {
-  appId: number;
-  jobId?: number;
-  serverId?: string;
+  jobId?: string;
   count?: number;
 }
 

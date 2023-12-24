@@ -121,6 +121,10 @@ export async function killScheduleTask(id: number) {
   return request.put(`/logger/killTask/${id}`, {});
 }
 
+export async function catTaskLog(id: string, fromLineNum: number) {
+  return request.get(`/logger/catLog/${id}?fromLineNum=${fromLineNum}`);
+}
+
 export async function fetchAlarmRecordPage(params: {
   /** 当前的页码 */
   current?: number;
@@ -194,26 +198,9 @@ export async function fetchAnalysisNumber() {
   return request.get('/analysis/statistic');
 }
 
-export async function fetchAppAnalysisNumber(appId: number) {
-  return request.get('/analysis/appStatistic', {
-    appId,
-  });
-}
-
-export async function fetchJobAnalysisNumber(appId: number, jobId: number) {
+export async function fetchJobAnalysisNumber(jobId: string) {
   return request.get('/analysis/jobStatistic', {
-    appId,
     jobId,
-  });
-}
-
-export async function fetchInstanceAnalysisNumber(
-  appId: number,
-  serverId: string
-) {
-  return request.get('/analysis/instanceStatistic', {
-    appId,
-    serverId,
   });
 }
 
