@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { message } from 'antd';
+import { Card, message } from 'antd';
 import { InferGetServerSidePropsType } from 'next';
 import { catTaskLog } from '@/services/api';
+import BaseLayout from '@/components/Layout';
 
 export default function RollingLog({
   logId,
@@ -32,14 +33,16 @@ export default function RollingLog({
   }, [fromLineNum]);
 
   return (
-    <div>
-      <section className='content'>
-        <pre style={{ fontSize: '14px' }}>
-          <div>{logContent}</div>
-          <div>{loading}</div>
-        </pre>
-      </section>
-    </div>
+    <BaseLayout>
+      <Card bordered={false}>
+        <section>
+          <pre style={{ fontSize: '14px' }}>
+            <div>{logContent}</div>
+            <div>{loading}</div>
+          </pre>
+        </section>
+      </Card>
+    </BaseLayout>
   );
 }
 
