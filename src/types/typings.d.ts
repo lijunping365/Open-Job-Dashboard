@@ -34,25 +34,6 @@ export interface StatisticNumber {
   taskTakeTime: string;
 }
 
-export interface AnalysisChart {
-  date: Date;
-  name: string;
-  value: number;
-}
-
-export interface JobTimeChart {
-  startDate: string;
-  endDate: string;
-  value: number;
-  charts: JobChart[];
-}
-
-export interface JobChart {
-  key: string;
-  date: string;
-  value: number;
-}
-
 export interface OpenJobLog {
   id: number;
   appId: number;
@@ -151,8 +132,7 @@ export interface ChartParam {
 }
 
 export interface JobChartParam {
-  appId: number;
-  jobId?: number;
+  jobId?: string;
   count?: number;
   period?: number;
 }
@@ -161,6 +141,17 @@ export interface TableParams {
   pagination?: TablePaginationConfig;
   order?: any;
   filters?: Record<string, FilterValue>;
+}
+
+export interface AnalysisChart {
+  date: Date;
+  name: string;
+  value: number;
+}
+
+export interface JobTimeChart {
+  labels: string[];
+  takeTime: string[];
 }
 
 export type TimeType = 'today' | 'week' | 'month' | 'year';

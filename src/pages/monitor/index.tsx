@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Statistic } from 'antd';
 import { fetchJobAnalysisNumber, fetchJobTimeChart } from '@/services/api';
 import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
-import { TimeChartCard } from '@/components/TimeChartCard';
 import BaseLayout from '@/components/Layout';
-import { AnalysisChart, StatisticNumber, TimeType } from '@/types/typings';
+import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
 import Chart, {
   BubbleDataPoint,
@@ -19,7 +18,7 @@ export default function MonitorPage({
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
   const [selectDate, setSelectDate] = useState<TimeType>('today');
-  const [data, setChartData] = useState<AnalysisChart[]>([]);
+  const [data, setChartData] = useState<JobTimeChart>();
 
   const getJobAnalysisNumber = async () => {
     try {
@@ -30,29 +29,17 @@ export default function MonitorPage({
     }
   };
 
-  useEffect(() => {
-    getJobAnalysisNumber().then();
-  }, [jobId]);
-
   const onFetchJobChartData = async () => {
     try {
-      const res = await fetchJobTimeChart({ jobId, period: 4 });
-      if (res) {
-        res.value = Number(res.value);
-        let charts = res.charts;
-        if (charts) {
-          charts.forEach((e: any) => {
-            e.value = Number(e.value);
-          });
-        }
-        setChartData(res);
-      }
+      const res: any = await fetchJobTimeChart({ jobId, period: 4 });
+      if (res) setChartData(res);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
+    getJobAnalysisNumber().then();
     onFetchJobChartData().then();
   }, [jobId]);
 
@@ -73,7 +60,7 @@ export default function MonitorPage({
               label: '执行耗时',
               backgroundColor: '#4c51bf',
               borderColor: '#4c51bf',
-              data: data.visitorData,
+              data: data.takeTime,
               fill: false,
             },
           ],
@@ -163,36 +150,6 @@ export default function MonitorPage({
             marginTop: '20px',
             marginBottom: '20px',
           }}
-          extra={
-            <div className={styles.salesExtraWrap}>
-              <div className={styles.salesExtra}>
-                <a
-                  style={{ color: selectDate === 'today' ? '' : '' }}
-                  onClick={() => setSelectDate('today')}
-                >
-                  最近一分钟
-                </a>
-                <a
-                  className={selectDate === 'week' ? styles.currentDate : ''}
-                  onClick={() => setSelectDate('week')}
-                >
-                  最近30分钟
-                </a>
-                <a
-                  className={selectDate === 'month' ? styles.currentDate : ''}
-                  onClick={() => setSelectDate('month')}
-                >
-                  最近1小时
-                </a>
-                <a
-                  className={selectDate === 'year' ? styles.currentDate : ''}
-                  onClick={() => setSelectDate('year')}
-                >
-                  今天
-                </a>
-              </div>
-            </div>
-          }
         >
           {/* Chart */}
           <div className='h-350-px relative'>
