@@ -144,9 +144,9 @@ export interface TableParams {
 }
 
 export interface AnalysisChart {
-  date: Date;
-  name: string;
-  value: number;
+  labels: string[];
+  totalCount: string[];
+  successCount: string[];
 }
 
 export interface JobTimeChart {

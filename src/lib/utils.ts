@@ -16,44 +16,6 @@ export const generateUUID = () => {
   return s.join('');
 };
 
-export const handlerTokData = (res: any) => {
-  const d1 = res.map((item: any) => {
-    return {
-      key: item.key,
-      value: Number(item.totalCount),
-      name: '执行总次数',
-    };
-  });
-  const d2 = res.map((item: any) => {
-    return {
-      key: item.key,
-      value: Number(item.successCount),
-      name: '执行成功次数',
-    };
-  });
-
-  return d1.concat(d2);
-};
-
-export const handlerChartData = (res: any) => {
-  const d1 = res.map((item: any) => {
-    return {
-      date: item.date,
-      value: Number(item.totalCount),
-      name: '执行总次数',
-    };
-  });
-  const d2 = res.map((item: any) => {
-    return {
-      date: item.date,
-      value: Number(item.successCount),
-      name: '执行成功次数',
-    };
-  });
-
-  return d1.concat(d2);
-};
-
 export const getTopCount = (timeType: TimeType) => {
   switch (timeType) {
     case 'today':
