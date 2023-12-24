@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Divider, Row, Space, Statistic } from 'antd';
 import { fetchJobAnalysisNumber, fetchJobTimeChart } from '@/services/api';
-import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
+import {
+  BarChartOutlined,
+  DashboardOutlined,
+  FlagOutlined,
+} from '@ant-design/icons';
 import BaseLayout from '@/components/Layout';
 import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
@@ -108,8 +112,7 @@ export default function MonitorPage({
               loading={statisticLoading}
               title='调度次数'
               value={statisticNumber?.taskExecuteTotalNum || ''}
-              prefix={<BarChartOutlined />}
-              suffix={'ms'}
+              prefix={<FlagOutlined />}
               valueStyle={{ fontSize: '20px' }}
             />
           </Card>
@@ -163,6 +166,18 @@ export default function MonitorPage({
               onClick={() => setSelectDate('month')}
             >
               最近1小时
+            </a>
+            <a
+              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
+              onClick={() => setSelectDate('month')}
+            >
+              最近1周
+            </a>
+            <a
+              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
+              onClick={() => setSelectDate('month')}
+            >
+              最近1月
             </a>
             <a
               style={{ color: selectDate === 'year' ? '#1677ff' : color }}
