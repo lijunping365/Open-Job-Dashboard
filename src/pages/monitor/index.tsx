@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Row, Statistic } from 'antd';
+import { Card, Col, Divider, Row, Space, Statistic } from 'antd';
 import { fetchJobAnalysisNumber, fetchJobTimeChart } from '@/services/api';
 import { BarChartOutlined, DashboardOutlined } from '@ant-design/icons';
 import BaseLayout from '@/components/Layout';
@@ -58,8 +58,9 @@ export default function MonitorPage({
           datasets: [
             {
               label: '执行耗时(s)',
-              borderColor: '#4c51bf',
+              borderColor: '#3080d0',
               data: data.takeTime,
+              backgroundColor: '#9abde0',
               pointRadius: 5,
               fill: false,
             },
@@ -141,8 +142,35 @@ export default function MonitorPage({
         bordered={false}
         title='任务耗时统计'
         style={{ marginTop: '20px' }}
+        extra={
+          <Space split={<Divider type='vertical' />}>
+            <a
+              style={{ color: selectDate === 'today' ? '#1677ff' : '#000' }}
+              onClick={() => setSelectDate('today')}
+            >
+              最近一分钟
+            </a>
+            <a
+              style={{ color: selectDate === 'week' ? '#1677ff' : '#000' }}
+              onClick={() => setSelectDate('week')}
+            >
+              最近30分钟
+            </a>
+            <a
+              style={{ color: selectDate === 'month' ? '#1677ff' : '#000' }}
+              onClick={() => setSelectDate('month')}
+            >
+              最近1小时
+            </a>
+            <a
+              style={{ color: selectDate === 'year' ? '#1677ff' : '#000' }}
+              onClick={() => setSelectDate('year')}
+            >
+              今天
+            </a>
+          </Space>
+        }
       >
-        {/* Chart */}
         <div>
           <canvas id='line-chart'></canvas>
         </div>
