@@ -118,10 +118,6 @@ export async function killScheduleTask(id: number) {
   return request.put(`/logger/killTask/${id}`, {});
 }
 
-export async function fetchJobHandlers(appId: any) {
-  return request.get<JobHandler[]>('/task/getHandlers', { appId });
-}
-
 export async function catTaskLog(id: string, fromLineNum: number) {
   return request.get(`/logger/catLog/${id}?fromLineNum=${fromLineNum}`);
 }
