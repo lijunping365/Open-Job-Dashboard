@@ -1,15 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  Button,
-  Col,
-  Form,
-  Input,
-  message,
-  Modal,
-  Row,
-  Select,
-  Space,
-} from 'antd';
+import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
 import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
 import { OpenJob } from '@/types/typings';
@@ -38,11 +28,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
 }: CreateFormProps) => {
   const [form] = Form.useForm();
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
-  const [cronExpressValue, setCronExpressValue] = useState<string>(
-    values?.cronExpression || ''
-  );
   const [appOptions, setAppOptions] = useState<any[]>([]);
-  const [handlerOptions, setHandlerOptions] = useState<any[]>([]);
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -57,7 +43,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
     try {
-      await validateCronExpress(cronExpressValue);
+      await validateCronExpress(form.getFieldValue('cronExpression'));
     } catch (errMsg: any) {
       message.error(errMsg);
       return;
@@ -66,9 +52,14 @@ const CreateForm: React.FC<CreateFormProps> = ({
     onSubmit({
       ...values,
       ...fieldsValue,
-      cronExpression: cronExpressValue,
     });
   };
+
+  const suffixSelector = (
+    <Form.Item noStyle>
+      <a onClick={() => handleCronModalVisible(true)}>Cron 工具</a>
+    </Form.Item>
+  );
 
   useEffect(() => {
     onFetchOpenJobAppList().then();
@@ -119,20 +110,10 @@ const CreateForm: React.FC<CreateFormProps> = ({
               label='Cron 表达式'
               rules={[{ required: true, message: '请输入Cron 表达式！' }]}
             >
-              <Space.Compact>
-                <Input
-                  placeholder='请输入Cron 表达式'
-                  value={cronExpressValue}
-                  onChange={(e) => setCronExpressValue(e.target.value)}
-                />
-
-                <Button
-                  type='primary'
-                  onClick={() => handleCronModalVisible(true)}
-                >
-                  Cron 工具
-                </Button>
-              </Space.Compact>
+              <Input
+                placeholder='请输入Cron 表达式'
+                addonAfter={suffixSelector}
+              />
             </FormItem>
           </Col>
         </Row>
@@ -199,15 +180,13 @@ const CreateForm: React.FC<CreateFormProps> = ({
         </Row>
 
         <CronModal
-          cronExpressValue={
-            cronExpressValue && cronExpressValue.length !== 0
-              ? cronExpressValue
-              : '* * * * * ? *'
-          }
+          cronExpressValue={form.getFieldValue('cronExpression')}
           modalVisible={cronModalVisible}
           onCancel={() => handleCronModalVisible(false)}
           onSubmit={(value) => {
-            setCronExpressValue(value);
+            form.setFieldsValue({
+              cronExpression: value,
+            });
             handleCronModalVisible(false);
           }}
         />
