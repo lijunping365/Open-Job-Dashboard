@@ -1,11 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
-import CronModal from '@/components/CronModel';
 import {
-  fetchAllInstance,
-  fetchOpenJobAppList,
-  validateCronExpress,
-} from '@/services/api';
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Space,
+} from 'antd';
+import CronModal from '@/components/CronModel';
+import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
 import { OpenJob } from '@/types/typings';
 
 interface CreateFormProps {
@@ -36,7 +42,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
     values?.cronExpression || ''
   );
   const [appOptions, setAppOptions] = useState<any[]>([]);
-  const [nodeOptions, setNodeOptions] = useState<any[]>([]);
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -48,36 +53,12 @@ const CreateForm: React.FC<CreateFormProps> = ({
     }
   }, []);
 
-  const handleSelectApp = async (op: any) => {
-    const result = await fetchAllInstance(op);
-    if (result) {
-      const instanceList = result.map((item) => {
-        return { label: item.serverId, value: item.serverId };
-      });
-      setNodeOptions(instanceList);
-    }
-  };
-
-  const filterOption = (
-    input: string,
-    option?: { label: string; value: string }
-  ) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
-
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
-    if (!cronExpressValue || cronExpressValue.length === 0) {
-      message.error('cron 表达式不能为空');
-      return;
-    }
-    const result = await validateCronExpress(cronExpressValue);
-    if (!result) {
-      return;
-    }
-
-    const { routeStrategy } = fieldsValue;
-    const { shardingNodes } = fieldsValue;
-    if (routeStrategy === 1 && (!shardingNodes || shardingNodes.length === 0)) {
-      message.error('分片执行时分片节点不能为空');
+    try {
+      await validateCronExpress(cronExpressValue);
+    } catch (errMsg: any) {
+      message.error(errMsg);
       return;
     }
 
@@ -85,7 +66,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
       ...values,
       ...fieldsValue,
       cronExpression: cronExpressValue,
-      shardingNodes: shardingNodes.join(','),
     });
   };
 
@@ -136,23 +116,22 @@ const CreateForm: React.FC<CreateFormProps> = ({
             <FormItem
               name='cronExpression'
               label='Cron 表达式'
+              rules={[{ required: true, message: '请输入Cron 表达式！' }]}
             >
-              <Input.Group
-                compact
-                style={{ display: 'flex' }}
-              >
+              <Space.Compact>
                 <Input
                   placeholder='请输入Cron 表达式'
                   value={cronExpressValue}
                   onChange={(e) => setCronExpressValue(e.target.value)}
                 />
+
                 <Button
                   type='primary'
                   onClick={() => handleCronModalVisible(true)}
                 >
                   Cron 工具
                 </Button>
-              </Input.Group>
+              </Space.Compact>
             </FormItem>
           </Col>
         </Row>
@@ -164,11 +143,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
               label='选择应用'
               rules={[{ required: true, message: '请选择应用!' }]}
             >
-              <Select
-                onChange={handleSelectApp}
-                filterOption={filterOption}
-                options={appOptions}
-              />
+              <Select options={appOptions} />
             </FormItem>
           </Col>
           <Col span={12}>
