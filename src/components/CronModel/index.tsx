@@ -78,21 +78,18 @@ const CronModal: React.FC<CronModalProps> = (props) => {
 
   useEffect(() => {
     form.resetFields();
-
-    if (!modalVisible) {
-      return;
-    }
-
+    if (!modalVisible) return;
+    if (!cronExpressValue) return;
     handlerChange(cronExpressValue);
   }, [modalVisible]);
 
-  const handleFinish = async () => {
-    const fieldsValue: any = await form.validateFields();
-    const { cronExpression } = fieldsValue;
+  const handleFinish = () => {
+    const cronExpression = form.getFieldValue('cronExpression');
     handleCronExpressValue(cronExpression);
   };
 
   const handlerInput = async (index: number, value: string) => {
+    if (!inputValue) return;
     const regs: any[] = inputValue.split(' ');
     regs[index] = value;
     const tempValue = regs.join(' ');
@@ -103,7 +100,7 @@ const CronModal: React.FC<CronModalProps> = (props) => {
     <Modal
       title='Cron 工具'
       width={640}
-      visible={modalVisible}
+      open={modalVisible}
       onCancel={() => handleCronModalVisible(false)}
       onOk={() => handleFinish()}
     >
@@ -117,7 +114,6 @@ const CronModal: React.FC<CronModalProps> = (props) => {
         <FormItem
           name='cronExpression'
           label='Cron 表达式'
-          rules={[{ required: true, message: '请输入Cron 表达式！' }]}
           tooltip={{
             title: cronTip,
             placement: 'topLeft',
@@ -132,11 +128,15 @@ const CronModal: React.FC<CronModalProps> = (props) => {
             onChange={(event) => handlerChange(event.target.value)}
           />
         </FormItem>
+
         <CronComponent onChange={handlerInput} />
+
         <Divider orientation='left'>最近运行时间</Divider>
+
         {errMsg && errMsg?.length !== 0 && (
           <Typography.Text type='danger'>{errMsg}</Typography.Text>
         )}
+
         {nextTimeList && nextTimeList?.length !== 0 && (
           <List
             dataSource={nextTimeList}
