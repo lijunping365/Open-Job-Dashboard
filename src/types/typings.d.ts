@@ -126,6 +126,11 @@ export interface LoginParams {
   type?: string;
 }
 
+export interface JobHandler {
+  value?: string;
+  name?: string;
+}
+
 export interface ChartParam {
   jobId?: string;
   count?: number;

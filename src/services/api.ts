@@ -6,6 +6,7 @@ import {
   CurrentUser,
   Instance,
   JobChartParam,
+  JobHandler,
   LoginParams,
   OpenJob,
   OpenJobAlarm,
@@ -81,10 +82,6 @@ export async function fetchInstancePage(params: {
   return request.get<PageResult<Instance>>('/instance/page', params);
 }
 
-export async function fetchAllInstance(appId: any) {
-  return request.get<Instance[]>('/instance/list', { appId });
-}
-
 export async function addInstance(params: Partial<Instance>) {
   return request.post('/instance/add', params);
 }
@@ -119,6 +116,10 @@ export async function removeTaskLog(params: { ids: number[] }) {
 
 export async function killScheduleTask(id: number) {
   return request.put(`/logger/killTask/${id}`, {});
+}
+
+export async function fetchJobHandlers(appId: any) {
+  return request.get<JobHandler[]>('/task/getHandlers', { appId });
 }
 
 export async function catTaskLog(id: string, fromLineNum: number) {

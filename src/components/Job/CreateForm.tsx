@@ -11,7 +11,11 @@ import {
   Space,
 } from 'antd';
 import CronModal from '@/components/CronModel';
-import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
+import {
+  fetchJobHandlers,
+  fetchOpenJobAppList,
+  validateCronExpress,
+} from '@/services/api';
 import { OpenJob } from '@/types/typings';
 
 interface CreateFormProps {
@@ -42,6 +46,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
     values?.cronExpression || ''
   );
   const [appOptions, setAppOptions] = useState<any[]>([]);
+  const [handlerOptions, setHandlerOptions] = useState<any[]>([]);
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -52,6 +57,16 @@ const CreateForm: React.FC<CreateFormProps> = ({
       setAppOptions(appList);
     }
   }, []);
+
+  const onFetchJobHandlers = async (appId: any) => {
+    const result: any = await fetchJobHandlers(appId);
+    if (result) {
+      const handlers = result.map((item: any) => {
+        return { label: item.name, value: item.value };
+      });
+      setHandlerOptions(handlers);
+    }
+  };
 
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
@@ -143,16 +158,19 @@ const CreateForm: React.FC<CreateFormProps> = ({
               label='选择应用'
               rules={[{ required: true, message: '请选择应用!' }]}
             >
-              <Select options={appOptions} />
+              <Select
+                options={appOptions}
+                onChange={(appId) => onFetchJobHandlers(appId)}
+              />
             </FormItem>
           </Col>
           <Col span={12}>
             <FormItem
-              name='handlerName'
-              label='jobHandler'
-              rules={[{ required: true, message: '请输入jobHandler！' }]}
+              name='jobHandler'
+              label='选择 handler'
+              rules={[{ required: true, message: '请选择 jobHandler！' }]}
             >
-              <Input placeholder='请输入jobHandler' />
+              <Select options={handlerOptions} />
             </FormItem>
           </Col>
         </Row>
