@@ -162,11 +162,9 @@ const CreateForm: React.FC<CreateFormProps> = ({
             <FormItem
               name='appId'
               label='选择应用'
-              hasFeedback
               rules={[{ required: true, message: '请选择应用!' }]}
             >
               <Select
-                showSearch
                 onChange={handleSelectApp}
                 filterOption={filterOption}
                 options={appOptions}
@@ -191,23 +189,9 @@ const CreateForm: React.FC<CreateFormProps> = ({
               label='路由策略'
             >
               <Select defaultValue={0}>
-                <Option value={0}>负载均衡</Option>
-                <Option value={1}>分片执行</Option>
+                <Option value={0}>故障转移</Option>
+                <Option value={1}>分片广播</Option>
               </Select>
-            </FormItem>
-          </Col>
-          <Col span={12}>
-            <FormItem
-              name='shardingNodes'
-              label='选择节点'
-            >
-              <Select
-                mode='multiple'
-                allowClear
-                style={{ width: '100%' }}
-                placeholder='请选择节点'
-                options={nodeOptions}
-              />
             </FormItem>
           </Col>
         </Row>
