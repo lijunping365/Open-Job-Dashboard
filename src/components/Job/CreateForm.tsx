@@ -147,7 +147,8 @@ const CreateForm: React.FC<CreateFormProps> = ({
             >
               <Select defaultValue={0}>
                 <Option value={0}>故障转移</Option>
-                <Option value={1}>分片广播</Option>
+                <Option value={1}>失败重试</Option>
+                <Option value={2}>分片广播</Option>
               </Select>
             </FormItem>
           </Col>
