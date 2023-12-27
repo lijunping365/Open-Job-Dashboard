@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
-import { Avatar, Button, Dropdown, Layout, MenuProps, Space } from 'antd';
+import { Avatar, Button, Dropdown, Layout, Menu, MenuProps, Space } from 'antd';
 import {
   LogoutOutlined,
   MenuFoldOutlined,
@@ -8,8 +8,9 @@ import {
 } from '@ant-design/icons';
 import { IconDark } from '@/components/Icon/IconDark';
 import { IconLight } from '@/components/Icon/IconLight';
-import { useThemeContext } from '@/components/Provider/ThemeContext';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 import { useRouter } from 'next/router';
+import { IconLocale } from '@/components/Icon/IconLocale';
 
 interface Props {
   collapsed: boolean;
@@ -19,15 +20,29 @@ interface Props {
 const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
-  const { theme, toggleTheme } = useThemeContext();
+  const { theme, toggleTheme, locale, toggleLocale } = useConfigContext();
 
-  const items: MenuProps['items'] = [
+  const optionItems: MenuProps['items'] = [
     {
-      key: '2',
+      key: '1',
       label: <a onClick={() => router.replace('/login')}>退出登录</a>,
       icon: <LogoutOutlined />,
     },
   ];
+
+  const localeItems: MenuProps['items'] = [
+    {
+      key: 'zh-cn',
+      label: '简体中文',
+      icon: <span>🇨🇳 </span>,
+    },
+    {
+      key: 'en',
+      label: 'English',
+      icon: <span>🇺🇸 </span>,
+    },
+  ];
+
   return (
     <Layout.Header
       style={{
@@ -51,6 +66,30 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
       />
 
       <Space size='middle'>
+        <Dropdown
+          placement='bottomRight'
+          overlay={
+            <Menu
+              selectedKeys={[locale]}
+              onClick={() => toggleLocale && toggleLocale()}
+              mode='inline'
+              items={localeItems}
+            />
+          }
+        >
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <IconLocale style={{ height: 20, width: 20 }} />
+          </div>
+        </Dropdown>
+
         <Button
           type='text'
           icon={
@@ -70,7 +109,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
           onClick={() => toggleTheme && toggleTheme()}
         />
 
-        <Dropdown menu={{ items }}>
+        <Dropdown menu={{ items: optionItems }}>
           <Avatar
             src={user?.avatar || 'logo.png'}
             alt='avatar'

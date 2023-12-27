@@ -9,7 +9,7 @@ import {
 import BaseLayout from '@/components/Layout';
 import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
-import { useThemeContext } from '@/components/Provider/ThemeContext';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 import Chart, {
   BubbleDataPoint,
   ChartTypeRegistry,
@@ -19,7 +19,7 @@ import Chart, {
 export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { theme } = useThemeContext();
+  const { theme } = useConfigContext();
   const [loading, setLoading] = useState<boolean>(true);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();

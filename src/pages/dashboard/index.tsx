@@ -14,10 +14,10 @@ import Chart, {
   ChartTypeRegistry,
   Point,
 } from 'chart.js/auto';
-import { useThemeContext } from '@/components/Provider/ThemeContext';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 const TableList: React.FC = () => {
-  const { theme } = useThemeContext();
+  const { theme } = useConfigContext();
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();

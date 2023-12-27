@@ -15,7 +15,7 @@ import {
   SmileOutlined,
 } from '@ant-design/icons';
 import Footer from '@/components/Footer';
-import { useThemeContext } from '@/components/Provider/ThemeContext';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -55,7 +55,7 @@ const { Content, Sider } = Layout;
 
 const BaseLayout = ({ children }: any) => {
   const router = useRouter();
-  const { theme } = useThemeContext();
+  const { theme } = useConfigContext();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
 

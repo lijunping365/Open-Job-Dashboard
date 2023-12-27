@@ -5,7 +5,7 @@ import { IconLogo } from '@/components/Icon/IconLogo';
 import AccountLogin from '@/components/Login/AccountLogin';
 import MobileLogin from '@/components/Login/MobileLogin';
 import { useLoginRedirect } from '@/hooks/useLoginRedirect';
-import { useThemeContext } from '@/components/Provider/ThemeContext';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 const items: TabsProps['items'] = [
   {
@@ -19,7 +19,7 @@ const items: TabsProps['items'] = [
 ];
 const Login: React.FC = () => {
   const redirect = useLoginRedirect();
-  const { theme } = useThemeContext();
+  const { theme } = useConfigContext();
   const [type, setType] = useState<string>('account');
 
   return (
