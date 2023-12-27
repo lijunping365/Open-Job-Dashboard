@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
-import { Avatar, Button, Dropdown, Layout, Menu, MenuProps, Space } from 'antd';
+import { Avatar, Button, Dropdown, Layout, MenuProps, Space } from 'antd';
 import {
   LogoutOutlined,
   MenuFoldOutlined,
@@ -68,14 +68,12 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
       <Space size='middle'>
         <Dropdown
           placement='bottomRight'
-          overlay={
-            <Menu
-              selectedKeys={[locale]}
-              onClick={() => toggleLocale && toggleLocale()}
-              mode='inline'
-              items={localeItems}
-            />
-          }
+          menu={{
+            items: localeItems,
+            selectedKeys: [locale],
+            onClick: () => toggleLocale && toggleLocale(),
+            mode: 'inline',
+          }}
         >
           <div
             style={{
