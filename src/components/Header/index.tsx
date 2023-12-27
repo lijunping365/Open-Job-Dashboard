@@ -70,7 +70,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
           theme !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
       }}
     >
-      <Space size='middle'>
+      <Space>
         <Button
           type='text'
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -79,7 +79,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
         />
 
         <Breadcrumb
-          style={{ fontSize: '16px', lineHeight: '64px' }}
+          style={{ marginBottom: '2.5px' }}
           items={breadcrumbs}
         />
       </Space>
