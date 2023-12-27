@@ -160,3 +160,8 @@ export interface JobTimeChart {
 }
 
 export type TimeType = 'today' | 'week' | 'month' | 'year';
+
+export enum LangType {
+  EN_US = 'en-us',
+  ZH_CN = 'zh-cn',
+}

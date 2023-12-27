@@ -1,36 +1,36 @@
 ﻿export default [
   {
-    name: 'Dashboard',
+    name: 'menu.dashboard',
     icon: 'dashboard',
     path: '/dashboard',
   },
   {
-    name: '应用管理',
+    name: 'menu.app',
     icon: 'app',
     path: '/app',
   },
   {
-    name: '集群管理',
+    name: 'menu.cluster',
     icon: 'cluster',
     path: '/cluster',
   },
   {
-    name: '任务管理',
+    name: 'menu.job',
     icon: 'job',
     path: '/job',
   },
   {
-    name: '日志管理',
+    name: 'menu.logger',
     icon: 'logger',
     path: '/logger',
   },
   {
-    name: '报警管理',
+    name: 'menu.alarm',
     icon: 'alarm',
     path: '/alarm',
   },
   {
-    name: '用户管理',
+    name: 'menu.user',
     icon: 'user',
     path: '/user',
   },

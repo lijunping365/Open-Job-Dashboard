@@ -10,7 +10,7 @@ const useLocale = (): [string, () => void] => {
 
   const toggleLocale = () => {
     setLocale((prevLocale) => {
-      const value = prevLocale === 'zh-cn' ? 'en' : 'zh-cn';
+      const value = prevLocale === 'zh-cn' ? 'en-us' : 'zh-cn';
       window.localStorage.setItem('locale', value);
       return value;
     });

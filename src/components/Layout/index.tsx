@@ -5,6 +5,10 @@ import { MenuProps } from 'antd';
 import menuItems from '@/config/menus';
 import Header from '@/components/Header';
 import { IconLogo } from '@/components/Icon/IconLogo';
+import Footer from '@/components/Footer';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
+import i18n from '@/i18n';
+import { LangType } from '@/types/typings';
 import {
   AlertOutlined,
   AppstoreOutlined,
@@ -14,8 +18,6 @@ import {
   FileTextOutlined,
   SmileOutlined,
 } from '@ant-design/icons';
-import Footer from '@/components/Footer';
-import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 type MenuItem = Required<MenuProps>['items'][number];
 
@@ -37,27 +39,28 @@ function getIcon(icon: string) {
       return <FileTextOutlined />;
   }
 }
-function getItem(item: any): MenuItem {
-  return {
-    key: item.path,
-    icon: getIcon(item.icon),
-    label: item.name,
-  } as MenuItem;
+function getMenuItems(currentLang: LangType): MenuItem[] {
+  return menuItems.map((item) => {
+    return {
+      key: item.path,
+      icon: getIcon(item.icon),
+      label: i18n(item.name, currentLang),
+    } as MenuItem;
+  });
 }
 
 // 收起的宽度
 const collapsedWidth = 64;
 const siderWidth = 208;
 
-const items: MenuItem[] = menuItems.map((item) => getItem(item));
-
 const { Content, Sider } = Layout;
 
 const BaseLayout = ({ children }: any) => {
   const router = useRouter();
-  const { theme } = useConfigContext();
+  const { theme, locale } = useConfigContext();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
+  const items: MenuItem[] = getMenuItems(locale as LangType);
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
