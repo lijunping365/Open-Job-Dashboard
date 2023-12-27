@@ -1,5 +1,6 @@
 import { TimeType } from '@/types/typings';
 import dayjs from 'dayjs';
+import { MenuItem } from '@/components/Layout';
 
 export const generateUUID = () => {
   const s: any[] = [];
@@ -37,5 +38,22 @@ export const processTime = (searchForm: any, values: any) => {
     searchForm.endTime = dayjs(values.timeRange[1]).format(
       'YYYY-MM-DD HH:mm:ss'
     );
+  }
+};
+
+// iterates the route tree from the current route to find its ancestors for breadcrumbs
+export const getBreadcrumbs = (
+  path: string,
+  routes: any[],
+  breadcrumbs: any[]
+) => {
+  for (const route of routes) {
+    if (route?.key === path) {
+      breadcrumbs.push({ title: route?.label });
+      if (route.children) {
+        getBreadcrumbs(path, route?.children, breadcrumbs);
+      }
+      return;
+    }
   }
 };

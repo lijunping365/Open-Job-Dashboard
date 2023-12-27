@@ -1,16 +1,27 @@
 import React from 'react';
 import { useAuthContext } from '@/components/Provider/AuthContext';
-import { Avatar, Button, Dropdown, Layout, MenuProps, Space } from 'antd';
-import {
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
-} from '@ant-design/icons';
 import { IconDark } from '@/components/Icon/IconDark';
 import { IconLight } from '@/components/Icon/IconLight';
 import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 import { useRouter } from 'next/router';
 import { IconLocale } from '@/components/Icon/IconLocale';
+import { getBreadcrumbs } from '@/lib/utils';
+import { LangType } from '@/types/typings';
+import { getMenuItems, MenuItem } from '@/components/Layout';
+import {
+  Avatar,
+  Breadcrumb,
+  Button,
+  Dropdown,
+  Layout,
+  MenuProps,
+  Space,
+} from 'antd';
+import {
+  LogoutOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from '@ant-design/icons';
 
 interface Props {
   collapsed: boolean;
@@ -20,7 +31,11 @@ interface Props {
 const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
+  const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const { theme, toggleTheme, locale, toggleLocale } = useConfigContext();
+  const items: MenuItem[] = getMenuItems(locale as LangType);
+  const breadcrumbs: any[] = [];
+  getBreadcrumbs(cleanedPath, items, breadcrumbs);
 
   const optionItems: MenuProps['items'] = [
     {
@@ -37,7 +52,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
       icon: <span>🇨🇳 </span>,
     },
     {
-      key: 'en',
+      key: 'en-us',
       label: 'English',
       icon: <span>🇺🇸 </span>,
     },
@@ -55,15 +70,19 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
           theme !== 'light' ? '1px solid #343A46' : '1px solid #EBECF0',
       }}
     >
-      <Button
-        type='text'
-        icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        onClick={() => setCollapsed(!collapsed)}
-        style={{
-          width: 36,
-          height: 36,
-        }}
-      />
+      <Space size='middle'>
+        <Button
+          type='text'
+          icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          onClick={() => setCollapsed(!collapsed)}
+          style={{ width: 36, height: 36 }}
+        />
+
+        <Breadcrumb
+          style={{ fontSize: '16px', lineHeight: '64px' }}
+          items={breadcrumbs}
+        />
+      </Space>
 
       <Space size='middle'>
         <Dropdown

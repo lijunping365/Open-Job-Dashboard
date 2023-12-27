@@ -19,9 +19,9 @@ import {
   SmileOutlined,
 } from '@ant-design/icons';
 
-type MenuItem = Required<MenuProps>['items'][number];
+export type MenuItem = Required<MenuProps>['items'][number];
 
-function getIcon(icon: string) {
+export function getIcon(icon: string) {
   switch (icon) {
     case 'dashboard':
       return <DashboardOutlined />;
@@ -39,7 +39,7 @@ function getIcon(icon: string) {
       return <FileTextOutlined />;
   }
 }
-function getMenuItems(currentLang: LangType): MenuItem[] {
+export function getMenuItems(currentLang: LangType): MenuItem[] {
   return menuItems.map((item) => {
     return {
       key: item.path,
