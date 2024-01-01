@@ -38,6 +38,9 @@ dependencies:
   react-dom:
     specifier: ^18
     version: registry.npmmirror.com/react-dom@18.2.0(react@18.2.0)
+  sse.js:
+    specifier: 2.1.0
+    version: registry.npmmirror.com/sse.js@2.1.0
   use-debounce:
     specifier: ^9.0.4
     version: registry.npmmirror.com/use-debounce@9.0.4(react@18.2.0)
@@ -3687,6 +3690,12 @@ packages:
     name: source-map-js
     version: 1.0.2
     engines: {node: '>=0.10.0'}
+
+  registry.npmmirror.com/sse.js@2.1.0:
+    resolution: {integrity: sha512-pD2rLanKnaQwlXzNT4RKDfxy3UhbewzTTV/84s0fjS9B+rCWKDvv2okkqBInW5O9DA/PvUenTkmUXUXTyQJ1Bw==, tarball: https://registry.npmmirror.com/sse.js/-/sse.js-2.1.0.tgz}
+    name: sse.js
+    version: 2.1.0
+    dev: false
 
   registry.npmmirror.com/streamsearch@1.1.0:
     resolution: {integrity: sha512-Mcc5wHehp9aXz1ax6bZUyY5afg9u2rv5cqQI3mRrYkGC8rW2hM02jWuwjtL++LS5qinSyhj2QfLyNsuc+VsExg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/streamsearch/-/streamsearch-1.1.0.tgz}
