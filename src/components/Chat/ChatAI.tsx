@@ -4,6 +4,7 @@ import { IconSetting } from '@/components/Icon/IconSetting';
 import * as React from 'react';
 import { Markdown } from '@/components/Chat/Markdown';
 import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
+import { Button } from 'antd';
 
 interface ChatBotProps {
   content: string;
@@ -57,13 +58,19 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <button className='mb-2 text-neutral-300 transition hover:text-neutral-800 dark:hover:text-neutral-300'>
-                <IconReload />
-              </button>
-              <button className='text-neutral-300 transition hover:text-neutral-800 dark:hover:text-neutral-200'>
-                <IconSetting />
-              </button>
+            <div
+              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
+            >
+              <Button
+                type={'text'}
+                size={'small'}
+                icon={<IconReload />}
+              ></Button>
+              <Button
+                type={'text'}
+                size={'small'}
+                icon={<IconSetting />}
+              ></Button>
             </div>
           </div>
         </div>
