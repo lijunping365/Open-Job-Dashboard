@@ -171,18 +171,11 @@ export interface ChatRequest {
   userKey?: string;
 }
 
-export type ChatType = 'me' | 'bot';
+export type ChatType = 'user' | 'assistant';
 
 export type ChatItem = {
-  chatId: string;
+  chatId: number;
   content: string;
   date: string;
   type: ChatType;
 };
-
-export interface Chat {
-  id: string;
-  name: string;
-  active: boolean;
-  data: ChatItem[];
-}

@@ -25,7 +25,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
               <div className='break-words leading-relaxed'>
                 <div className='flex items-end'>
                   <div className='w-full'>
-                    <Markdown content={item.content || ''} />
+                    <Markdown content={content || ''} />
                   </div>
                 </div>
               </div>

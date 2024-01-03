@@ -1,7 +1,9 @@
 import { Button, Input } from 'antd';
 import { useEffect, useRef, useState } from 'react';
-import { ChatItem } from '@/types/typings';
+import { ChatItem, ChatRequest } from '@/types/typings';
 import ChatList from '@/components/Chat/ChatList';
+import { IconPush } from '@/components/Icon/IconPush';
+import { openAi } from '@/services/chat';
 
 const { TextArea } = Input;
 
@@ -18,7 +20,52 @@ const AIChat = () => {
     }, 0);
   };
 
-  const onSubmit = async (inputTextValue: string) => {};
+  const onSubmit = async (inputTextValue: string) => {
+    const date = new Date();
+
+    const askData: ChatItem = {
+      chatId: (date.getTime() / 1000) * Math.random(),
+      content: inputTextValue,
+      date: date.toLocaleString(),
+      type: 'user',
+    };
+
+    const answerData: ChatItem = {
+      chatId: (date.getTime() / 1000) * Math.random(),
+      content: '',
+      date: date.toLocaleString(),
+      type: 'assistant',
+    };
+
+    setChatList((chatList: any) => [...chatList, askData, answerData]);
+
+    const paramsData: ChatRequest = {
+      prompt: inputTextValue,
+    };
+
+    const options = {
+      onMessage(content: any, done: boolean) {
+        setChatList((prevChatList: ChatItem[]) => {
+          prevChatList[prevChatList.length - 1].content = content;
+          return [...prevChatList];
+        });
+        if (done) setGenerateLoading(false);
+      },
+      onError(error: Error, statusCode: any) {
+        setGenerateLoading(false);
+        setChatList((prevChatList: ChatItem[]) => {
+          prevChatList[prevChatList.length - 1].content = error.message;
+          return [...prevChatList];
+        });
+      },
+    };
+
+    try {
+      openAi(paramsData, options);
+    } catch {
+      setGenerateLoading(false);
+    }
+  };
 
   const onWheel = (event: any) => {
     if (event.deltaY !== 0) {
@@ -50,40 +97,39 @@ const AIChat = () => {
           ref={messageRef}
           className='bg-white '
         >
-          <ChatList
-            scrollRef={scrollRef}
-            chatList={chatList}
-            onChange={onScrollChange}
-          />
+          <ChatList chatList={chatList} />
         </div>
       </div>
-      <div className='border-t box-border shrink-0	 flex items-center flex-col bg-[#ffffff]'>
-        <div>
-          <TextArea
-            ref={textareaRef}
-            value={inputText}
-            autoSize={{ minRows: 2, maxRows: 8 }}
-            onPressEnter={handleKeyUp}
-            onChange={(e) => {
-              setInputText(e?.target?.value);
+      <div
+        style={{
+          display: 'flex',
+          position: 'relative',
+          flexDirection: 'column',
+        }}
+      >
+        <TextArea
+          size={'large'}
+          ref={textareaRef}
+          value={inputText}
+          autoSize={{ minRows: 1, maxRows: 8 }}
+          onPressEnter={handleKeyUp}
+          onChange={(e) => {
+            setInputText(e?.target?.value);
+          }}
+          placeholder='请输入问题，可通过shift+回车换行'
+        />
+        <div style={{ position: 'absolute', bottom: '2px', right: '2px' }}>
+          <Button
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
-            className='block h-[60px] md:h-[80px] p-2 md:p-5 md:leading-[25px] border-0 outline-0	box-border resize-none w-full text-lg font-[600] text-gray-900'
-            placeholder='请输入问题，可通过shift+回车换行'
+            icon={<IconPush />}
+            disabled={generateLoading}
+            onClick={() => onSubmit(inputText)}
+            type={'text'}
           />
-        </div>
-        <div className='w-full flex py-[10px] justify-between pr-[20px] items-center'>
-          <div>
-            <span className={'mr-[10px] text-[12px] text-[#333333]/50'}>
-              enter发送/shift+enter换行
-            </span>
-            <Button
-              disabled={generateLoading}
-              onClick={() => onSubmit(inputText)}
-              type='primary'
-            >
-              发送
-            </Button>
-          </div>
         </div>
       </div>
     </div>

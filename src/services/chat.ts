@@ -7,7 +7,7 @@ let baseURL: string;
 if (process.env.NODE_ENV === 'production') {
   baseURL = 'https://openbytecode.com/openjob';
 } else {
-  baseURL = 'http://localhost:8088/openjob';
+  baseURL = 'http://localhost:8090/openJob';
 }
 
 export const openAi = (
