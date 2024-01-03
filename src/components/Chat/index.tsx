@@ -45,11 +45,15 @@ const AIChat = () => {
 
     const options = {
       onMessage(content: any, done: boolean) {
+        if (done) {
+          setGenerateLoading(false);
+          return;
+        }
+
         setChatList((prevChatList: ChatItem[]) => {
           prevChatList[prevChatList.length - 1].content = content;
           return [...prevChatList];
         });
-        if (done) setGenerateLoading(false);
       },
       onError(error: Error, statusCode: any) {
         setGenerateLoading(false);
