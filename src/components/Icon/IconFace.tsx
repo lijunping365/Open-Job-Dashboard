@@ -4,11 +4,10 @@ export const IconFace = memo<JSX.IntrinsicElements['svg']>(
   function IconFace(props) {
     return (
       <svg
-        width='32'
-        height='32'
         viewBox='0 0 32 32'
         fill='none'
         xmlns='http://www.w3.org/2000/svg'
+        {...props}
       >
         <path
           d='M15.9989 29.9978C25.3333 29.9978 29.9978 23.7303 29.9978 15.9989C29.9978 8.26751 25.3333 2 15.9989 2C6.66443 2 2 8.26751 2 15.9989C2 23.7303 6.66443 29.9978 15.9989 29.9978Z'

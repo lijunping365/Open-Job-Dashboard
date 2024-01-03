@@ -3,6 +3,7 @@ import { IconReload } from '@/components/Icon/IconReload';
 import { IconSetting } from '@/components/Icon/IconSetting';
 import * as React from 'react';
 import { Markdown } from '@/components/Chat/Markdown';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 interface ChatBotProps {
   content: string;
@@ -10,27 +11,53 @@ interface ChatBotProps {
 }
 
 const ChatAI = ({ content, date }: ChatBotProps) => {
+  const { theme } = useConfigContext();
+
   return (
     <>
-      <div className='mb-6 flex w-full overflow-hidden'>
-        <div className='mr-2 flex h-8 shrink-0 basis-8 items-center justify-center overflow-hidden rounded-full'>
-          <span className='dark:text-white'>
-            <IconChatGPT className='h-7 w-7' />
-          </span>
+      <div
+        style={{
+          marginBottom: '24px',
+          display: 'flex',
+          overflow: 'hidden',
+        }}
+      >
+        <div>
+          <IconChatGPT style={{ width: '32px', height: '32px' }} />
         </div>
-        <div className='items-start overflow-hidden text-sm'>
-          <p className='text-left text-xs text-[#b4bbc4]'>{date}</p>
-          <div className='mt-2 flex flex-row items-end gap-1'>
-            <div className='min-w-[20px] rounded-md bg-[#f4f6f8] px-3 py-2 text-base text-black dark:bg-slate-800 dark:text-slate-300'>
-              <div className='break-words leading-relaxed'>
-                <div className='flex items-end'>
-                  <div className='w-full'>
-                    <Markdown content={content || ''} />
-                  </div>
-                </div>
+
+        <div>
+          <p
+            style={{
+              lineHeight: '32px',
+              margin: '0px 10px',
+            }}
+          >
+            {date}
+          </p>
+
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              marginTop: '8px',
+              alignItems: 'end',
+              gap: '4px',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: theme === 'light' ? '#f4f6f8' : '#081f33',
+                borderRadius: '8px',
+                padding: '8px',
+              }}
+            >
+              <div style={{ overflowWrap: 'break-word' }}>
+                <Markdown content={content || ''} />
               </div>
             </div>
-            <div className='flex flex-col'>
+
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
               <button className='mb-2 text-neutral-300 transition hover:text-neutral-800 dark:hover:text-neutral-300'>
                 <IconReload />
               </button>
