@@ -1,9 +1,10 @@
 import { Button, Input } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { ChatItem, ChatRequest } from '@/types/typings';
 import ChatList from '@/components/Chat/ChatList';
 import { IconPush } from '@/components/Icon/IconPush';
 import { openAi } from '@/services/chat';
+import useScrollToBottom from '@/hooks/useScrollToBottom';
 
 const { TextArea } = Input;
 
@@ -11,21 +12,19 @@ const AIChat = () => {
   const [generateLoading, setGenerateLoading] = useState<boolean>(false);
   const [inputText, setInputText] = useState('');
   const [chatList, setChatList] = useState<ChatItem[]>([]);
-  const textareaRef = useRef<any>(null);
-  const messageRef = useRef<any>(null);
+  const [hitBottom, setHitBottom] = useState(true);
+  const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
 
-  const msgToBottom = () => {
-    setTimeout(() => {
-      messageRef?.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    }, 0);
-  };
+  const onSubmit = async () => {
+    if (!inputText) return;
 
-  const onSubmit = async (inputTextValue: string) => {
+    if (!hitBottom) scrollDomToBottom();
+
     const date = new Date();
 
     const askData: ChatItem = {
       chatId: (date.getTime() / 1000) * Math.random(),
-      content: inputTextValue,
+      content: inputText,
       date: date.toLocaleString(),
       type: 'user',
     };
@@ -37,10 +36,11 @@ const AIChat = () => {
       type: 'assistant',
     };
 
+    setInputText('');
     setChatList((chatList: any) => [...chatList, askData, answerData]);
 
     const paramsData: ChatRequest = {
-      prompt: inputTextValue,
+      prompt: inputText,
     };
 
     const options = {
@@ -71,38 +71,26 @@ const AIChat = () => {
     }
   };
 
-  const onWheel = (event: any) => {
-    if (event.deltaY !== 0) {
-      messageRef?.current?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
-    }
-  };
-
   const handleKeyUp = async (event: any) => {
     if (event.keyCode === 13 && !event.shiftKey) {
       event.preventDefault();
-      await onSubmit(inputText);
+      await onSubmit();
     }
   };
 
-  useEffect(() => {
-    msgToBottom();
-  }, [chatList]);
+  const onScrollChange = (value: boolean) => {
+    setHitBottom(value);
+    setAutoScroll(value);
+  };
 
   return (
     <div className=' h-full flex flex-col shadow bg-[#f0f0f0]/30'>
-      <div
-        onWheel={onWheel}
-        className='flex flex-col flex-1 center relative grow  overflow-scroll'
-      >
-        <div
-          ref={messageRef}
-          className='bg-white '
-        >
-          <ChatList chatList={chatList} />
-        </div>
+      <div className='flex flex-col flex-1 center relative grow  overflow-scroll'>
+        <ChatList
+          scrollRef={scrollRef}
+          chatList={chatList}
+          onChange={onScrollChange}
+        />
       </div>
       <div
         style={{
@@ -113,7 +101,6 @@ const AIChat = () => {
       >
         <TextArea
           size={'large'}
-          ref={textareaRef}
           value={inputText}
           autoSize={{ minRows: 1, maxRows: 8 }}
           onPressEnter={handleKeyUp}
@@ -131,7 +118,7 @@ const AIChat = () => {
             }}
             icon={<IconPush />}
             disabled={generateLoading}
-            onClick={() => onSubmit(inputText)}
+            onClick={() => onSubmit()}
             type={'text'}
           />
         </div>
