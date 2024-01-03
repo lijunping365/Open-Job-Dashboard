@@ -34,11 +34,11 @@ const ChatUser = ({ text, date }: ChatMeProps) => {
           )}
         </div>
 
-        <div>
+        <div style={{ marginRight: '10px' }}>
           <p
             style={{
               lineHeight: '32px',
-              margin: '0px 10px',
+              margin: '0px',
               textAlign: 'right',
             }}
           >

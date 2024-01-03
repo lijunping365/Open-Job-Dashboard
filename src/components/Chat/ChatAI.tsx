@@ -26,11 +26,11 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
           <IconChatGPT style={{ width: '32px', height: '32px' }} />
         </div>
 
-        <div>
+        <div style={{ marginLeft: '10px' }}>
           <p
             style={{
               lineHeight: '32px',
-              margin: '0px 10px',
+              margin: '0px',
             }}
           >
             {date}
