@@ -170,3 +170,19 @@ export interface ChatRequest {
   prompt?: string;
   userKey?: string;
 }
+
+export type ChatType = 'me' | 'bot';
+
+export type ChatItem = {
+  chatId: string;
+  content: string;
+  date: string;
+  type: ChatType;
+};
+
+export interface Chat {
+  id: string;
+  name: string;
+  active: boolean;
+  data: ChatItem[];
+}
