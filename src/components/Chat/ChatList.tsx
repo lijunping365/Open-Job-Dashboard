@@ -15,7 +15,7 @@ const ChatList = ({ chatList, scrollRef, onChange }: Props) => {
     onChange(isHitBottom);
   };
   return (
-    <main style={{ position: 'relative' }}>
+    <main style={{ position: 'relative', flex: '1 1 0%' }}>
       <div
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}

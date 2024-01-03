@@ -84,21 +84,13 @@ const AIChat = () => {
   };
 
   return (
-    <div className=' h-full flex flex-col shadow bg-[#f0f0f0]/30'>
-      <div className='flex flex-col flex-1 center relative grow  overflow-scroll'>
-        <ChatList
-          scrollRef={scrollRef}
-          chatList={chatList}
-          onChange={onScrollChange}
-        />
-      </div>
-      <div
-        style={{
-          display: 'flex',
-          position: 'relative',
-          flexDirection: 'column',
-        }}
-      >
+    <div style={{ height: '100vh', overflow: 'hidden' }}>
+      <ChatList
+        scrollRef={scrollRef}
+        chatList={chatList}
+        onChange={onScrollChange}
+      />
+      <div style={{ position: 'relative' }}>
         <TextArea
           size={'large'}
           value={inputText}
