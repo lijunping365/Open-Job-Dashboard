@@ -12,10 +12,10 @@ const ChatModal = () => {
       key: 'chat',
       message: 'AI Chat',
       description: <AIChat />,
-      duration: 0,
+      duration: null,
       style: {
         width: 500,
-        height: 380,
+        height: 480,
       },
       onClose: () => setOpen(false),
     });
