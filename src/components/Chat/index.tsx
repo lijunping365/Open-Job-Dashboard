@@ -126,19 +126,25 @@ const AIChat = () => {
 
       <div
         style={{
-          textAlign: 'center',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
           paddingTop: '5px',
           color: '#969696',
           fontWeight: '600',
+          gap: 10,
         }}
       >
         Powered By{' '}
-        <span style={{ color: '#000' }}>
-          <IconLogo
-            style={{ height: '20px', width: '20px', color: '#149eca' }}
-          />
-          OpenByteCode
-        </span>
+        <IconLogo
+          style={{
+            height: '15px',
+            width: '22px',
+            color: '#149eca',
+            paddingTop: '4px',
+          }}
+        />
+        <span style={{ color: '#000' }}>OpenByteCode</span>
       </div>
     </div>
   );
