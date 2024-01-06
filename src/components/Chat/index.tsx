@@ -5,6 +5,7 @@ import ChatList from '@/components/Chat/ChatList';
 import { IconPush } from '@/components/Icon/IconPush';
 import { openAi } from '@/services/chat';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
+import { IconLogo } from '@/components/Icon/IconLogo';
 
 const { TextArea } = Input;
 
@@ -88,7 +89,7 @@ const AIChat = () => {
       style={{
         display: 'flex',
         flexDirection: 'column',
-        height: '100vh',
+        height: '420px',
         overflow: 'hidden',
       }}
     >
@@ -97,7 +98,7 @@ const AIChat = () => {
         chatList={chatList}
         onChange={onScrollChange}
       />
-      <div style={{ position: 'relative' }}>
+      <div style={{ paddingTop: '12px', position: 'relative' }}>
         <TextArea
           size={'large'}
           value={inputText}
@@ -121,6 +122,23 @@ const AIChat = () => {
             type={'text'}
           />
         </div>
+      </div>
+
+      <div
+        style={{
+          textAlign: 'center',
+          paddingTop: '5px',
+          color: '#969696',
+          fontWeight: '600',
+        }}
+      >
+        Powered By{' '}
+        <span style={{ color: '#000' }}>
+          <IconLogo
+            style={{ height: '20px', width: '20px', color: '#149eca' }}
+          />
+          OpenByteCode
+        </span>
       </div>
     </div>
   );
