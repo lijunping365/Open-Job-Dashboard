@@ -15,11 +15,11 @@ const ChatList = ({ chatList, scrollRef, onChange }: Props) => {
     onChange(isHitBottom);
   };
   return (
-    <main style={{ position: 'relative', flex: '1 1 0%' }}>
+    <main className='chat-list-box'>
       <div
         ref={scrollRef}
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
-        style={{ overflowY: 'scroll', position: 'absolute', inset: '0px' }}
+        className='chat-list-wrapper'
       >
         {chatList.map((e) => {
           if (e.type === 'user') {

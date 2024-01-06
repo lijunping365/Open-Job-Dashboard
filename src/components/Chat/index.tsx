@@ -85,20 +85,13 @@ const AIChat = () => {
   };
 
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '420px',
-        overflow: 'hidden',
-      }}
-    >
+    <div className='chat-box'>
       <ChatList
         scrollRef={scrollRef}
         chatList={chatList}
         onChange={onScrollChange}
       />
-      <div style={{ paddingTop: '12px', position: 'relative' }}>
+      <div className='chat-input-box'>
         <TextArea
           size={'large'}
           value={inputText}
@@ -109,13 +102,9 @@ const AIChat = () => {
           }}
           placeholder='请输入问题，可通过shift+回车换行'
         />
-        <div style={{ position: 'absolute', bottom: '2px', right: '2px' }}>
+        <div className='chat-send-btn-box'>
           <Button
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
+            className='chat-send-btn'
             icon={<IconPush />}
             disabled={generateLoading}
             onClick={() => onSubmit()}
@@ -124,26 +113,8 @@ const AIChat = () => {
         </div>
       </div>
 
-      <div
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          paddingTop: '5px',
-          color: '#969696',
-          fontWeight: '600',
-          gap: 10,
-        }}
-      >
-        Powered By{' '}
-        <IconLogo
-          style={{
-            height: '15px',
-            width: '22px',
-            color: '#149eca',
-            paddingTop: '4px',
-          }}
-        />
+      <div className='chat-footer-box'>
+        Powered By <IconLogo className='chat-footer-logo' />
         <span style={{ color: '#000' }}>OpenByteCode</span>
       </div>
     </div>

@@ -16,36 +16,14 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
 
   return (
     <>
-      <div
-        style={{
-          marginBottom: '24px',
-          display: 'flex',
-          overflow: 'hidden',
-        }}
-      >
+      <div className='chat-completion-ai-box'>
         <div>
-          <IconChatGPT style={{ width: '32px', height: '32px' }} />
+          <IconChatGPT className='chat-completion-icon' />
         </div>
 
         <div style={{ marginLeft: '10px' }}>
-          <p
-            style={{
-              lineHeight: '32px',
-              margin: '0px',
-            }}
-          >
-            {date}
-          </p>
-
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              marginTop: '8px',
-              alignItems: 'end',
-              gap: '4px',
-            }}
-          >
+          <p className='chat-completion-ai-date'>{date}</p>
+          <div className='chat-completion-ai-wrapper'>
             <div
               style={{
                 backgroundColor: theme === 'light' ? '#f4f6f8' : '#081f33',

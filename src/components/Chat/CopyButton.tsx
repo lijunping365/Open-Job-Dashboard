@@ -4,17 +4,9 @@ import { IconCopied } from '@/components/Icon/IconCopied';
 
 export function CopyButton({
   onCope,
-  style = {
-    position: 'absolute',
-    top: '10px',
-    right: '10px',
-    width: '1.1em',
-    height: '1.1em',
-  },
   className,
 }: {
   onCope: (fn: any) => void;
-  style?: React.CSSProperties;
   className?: string;
 }) {
   const [copied, setCopied] = React.useState(false);
@@ -33,7 +25,6 @@ export function CopyButton({
       type='button'
       title='Copy code'
       className={className}
-      style={style}
       onClick={() => handleCope()}
     >
       {copied ? <IconCopied /> : <IconCopy />}
