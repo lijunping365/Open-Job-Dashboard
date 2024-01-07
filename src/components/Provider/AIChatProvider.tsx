@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { AIChatContext } from '@/components/Provider/AIChatContext';
 import ChatModal from '@/components/Chat/ChatModal';
+import { useRouter } from 'next/router';
 
 export interface AIChatProviderProps {
   children: React.ReactNode;
 }
 
+const excludePath = ['/login'];
+
 export function AIChatProvider(props: AIChatProviderProps) {
   const router = useRouter();
+  const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [chatList, setChatList] = useState<any>();
 
   const initAIChat = async () => {
@@ -25,7 +28,7 @@ export function AIChatProvider(props: AIChatProviderProps) {
 
   return (
     <AIChatContext.Provider value={{ chatList, setChatList }}>
-      <ChatModal />
+      {!excludePath.includes(cleanedPath) && <ChatModal />}
       {props.children}
     </AIChatContext.Provider>
   );
