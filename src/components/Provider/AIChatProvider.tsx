@@ -7,7 +7,7 @@ export interface AIChatProviderProps {
   children: React.ReactNode;
 }
 
-const excludePath = ['/login'];
+const excludePath = ['/login', '/404'];
 
 export function AIChatProvider(props: AIChatProviderProps) {
   const router = useRouter();
