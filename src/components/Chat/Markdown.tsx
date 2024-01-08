@@ -22,7 +22,6 @@ export function PreCode(props: { children: any }) {
               className='sp-cm'
             >
               <CopyButton
-                className='chat-markdown-copy-btn'
                 onCope={(fn: any) => {
                   if (ref.current) {
                     fn(ref.current.innerText);
