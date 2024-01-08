@@ -135,6 +135,10 @@
     padding-top: 4px;
 }
 
+.markdown-body {
+    overflow-wrap: break-word;
+}
+
 .chat-markdown-copy-btn {
     position: absolute;
     top: 10px;

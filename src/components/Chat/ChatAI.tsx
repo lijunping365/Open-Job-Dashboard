@@ -31,9 +31,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
                 padding: '8px',
               }}
             >
-              <div style={{ overflowWrap: 'break-word' }}>
-                <Markdown content={content || ''} />
-              </div>
+              <Markdown content={content || ''} />
             </div>
 
             <div
