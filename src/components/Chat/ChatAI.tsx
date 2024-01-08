@@ -28,7 +28,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
               style={{
                 backgroundColor: theme === 'light' ? '#f4f6f8' : '#081f33',
                 borderRadius: '8px',
-                padding: '8px',
+                padding: '10px',
               }}
             >
               <Markdown content={content || ''} />
