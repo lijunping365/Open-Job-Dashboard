@@ -16,14 +16,14 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
 
   return (
     <>
-      <div className='chat-completion-ai-box'>
-        <div>
-          <IconChatGPT className='chat-completion-icon' />
+      <div className='chat-ai-box'>
+        <div className='chat-icon-ai-wrapper'>
+          <IconChatGPT className='chat-icon' />
+          <p className='chat-date'>{date}</p>
         </div>
 
-        <div style={{ marginLeft: '10px' }}>
-          <p className='chat-completion-ai-date'>{date}</p>
-          <div className='chat-completion-ai-wrapper'>
+        <div>
+          <div className='chat-ai-wrapper'>
             <div
               style={{
                 backgroundColor: theme === 'light' ? '#f4f6f8' : '#081f33',

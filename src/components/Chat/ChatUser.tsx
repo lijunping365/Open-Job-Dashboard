@@ -14,8 +14,9 @@ const ChatUser = ({ text, date }: ChatMeProps) => {
   const { user } = useAuthContext();
   return (
     <>
-      <div className='chat-completion-user-box'>
-        <div>
+      <div className='chat-user-box'>
+        <div className='chat-icon-user-wrapper'>
+          <p className='chat-date'>{date}</p>
           {user?.avatar ? (
             <Avatar
               size={32}
@@ -23,13 +24,12 @@ const ChatUser = ({ text, date }: ChatMeProps) => {
               alt='profile picture'
             />
           ) : (
-            <IconFace className='chat-completion-icon' />
+            <IconFace className='chat-icon' />
           )}
         </div>
 
-        <div style={{ marginRight: '10px' }}>
-          <p className='chat-completion-user-date'>{date}</p>
-          <div className='chat-completion-user-wrapper'>
+        <div>
+          <div className='chat-user-wrapper'>
             <div
               style={{
                 backgroundColor: theme === 'light' ? '#d2f9d1' : '#a1dc95',
