@@ -1,17 +1,28 @@
-import { FloatButton, Modal, notification } from 'antd';
+import { FloatButton, notification } from 'antd';
 import AIChat from '@/components/Chat/index';
 import * as React from 'react';
 import { CommentOutlined } from '@ant-design/icons';
 import { useState } from 'react';
+import { ChatItem } from '@/types/typings';
 
-const ChatModal = () => {
+interface ChatModalProps {
+  chatList: ChatItem[];
+  setChatList: any;
+}
+
+const ChatModal = ({ chatList, setChatList }: ChatModalProps) => {
   const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [open, setOpen] = useState(false);
   const openModal = () => {
     api.open({
       key: 'chat',
       message: 'AI Chat',
-      description: <AIChat />,
+      description: (
+        <AIChat
+          cacheChatList={chatList}
+          setCacheChatList={setChatList}
+        />
+      ),
       duration: null,
       style: {
         width: 500,

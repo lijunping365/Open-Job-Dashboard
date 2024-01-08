@@ -21,7 +21,12 @@ export function AIChatProvider(props: AIChatProviderProps) {
 
   return (
     <AIChatContext.Provider value={{ chatList, setChatList }}>
-      {!excludePath.includes(cleanedPath) && <ChatModal />}
+      {!excludePath.includes(cleanedPath) && (
+        <ChatModal
+          chatList={chatList}
+          setChatList={setChatList}
+        />
+      )}
       {props.children}
     </AIChatContext.Provider>
   );

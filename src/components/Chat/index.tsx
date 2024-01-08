@@ -1,5 +1,5 @@
 import { Button, Input } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ChatItem, ChatRequest } from '@/types/typings';
 import ChatList from '@/components/Chat/ChatList';
 import { IconPush } from '@/components/Icon/IconPush';
@@ -9,10 +9,15 @@ import { IconLogo } from '@/components/Icon/IconLogo';
 
 const { TextArea } = Input;
 
-const AIChat = () => {
+interface AIChatProps {
+  cacheChatList: ChatItem[];
+  setCacheChatList: any;
+}
+
+const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
   const [generateLoading, setGenerateLoading] = useState<boolean>(false);
   const [inputText, setInputText] = useState('');
-  const [chatList, setChatList] = useState<ChatItem[]>([]);
+  const [chatList, setChatList] = useState<ChatItem[]>(cacheChatList);
   const [hitBottom, setHitBottom] = useState(true);
   const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
 
@@ -38,6 +43,7 @@ const AIChat = () => {
     };
 
     setInputText('');
+    setGenerateLoading(true);
     setChatList((chatList: any) => [...chatList, askData, answerData]);
 
     const paramsData: ChatRequest = {
@@ -71,6 +77,10 @@ const AIChat = () => {
       setGenerateLoading(false);
     }
   };
+
+  useEffect(() => {
+    setCacheChatList(chatList);
+  }, [generateLoading]);
 
   const handleKeyUp = async (event: any) => {
     if (event.keyCode === 13 && !event.shiftKey) {
