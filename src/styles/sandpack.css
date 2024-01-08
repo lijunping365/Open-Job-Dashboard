@@ -192,6 +192,7 @@ html.dark .sp-wrapper {
   position: relative;
   overflow: auto;
   background: var(--sp-colors-surface1);
+  border-radius: 8px;
 }
 
 .sandpack .sp-code-editor .cm-editor,
@@ -446,7 +447,6 @@ html.dark .sandpack--playground .sp-overlay {
   @apply font-mono;
   font-size: 13.6px;
   line-height: 24px;
-  padding: 18px;
   -webkit-font-smoothing: auto;
 }
 

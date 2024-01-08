@@ -13,16 +13,13 @@ export function PreCode(props: { children: any }) {
   const ref = useRef<HTMLPreElement>(null);
 
   return (
-    <div
-      style={{ display: 'flex', height: '100%', width: '100%' }}
-      className='sandpack flex h-full w-full items-center overflow-x-auto rounded-lg bg-wash shadow-lg dark:bg-gray-95 my-8'
-    >
+    <div className='sandpack'>
       <div className='sp-wrapper'>
         <div className='sp-stack'>
-          <div className='sp-code-editor no-bg-scrollbar'>
+          <div className='sp-code-editor'>
             <pre
               ref={ref}
-              className='sp-cm sp-pristine sp-javascript align-start flex'
+              className='sp-cm'
             >
               <CopyButton
                 className='chat-markdown-copy-btn'
@@ -32,9 +29,7 @@ export function PreCode(props: { children: any }) {
                   }
                 }}
               />
-              <code className='sp-pre-placeholder grow-[2]'>
-                {props.children}
-              </code>
+              <code className='sp-pre-placeholder'>{props.children}</code>
             </pre>
           </div>
         </div>
