@@ -151,12 +151,12 @@
 }
 
 .chat-markdown-copy-btn {
-    position: absolute;
+    position: absolute !important;
     top: 10px;
     right: 10px;
     width: 1.1em;
     height: 1.1em;
-    display: inline-flex;
+    display: inline-flex !important;
     align-items: center;
     justify-content: center;
 }

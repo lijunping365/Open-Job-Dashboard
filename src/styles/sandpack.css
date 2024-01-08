@@ -255,6 +255,7 @@ html.dark .sp-wrapper {
   margin: 0px;
   outline: none;
   height: 100%;
+  padding: 10px
 }
 
 .sp-code-editor .sp-cm .cm-scroller {
