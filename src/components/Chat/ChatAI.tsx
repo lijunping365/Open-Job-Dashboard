@@ -34,19 +34,17 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
               <Markdown content={content || ''} />
             </div>
 
-            <div
-              style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}
-            >
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}>
               <Button
                 type={'text'}
                 size={'small'}
                 icon={<IconReload />}
-              ></Button>
+              />
               <Button
                 type={'text'}
                 size={'small'}
                 icon={<IconSetting />}
-              ></Button>
+              />
             </div>
           </div>
         </div>
