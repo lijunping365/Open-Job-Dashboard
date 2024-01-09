@@ -21,8 +21,8 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
   const [hitBottom, setHitBottom] = useState(true);
   const { scrollRef, setAutoScroll, scrollDomToBottom } = useScrollToBottom();
 
-  const onSubmit = async () => {
-    if (!inputText) return;
+  const onSubmit = async (askContent: string) => {
+    if (!askContent) return;
 
     if (!hitBottom) scrollDomToBottom();
 
@@ -30,7 +30,7 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
 
     const askData: ChatItem = {
       chatId: (date.getTime() / 1000) * Math.random(),
-      content: inputText,
+      content: askContent,
       date: date.toLocaleString(),
       type: 'user',
     };
@@ -47,7 +47,7 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
     setChatList((chatList: any) => [...chatList, askData, answerData]);
 
     const paramsData: ChatRequest = {
-      prompt: inputText,
+      prompt: askContent,
     };
 
     const options = {
@@ -85,7 +85,7 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
   const handleKeyUp = async (event: any) => {
     if (event.keyCode === 13 && !event.shiftKey) {
       event.preventDefault();
-      await onSubmit();
+      await onSubmit(inputText);
     }
   };
 
@@ -94,12 +94,21 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
     setAutoScroll(value);
   };
 
+  const onReply = async (index: number) => {
+    const askContent = chatList[index - 1].content;
+    if (generateLoading) return;
+    if (askContent) {
+      await onSubmit(askContent);
+    }
+  };
+
   return (
     <div className='chat-box'>
       <ChatList
         scrollRef={scrollRef}
         chatList={chatList}
         onChange={onScrollChange}
+        onReply={(index) => onReply(index)}
       />
       <div className='chat-input-box'>
         <TextArea
@@ -117,7 +126,7 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
             className='chat-send-btn'
             icon={<IconPush />}
             disabled={generateLoading}
-            onClick={() => onSubmit()}
+            onClick={() => onSubmit(inputText)}
             type={'text'}
           />
         </div>

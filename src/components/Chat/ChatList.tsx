@@ -7,8 +7,9 @@ interface Props {
   chatList: ChatItem[];
   scrollRef: React.Ref<HTMLDivElement>;
   onChange: (value: boolean) => void;
+  onReply: (index: number) => void;
 }
-const ChatList = ({ chatList, scrollRef, onChange }: Props) => {
+const ChatList = ({ chatList, scrollRef, onChange, onReply }: Props) => {
   const onChatBodyScroll = (e: HTMLElement) => {
     const bottomHeight = e.scrollTop + e.clientHeight;
     const isHitBottom = bottomHeight >= e.scrollHeight - 10;
@@ -21,7 +22,7 @@ const ChatList = ({ chatList, scrollRef, onChange }: Props) => {
         onScroll={(e) => onChatBodyScroll(e.currentTarget)}
         className='chat-list-wrapper'
       >
-        {chatList.map((e) => {
+        {chatList.map((e, index) => {
           if (e.type === 'user') {
             return (
               <ChatUser
@@ -34,8 +35,8 @@ const ChatList = ({ chatList, scrollRef, onChange }: Props) => {
             return (
               <ChatAI
                 key={e.chatId}
-                content={e.content}
-                date={e.date}
+                data={e}
+                onReply={() => onReply(index)}
               />
             );
           }

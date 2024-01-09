@@ -5,13 +5,14 @@ import * as React from 'react';
 import { Markdown } from '@/components/Chat/Markdown';
 import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 import { Button } from 'antd';
+import { ChatItem } from '@/types/typings';
 
 interface ChatBotProps {
-  content: string;
-  date: string;
+  data: ChatItem;
+  onReply: () => void;
 }
 
-const ChatAI = ({ content, date }: ChatBotProps) => {
+const ChatAI = ({ data, onReply }: ChatBotProps) => {
   const { theme } = useConfigContext();
 
   return (
@@ -19,7 +20,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
       <div className='chat-ai-box'>
         <div className='chat-icon-ai-wrapper'>
           <IconChatGPT className='chat-icon' />
-          <p className='chat-date'>{date}</p>
+          <p className='chat-date'>{data.date}</p>
         </div>
 
         <div>
@@ -31,7 +32,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
                 padding: '10px',
               }}
             >
-              <Markdown content={content || ''} />
+              <Markdown content={data.content || ''} />
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}>
@@ -39,6 +40,7 @@ const ChatAI = ({ content, date }: ChatBotProps) => {
                 type={'text'}
                 size={'small'}
                 icon={<IconReload />}
+                onClick={() => onReply()}
               />
               <Button
                 type={'text'}
