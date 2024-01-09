@@ -19,7 +19,7 @@ export function PreCode(props: { children: any }) {
       <div className='sp-wrapper'>
         <div className='sp-stack'>
           <div
-            className='sp-code-editor'
+            className='sp-code-editor no-bg-scrollbar'
             style={{ backgroundColor: theme === 'light' ? '#fff' : '#16181d' }}
           >
             <pre
