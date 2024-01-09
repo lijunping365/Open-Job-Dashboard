@@ -37,6 +37,27 @@ export function PreCode(props: { children: any }) {
   );
 }
 
+const OL = (p: JSX.IntrinsicElements['ol']) => (
+  <ol
+    className='my-3 ml-6 list-decimal'
+    style={{ margin: '12px 0px 12px 12px', paddingLeft: '12px' }}
+    {...p}
+  />
+);
+const LI = (p: JSX.IntrinsicElements['li']) => (
+  <li
+    className='mb-1 leading-relaxed'
+    {...p}
+  />
+);
+const UL = (p: JSX.IntrinsicElements['ul']) => (
+  <ul
+    className='my-3 ml-6 list-disc'
+    style={{ margin: '12px 0px 12px 12px', paddingLeft: '12px' }}
+    {...p}
+  />
+);
+
 function _MarkDownContent(props: { content: string }) {
   return (
     <ReactMarkdown
@@ -50,6 +71,9 @@ function _MarkDownContent(props: { content: string }) {
             dir='auto'
           />
         ),
+        ol: OL,
+        ul: UL,
+        li: LI,
         a: (aProps) => {
           const href = aProps.href || '';
           const isInternal = /^\/#/i.test(href);
