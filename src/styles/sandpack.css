@@ -224,8 +224,7 @@ html.dark .sp-wrapper {
 }
 
 .sandpack--playground .sp-code-editor .cm-line.cm-errorLine {
-  @apply bg-red-400;
-  --tw-bg-opacity: 0.1; /* Background tweak: base color + opacity */
+  background-color: rgb(248 113 113);
   position: relative;
   padding-right: 2em;
   display: inline-block;
@@ -233,7 +232,7 @@ html.dark .sp-wrapper {
 }
 
 .sp-code-editor .cm-errorLine:after {
-  @apply text-red-500;
+  color: rgb(239 68 68);
   position: absolute;
   right: 8px;
   top: 0;
@@ -248,7 +247,7 @@ html.dark .sp-wrapper {
 }
 
 .sp-code-editor .cm-diagnostic-error {
-  @apply border-red-40;
+  border-color: rgb(254 242 242);
 }
 
 .sandpack .sp-cm {
@@ -407,7 +406,7 @@ html.dark .sp-wrapper {
 }
 
 .sandpack .sp-overlay {
-  @apply bg-card;
+  background-color: rgb(246 247 249);
   position: absolute;
   inset: 0;
   z-index: var(--sp-zIndices-top);
