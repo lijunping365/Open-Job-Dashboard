@@ -54,7 +54,7 @@ const ChatModal = ({ chatList, setChatList }: ChatModalProps) => {
         open={open}
         trigger='click'
         type='primary'
-        style={{ right: 24 }}
+        style={{ right: 24, zIndex: 9999 }}
         icon={<CommentOutlined />}
         onClick={() => handlerOpen()}
       >
