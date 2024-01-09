@@ -24,7 +24,7 @@ export const config = {
     '/app/:path*',
     '/cluster/:path*',
     '/job/:path*',
-    '/chat/:path*',
+    '/rolling/:path*',
     '/logger/:path*',
     '/monitor/:path*',
     '/alarm/:path*',
