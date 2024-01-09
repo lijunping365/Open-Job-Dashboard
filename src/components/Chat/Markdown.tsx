@@ -8,15 +8,20 @@ import rehypePrismPlus from 'rehype-prism-plus';
 import { useRef, RefObject } from 'react';
 import { IconLoading } from '@/components/Icon/IconLoading';
 import { CopyButton } from '@/components/Chat/CopyButton';
+import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 export function PreCode(props: { children: any }) {
+  const { theme } = useConfigContext();
   const ref = useRef<HTMLPreElement>(null);
 
   return (
     <div className='sandpack'>
       <div className='sp-wrapper'>
         <div className='sp-stack'>
-          <div className='sp-code-editor'>
+          <div
+            className='sp-code-editor'
+            style={{ backgroundColor: theme === 'light' ? '#fff' : '#16181d' }}
+          >
             <pre
               ref={ref}
               className='sp-cm'

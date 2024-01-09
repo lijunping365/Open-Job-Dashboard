@@ -35,7 +35,7 @@ const ChatUser = ({ text, date }: ChatMeProps) => {
                 backgroundColor: theme === 'light' ? '#d2f9d1' : '#a1dc95',
                 borderRadius: '8px',
                 padding: '8px',
-                color: '000',
+                color: '#000',
               }}
             >
               <div style={{ overflowWrap: 'break-word' }}>
