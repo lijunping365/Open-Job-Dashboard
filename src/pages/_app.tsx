@@ -1,6 +1,7 @@
 import React from 'react';
 import '@/styles/globals.css';
 import '@/styles/sandpack.css';
+import '@/styles/prism.css';
 import { AppProps } from 'next/app';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { GlobalConfigProvider } from '@/components/Provider/GlobalConfigProvider';

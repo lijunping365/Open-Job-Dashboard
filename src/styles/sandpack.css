@@ -445,7 +445,7 @@ html.dark .sandpack--playground .sp-overlay {
  * Placeholder
  */
 .sandpack .sp-code-editor .sp-pre-placeholder {
-  @apply font-mono;
+  font-family: var(--sp-font-mono);
   font-size: 13.6px;
   line-height: 24px;
   -webkit-font-smoothing: auto;
