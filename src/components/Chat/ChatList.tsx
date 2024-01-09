@@ -4,12 +4,19 @@ import * as React from 'react';
 import { ChatItem } from '@/types/typings';
 
 interface Props {
+  loading: boolean;
   chatList: ChatItem[];
   scrollRef: React.Ref<HTMLDivElement>;
   onChange: (value: boolean) => void;
   onReply: (index: number) => void;
 }
-const ChatList = ({ chatList, scrollRef, onChange, onReply }: Props) => {
+const ChatList = ({
+  chatList,
+  scrollRef,
+  onChange,
+  onReply,
+  loading,
+}: Props) => {
   const onChatBodyScroll = (e: HTMLElement) => {
     const bottomHeight = e.scrollTop + e.clientHeight;
     const isHitBottom = bottomHeight >= e.scrollHeight - 10;
@@ -36,6 +43,7 @@ const ChatList = ({ chatList, scrollRef, onChange, onReply }: Props) => {
               <ChatAI
                 key={e.chatId}
                 data={e}
+                loading={loading}
                 onReply={() => onReply(index)}
               />
             );

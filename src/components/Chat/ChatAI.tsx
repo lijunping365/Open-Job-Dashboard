@@ -4,15 +4,16 @@ import { IconSetting } from '@/components/Icon/IconSetting';
 import * as React from 'react';
 import { Markdown } from '@/components/Chat/Markdown';
 import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
-import { Button } from 'antd';
+import { Button, Spin } from 'antd';
 import { ChatItem } from '@/types/typings';
 
 interface ChatBotProps {
+  loading: boolean;
   data: ChatItem;
   onReply: () => void;
 }
 
-const ChatAI = ({ data, onReply }: ChatBotProps) => {
+const ChatAI = ({ data, onReply, loading }: ChatBotProps) => {
   const { theme } = useConfigContext();
 
   return (
@@ -33,6 +34,7 @@ const ChatAI = ({ data, onReply }: ChatBotProps) => {
               }}
             >
               <Markdown content={data.content || ''} />
+              {loading && <Spin size={'small'} />}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}>

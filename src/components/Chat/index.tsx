@@ -105,6 +105,7 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
   return (
     <div className='chat-box'>
       <ChatList
+        loading={generateLoading}
         scrollRef={scrollRef}
         chatList={chatList}
         onChange={onScrollChange}
