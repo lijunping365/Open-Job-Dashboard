@@ -32,9 +32,13 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const [aiModalVisible, handleAIModalVisible] = useState<boolean>(false);
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
+
+  const onChatComplete = (chatList: ChatItem[]) => {};
+
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
-    []
+    [],
+    onChatComplete
   );
 
   const onFetchOpenJobAppList = useCallback(async () => {
@@ -46,8 +50,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
       setAppOptions(appList);
     }
   }, []);
-
-  const onChatComplete = (chatList: ChatItem[]) => {};
 
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();

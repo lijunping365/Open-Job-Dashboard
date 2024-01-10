@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 
 const useLocalStorage = <T>(
   key: string,
-  initialValue: T
+  initialValue: T,
+  beforePersistence: (data: T) => void
 ): [T, (value: T) => void] => {
   const [storedValue, setStoredValue] = useState(initialValue);
 
@@ -17,6 +18,8 @@ const useLocalStorage = <T>(
   const setValue = (value: T) => {
     // Save state
     setStoredValue(value);
+    // Before persistence
+    beforePersistence(value);
     // Save to localStorage
     window.localStorage.setItem(key, JSON.stringify(value));
   };
