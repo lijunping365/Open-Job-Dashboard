@@ -2,7 +2,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
 import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
-import { OpenJob } from '@/types/typings';
+import { ChatItem, OpenJob } from '@/types/typings';
+import ChatModal from '@/components/Chat/ChatModal';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 interface CreateFormProps {
   modalVisible: boolean;
@@ -27,8 +29,13 @@ const CreateForm: React.FC<CreateFormProps> = ({
   values,
 }: CreateFormProps) => {
   const [form] = Form.useForm();
+  const [aiModalVisible, handleAIModalVisible] = useState<boolean>(false);
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
+  const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
+    'open-job-ai',
+    []
+  );
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -39,6 +46,8 @@ const CreateForm: React.FC<CreateFormProps> = ({
       setAppOptions(appList);
     }
   }, []);
+
+  const onChatComplete = (chatList: ChatItem[]) => {};
 
   const handleFinish = async () => {
     const fieldsValue: any = await form.validateFields();
@@ -74,6 +83,12 @@ const CreateForm: React.FC<CreateFormProps> = ({
           onClick={() => handleFinish()}
         >
           保存
+        </Button>
+        <Button
+          type='primary'
+          onClick={() => handleAIModalVisible(true)}
+        >
+          AI 生成
         </Button>
       </>
     );
@@ -179,6 +194,13 @@ const CreateForm: React.FC<CreateFormProps> = ({
             </FormItem>
           </Col>
         </Row>
+
+        <ChatModal
+          modalVisible={aiModalVisible}
+          chatList={chatList}
+          setChatList={setChatList}
+          onClose={() => handleAIModalVisible(false)}
+        />
 
         <CronModal
           cronExpressValue={form.getFieldValue('cronExpression')}
