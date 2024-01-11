@@ -1,5 +1,5 @@
 import { Button, Modal, Tag, Typography } from 'antd';
-import AIChat from '@/components/Chat/index';
+import AIChat from '@/components/Chat/ChatMain';
 import * as React from 'react';
 import { useState } from 'react';
 import { ChatItem } from '@/types/typings';
@@ -74,7 +74,7 @@ const ChatModal = ({
 
   return (
     <Modal
-      title={null}
+      title={<Header />}
       width={500}
       open={modalVisible}
       onCancel={() => onClose()}
@@ -82,7 +82,12 @@ const ChatModal = ({
       footer={null}
     >
       {open ? (
-        <Paragraph editable={{ onChange: setPrompt }}>{prompt}</Paragraph>
+        <Paragraph
+          style={{ minHeight: '406px', overflowY: 'scroll' }}
+          editable={{ onChange: setPrompt }}
+        >
+          {prompt}
+        </Paragraph>
       ) : (
         <AIChat
           cacheChatList={chatList}
