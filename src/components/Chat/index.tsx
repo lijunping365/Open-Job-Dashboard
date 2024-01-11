@@ -1,4 +1,4 @@
-import { Button, Input } from 'antd';
+import { Button, Input, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { ChatItem, ChatRequest } from '@/types/typings';
 import ChatList from '@/components/Chat/ChatList';
@@ -6,6 +6,13 @@ import { IconPush } from '@/components/Icon/IconPush';
 import { openAi } from '@/services/chat';
 import useScrollToBottom from '@/hooks/useScrollToBottom';
 import { IconLogo } from '@/components/Icon/IconLogo';
+import {
+  ClearOutlined,
+  CloseOutlined,
+  SettingOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
+import * as React from 'react';
 
 const { TextArea } = Input;
 
@@ -15,6 +22,9 @@ interface AIChatProps {
 }
 
 const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
+  const [open, setOpen] = useState(false);
+  const [prompt, setPrompt] = useState('This is an editable text.');
+
   const [generateLoading, setGenerateLoading] = useState<boolean>(false);
   const [inputText, setInputText] = useState('');
   const [chatList, setChatList] = useState<ChatItem[]>(cacheChatList);
@@ -104,6 +114,48 @@ const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
 
   return (
     <div className='chat-box'>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingBottom: '12px',
+        }}
+      >
+        <h2 style={{ fontSize: '20px', lineHeight: '22px', margin: 0 }}>
+          OpenJobGPT
+        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <Tag color='green'>connected</Tag>
+
+          <Button
+            type={'text'}
+            size={'small'}
+            icon={<SettingOutlined />}
+            onClick={() => setOpen(!open)}
+          />
+
+          <Button
+            type={'text'}
+            size={'small'}
+            icon={<SyncOutlined />}
+          />
+
+          <Button
+            type={'text'}
+            size={'small'}
+            icon={<ClearOutlined />}
+            onClick={() => setChatList([])}
+          />
+
+          <Button
+            type={'text'}
+            size={'small'}
+            icon={<CloseOutlined />}
+            //onClick={() => onClose()}
+          />
+        </div>
+      </div>
       <ChatList
         loading={generateLoading}
         scrollRef={scrollRef}

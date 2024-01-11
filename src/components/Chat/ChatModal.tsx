@@ -74,7 +74,7 @@ const ChatModal = ({
 
   return (
     <Modal
-      title={<Header />}
+      title={null}
       width={500}
       open={modalVisible}
       onCancel={() => onClose()}
