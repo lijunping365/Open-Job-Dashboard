@@ -193,3 +193,9 @@ html.dark .no-bg-scrollbar::-webkit-scrollbar-thumb:active,html.dark .no-bg-scro
 }
 
 /** chat end **/
+
+
+/** ant-design css */
+.ant-modal-close {
+    inset-inline-end: 22px !important;
+}
