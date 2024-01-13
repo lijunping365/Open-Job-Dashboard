@@ -79,6 +79,7 @@ const TableList: React.FC = () => {
           ],
         },
         options: {
+          maintainAspectRatio: false,
           responsive: true,
           plugins: {
             legend: {
@@ -169,7 +170,7 @@ const TableList: React.FC = () => {
           </Space>
         }
       >
-        <div>
+        <div style={{ minHeight: '550px' }}>
           <canvas id='line-chart'></canvas>
         </div>
       </Card>

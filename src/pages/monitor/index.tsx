@@ -73,6 +73,7 @@ export default function MonitorPage({
           ],
         },
         options: {
+          maintainAspectRatio: false,
           responsive: true,
           plugins: {
             legend: {
@@ -188,7 +189,7 @@ export default function MonitorPage({
           </Space>
         }
       >
-        <div>
+        <div style={{ minHeight: '550px' }}>
           <canvas id='line-chart'></canvas>
         </div>
       </Card>
