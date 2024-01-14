@@ -1,0 +1,10 @@
+# 忽略node_modules目录，因为我们会在Docker容器中重新安装依赖项  
+node_modules  
+  
+# 忽略.next目录，因为我们会在Docker容器中重新构建应用程序  
+.next  
+  
+# 忽略其他不需要的文件和目录  
+.gitignore  
+.eslintignore  
+.env
