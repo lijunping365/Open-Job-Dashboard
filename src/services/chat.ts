@@ -5,9 +5,9 @@ const TIME_OUT_MS = 60000;
 
 let baseURL: string;
 if (process.env.NODE_ENV === 'production') {
-  baseURL = 'https://openbytecode.com/openjob';
+  baseURL = 'https://openbytecode.com/open-job-api';
 } else {
-  baseURL = 'http://localhost:8090/openJob';
+  baseURL = 'http://localhost:8090/open-job-api';
 }
 
 export const openAi = (
