@@ -17,19 +17,6 @@ export const generateUUID = () => {
   return s.join('');
 };
 
-export const getTopCount = (timeType: TimeType) => {
-  switch (timeType) {
-    case 'today':
-      return 1;
-    case 'week':
-      return 7;
-    case 'month':
-      return 30;
-    default:
-      return 30;
-  }
-};
-
 export const processTime = (searchForm: any, values: any) => {
   if (values.timeRange) {
     searchForm.startTime = dayjs(values.timeRange[0]).format(

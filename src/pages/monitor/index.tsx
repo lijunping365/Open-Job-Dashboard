@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Divider, Row, Space, Statistic } from 'antd';
+import { Card, Col, Row, Select, Statistic } from 'antd';
 import { fetchJobAnalysisNumber, fetchJobTimeChart } from '@/services/api';
 import {
   BarChartOutlined,
@@ -16,6 +16,15 @@ import Chart, {
   Point,
 } from 'chart.js/auto';
 
+const options = [
+  { value: '1m', label: '最近一分钟' },
+  { value: '30m', label: '最近30分钟' },
+  { value: '1h', label: '最近1小时' },
+  { value: '24h', label: '最近24小时' },
+  { value: '30d', label: '最近30天' },
+  { value: '90d', label: '最近90天' },
+];
+
 export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
@@ -23,7 +32,7 @@ export default function MonitorPage({
   const [loading, setLoading] = useState<boolean>(true);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
-  const [selectDate, setSelectDate] = useState<TimeType>('today');
+  const [selectDate, setSelectDate] = useState<TimeType>('1m');
   const [data, setChartData] = useState<JobTimeChart>();
   const color = theme === 'light' ? '#000' : '#fff';
   const getJobAnalysisNumber = async () => {
@@ -37,7 +46,7 @@ export default function MonitorPage({
 
   const onFetchJobChartData = async () => {
     try {
-      const res: any = await fetchJobTimeChart({ jobId, period: 4 });
+      const res: any = await fetchJobTimeChart({ jobId, period: selectDate });
       if (res) setChartData(res);
     } finally {
       setLoading(false);
@@ -48,6 +57,10 @@ export default function MonitorPage({
     getJobAnalysisNumber().then();
     onFetchJobChartData().then();
   }, [jobId]);
+
+  useEffect(() => {
+    onFetchJobChartData().then();
+  }, [jobId, selectDate]);
 
   React.useEffect(() => {
     let chart: Chart<
@@ -149,44 +162,11 @@ export default function MonitorPage({
         title='任务耗时统计'
         style={{ marginTop: '20px' }}
         extra={
-          <Space split={<Divider type='vertical' />}>
-            <a
-              style={{ color: selectDate === 'today' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('today')}
-            >
-              最近一分钟
-            </a>
-            <a
-              style={{ color: selectDate === 'week' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('week')}
-            >
-              最近30分钟
-            </a>
-            <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('month')}
-            >
-              最近1小时
-            </a>
-            <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('month')}
-            >
-              最近1周
-            </a>
-            <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('month')}
-            >
-              最近1月
-            </a>
-            <a
-              style={{ color: selectDate === 'year' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('year')}
-            >
-              今天
-            </a>
-          </Space>
+          <Select
+            defaultValue='1m'
+            options={options}
+            onChange={(value: any) => setSelectDate(value)}
+          />
         }
       >
         <div style={{ minHeight: '550px' }}>

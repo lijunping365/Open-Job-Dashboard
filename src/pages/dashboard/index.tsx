@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Divider, Row, Space, Statistic } from 'antd';
+import { Card, Col, Row, Select, Statistic } from 'antd';
 import { fetchAnalysisNumber, fetchAnalysisChart } from '@/services/api';
 import BaseLayout from '@/components/Layout';
 import { AnalysisChart, StatisticNumber, TimeType } from '@/types/typings';
@@ -16,12 +16,18 @@ import Chart, {
 } from 'chart.js/auto';
 import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
+const options = [
+  { value: '7d', label: '最近7天' },
+  { value: '30d', label: '最近30天' },
+  { value: '90d', label: '最近90天' },
+];
+
 const TableList: React.FC = () => {
   const { theme } = useConfigContext();
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
-  const [selectDate, setSelectDate] = useState<TimeType>('today');
+  const [selectDate, setSelectDate] = useState<TimeType>('7d');
   const [data, setChartData] = useState<AnalysisChart>();
   const color = theme === 'light' ? '#000' : '#fff';
   const getAnalysisNumber = async () => {
@@ -35,7 +41,7 @@ const TableList: React.FC = () => {
 
   const getAnalysisChart = async () => {
     try {
-      const res: any = await fetchAnalysisChart({});
+      const res: any = await fetchAnalysisChart({ period: selectDate });
       if (res) setChartData(res);
     } finally {
       setChartLoading(false);
@@ -46,6 +52,10 @@ const TableList: React.FC = () => {
     getAnalysisNumber().then();
     getAnalysisChart().then();
   }, []);
+
+  useEffect(() => {
+    getAnalysisChart().then();
+  }, [selectDate]);
 
   React.useEffect(() => {
     let chart: Chart<
@@ -148,26 +158,11 @@ const TableList: React.FC = () => {
         title='任务调度报表'
         style={{ marginTop: '20px' }}
         extra={
-          <Space split={<Divider type='vertical' />}>
-            <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('month')}
-            >
-              最近1周
-            </a>
-            <a
-              style={{ color: selectDate === 'month' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('month')}
-            >
-              最近1月
-            </a>
-            <a
-              style={{ color: selectDate === 'year' ? '#1677ff' : color }}
-              onClick={() => setSelectDate('year')}
-            >
-              近半年
-            </a>
-          </Space>
+          <Select
+            defaultValue='1m'
+            options={options}
+            onChange={(value: any) => setSelectDate(value)}
+          />
         }
       >
         <div style={{ minHeight: '550px' }}>

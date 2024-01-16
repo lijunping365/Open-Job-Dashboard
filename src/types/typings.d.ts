@@ -133,13 +133,12 @@ export interface JobHandler {
 
 export interface ChartParam {
   jobId?: string;
-  count?: number;
+  period?: string;
 }
 
 export interface JobChartParam {
   jobId?: string;
-  count?: number;
-  period?: number;
+  period?: string;
 }
 
 export interface TableParams {
@@ -159,7 +158,7 @@ export interface JobTimeChart {
   takeTime: string[];
 }
 
-export type TimeType = 'today' | 'week' | 'month' | 'year';
+export type TimeType = '1m' | '30m' | '1h' | '24h' | '7d' | '30d' | '90d';
 
 export enum LangType {
   EN_US = 'en-us',
