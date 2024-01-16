@@ -163,8 +163,8 @@ export default function MonitorPage({
         style={{ marginTop: '20px' }}
         extra={
           <Select
-            defaultValue='1m'
             options={options}
+            defaultValue={selectDate}
             onChange={(value: any) => setSelectDate(value)}
           />
         }
