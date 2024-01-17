@@ -14,7 +14,6 @@ import Chart, {
   ChartTypeRegistry,
   Point,
 } from 'chart.js/auto';
-import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 
 const options = [
   { value: '7d', label: '最近7天' },
@@ -23,13 +22,12 @@ const options = [
 ];
 
 const TableList: React.FC = () => {
-  const { theme } = useConfigContext();
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
   const [selectDate, setSelectDate] = useState<TimeType>('7d');
   const [data, setChartData] = useState<AnalysisChart>();
-  const color = theme === 'light' ? '#000' : '#fff';
+
   const getAnalysisNumber = async () => {
     try {
       const res: any = await fetchAnalysisNumber();
@@ -113,9 +111,10 @@ const TableList: React.FC = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title='任务数量'
+              title='任务总数量'
               value={statisticNumber?.taskTotalNum || 0}
               prefix={<CoffeeOutlined />}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -123,9 +122,10 @@ const TableList: React.FC = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title='调度次数'
+              title='今日调度总次数'
               value={statisticNumber?.taskExecuteTotalNum}
               prefix={<FlagOutlined />}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -134,9 +134,10 @@ const TableList: React.FC = () => {
           <Card>
             <Statistic
               loading={statisticLoading}
-              title='执行器数量'
+              title='执行器总数量'
               value={statisticNumber?.executorTotalNum}
               prefix={<CloudServerOutlined />}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
@@ -147,6 +148,7 @@ const TableList: React.FC = () => {
               title='今日报警次数'
               value={statisticNumber?.alarmNum}
               prefix={<AlertOutlined />}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>

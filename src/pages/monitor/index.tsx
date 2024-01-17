@@ -9,7 +9,6 @@ import {
 import BaseLayout from '@/components/Layout';
 import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
-import { useConfigContext } from '@/components/Provider/GlobalConfigContext';
 import Chart, {
   BubbleDataPoint,
   ChartTypeRegistry,
@@ -28,13 +27,12 @@ const options = [
 export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
-  const { theme } = useConfigContext();
   const [loading, setLoading] = useState<boolean>(true);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
   const [selectDate, setSelectDate] = useState<TimeType>('1m');
   const [data, setChartData] = useState<JobTimeChart>();
-  const color = theme === 'light' ? '#000' : '#fff';
+
   const getJobAnalysisNumber = async () => {
     try {
       const res: any = await fetchJobAnalysisNumber(jobId);
@@ -151,6 +149,7 @@ export default function MonitorPage({
               title='今日报警次数'
               value={statisticNumber?.alarmNum}
               prefix={<BarChartOutlined />}
+              valueStyle={{ fontSize: '20px' }}
             />
           </Card>
         </Col>
