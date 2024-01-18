@@ -32,6 +32,7 @@ const TableList: React.FC = () => {
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
+  const [selectedJobId, setSelectedJobId] = useState<any>();
   const [selectDate, setSelectDate] = useState<TimeType>('7d');
   const [data, setChartData] = useState<AnalysisChart>();
 
@@ -46,7 +47,10 @@ const TableList: React.FC = () => {
 
   const getAnalysisChart = async () => {
     try {
-      const res: any = await fetchAnalysisChart({ period: selectDate });
+      const res: any = await fetchAnalysisChart({
+        jobId: selectedJobId === 'all' ? '' : selectedJobId,
+        period: selectDate,
+      });
       if (res) setChartData(res);
     } finally {
       setChartLoading(false);
@@ -56,6 +60,7 @@ const TableList: React.FC = () => {
   const fetchJobList = async (name: string) => {
     const res = await fetchByJobName(name);
     const options: SelectOptionsProps[] = [];
+    options.push({ label: '全部', value: 'all' });
     if (res) {
       res.forEach((item) => {
         options.push({ label: item.jobName, value: item.id });
@@ -71,7 +76,7 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     getAnalysisChart().then();
-  }, [selectDate]);
+  }, [selectDate, selectedJobId]);
 
   React.useEffect(() => {
     let chart: Chart<
@@ -180,12 +185,13 @@ const TableList: React.FC = () => {
         title='任务调度报表'
         style={{ marginTop: '20px' }}
         extra={
-          <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '15px' }}>
             <DebounceSelect
-              placeholder='输入任务名称'
-              defaultActiveFirstOption={true}
+              defaultValue={[{ label: '全部', value: 'all' }]}
+              placeholder='选择一个任务'
               fetchOptions={fetchJobList}
               style={{ minWidth: 200 }}
+              onChange={(newValue) => setSelectedJobId(newValue)}
             />
 
             <Select
