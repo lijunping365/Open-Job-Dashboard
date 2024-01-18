@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Select } from 'antd';
 import { fetchJobTimeChart } from '@/services/api';
 import BaseLayout from '@/components/Layout';
-import { JobTimeChart, TimeType } from '@/types/typings';
+import { ChartTimeType, JobTimeChart } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
 import Chart, {
   BubbleDataPoint,
@@ -11,24 +11,21 @@ import Chart, {
 } from 'chart.js/auto';
 
 const options = [
-  { value: '1m', label: '最近一分钟' },
-  { value: '30m', label: '最近30分钟' },
-  { value: '1h', label: '最近1小时' },
-  { value: '24h', label: '最近24小时' },
-  { value: '30d', label: '最近30天' },
-  { value: '90d', label: '最近90天' },
+  { value: 30, label: '最近30次运行' },
+  { value: 60, label: '最近60次运行' },
+  { value: 180, label: '最近180次运行' },
 ];
 
 export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [loading, setLoading] = useState<boolean>(true);
-  const [selectDate, setSelectDate] = useState<TimeType>('1m');
+  const [selectDate, setSelectDate] = useState<ChartTimeType>(30);
   const [data, setChartData] = useState<JobTimeChart>();
 
   const onFetchJobChartData = async () => {
     try {
-      const res: any = await fetchJobTimeChart({ jobId, period: selectDate });
+      const res: any = await fetchJobTimeChart({ jobId, count: selectDate });
       if (res) setChartData(res);
     } finally {
       setLoading(false);
@@ -39,7 +36,15 @@ export default function MonitorPage({
     onFetchJobChartData().then();
   }, [jobId, selectDate]);
 
-  React.useEffect(() => {
+  const footer = (tooltipItems: any) => {
+    let index = 0;
+    tooltipItems.forEach(function (tooltipItem: any) {
+      index = tooltipItem.parsed.x;
+    });
+    return '执行状态: ' + (data?.status[index] === 1 ? '成功' : '失败');
+  };
+
+  useEffect(() => {
     let chart: Chart<
       keyof ChartTypeRegistry,
       (number | Point | [number, number] | BubbleDataPoint | null)[],
@@ -47,6 +52,9 @@ export default function MonitorPage({
     >;
 
     if (data) {
+      const colors: string[] = data.status.map((e) =>
+        e === 1 ? '#279747' : '#ed64a6'
+      );
       let config: any = {
         type: 'line',
         data: {
@@ -57,17 +65,24 @@ export default function MonitorPage({
               borderColor: '#3080d0',
               data: data.takeTime,
               backgroundColor: '#9abde0',
-              pointRadius: 5,
-              fill: false,
+              fill: true,
+              tension: 0.4,
+              pointBackgroundColor: colors,
             },
           ],
         },
         options: {
+          animation: false,
           maintainAspectRatio: false,
           responsive: true,
           plugins: {
             legend: {
               position: 'top',
+            },
+            tooltip: {
+              callbacks: {
+                footer: footer,
+              },
             },
           },
         },

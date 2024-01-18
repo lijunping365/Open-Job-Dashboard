@@ -138,7 +138,7 @@ export interface ChartParam {
 
 export interface JobChartParam {
   jobId?: string;
-  period?: string;
+  count?: number;
 }
 
 export interface TableParams {
@@ -156,9 +156,12 @@ export interface AnalysisChart {
 export interface JobTimeChart {
   labels: string[];
   takeTime: string[];
+  status: number[];
 }
 
 export type TimeType = '1m' | '30m' | '1h' | '24h' | '7d' | '30d' | '90d';
+
+export type ChartTimeType = 30 | 60 | 180;
 
 export enum LangType {
   EN_US = 'en-us',
