@@ -25,10 +25,10 @@ import {
 
 interface Props {
   collapsed: boolean;
-  setCollapsed: (collapsed: boolean) => void;
+  onCollapse: (collapsed: boolean) => void;
 }
 
-const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
+const Header: React.FC<Props> = ({ collapsed, onCollapse }: Props) => {
   const router = useRouter();
   const { user } = useAuthContext();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
@@ -74,7 +74,7 @@ const Header: React.FC<Props> = ({ collapsed, setCollapsed }: Props) => {
         <Button
           type='text'
           icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-          onClick={() => setCollapsed(!collapsed)}
+          onClick={() => onCollapse(!collapsed)}
           style={{ width: 36, height: 36 }}
         />
 

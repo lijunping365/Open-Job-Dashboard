@@ -1,5 +1,5 @@
 import { Layout, Menu } from 'antd';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { MenuProps } from 'antd';
 import menuItems from '@/config/menus';
@@ -55,12 +55,21 @@ const siderWidth = 208;
 
 const { Content, Sider } = Layout;
 
-const BaseLayout = ({ children }: any) => {
+interface Props {
+  children: React.ReactNode;
+  onCollapse?: (collapsed: boolean) => void;
+}
+const BaseLayout = ({ children, onCollapse }: Props) => {
   const router = useRouter();
   const { theme, locale } = useConfigContext();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
   const [collapsed, setCollapsed] = useState(false);
   const items: MenuItem[] = getMenuItems(locale as LangType);
+
+  const handleCollapse = (value: boolean) => {
+    setCollapsed(value);
+    onCollapse && onCollapse(value);
+  };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
@@ -80,7 +89,7 @@ const BaseLayout = ({ children }: any) => {
         collapsed={collapsed}
         collapsedWidth={collapsedWidth}
         width={siderWidth}
-        onCollapse={(value) => setCollapsed(value)}
+        onCollapse={(value) => handleCollapse(value)}
         className='layout-side'
         trigger={null}
         style={{
@@ -122,7 +131,7 @@ const BaseLayout = ({ children }: any) => {
       <Layout>
         <Header
           collapsed={collapsed}
-          setCollapsed={setCollapsed}
+          onCollapse={(collapsed) => handleCollapse(collapsed)}
         />
         <Content
           className='layout-content'

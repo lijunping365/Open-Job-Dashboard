@@ -58,13 +58,16 @@ export default function MonitorPage({
               data: data.takeTime,
               backgroundColor: '#9abde0',
               pointRadius: 5,
-              fill: false,
+              fill: 'start',
             },
           ],
         },
         options: {
           maintainAspectRatio: false,
           responsive: true,
+          elements: {
+            line: { tension: 0.5 },
+          },
           plugins: {
             legend: {
               position: 'top',

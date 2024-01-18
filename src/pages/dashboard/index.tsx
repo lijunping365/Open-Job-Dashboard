@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Card, Col, Row, Select, Statistic } from 'antd';
 import {
   fetchAnalysisNumber,
@@ -13,14 +13,10 @@ import {
   CoffeeOutlined,
   FlagOutlined,
 } from '@ant-design/icons';
-import Chart, {
-  BubbleDataPoint,
-  ChartTypeRegistry,
-  Point,
-} from 'chart.js/auto';
 import DebounceSelect, {
   SelectOptionsProps,
 } from '@/components/DebounceSelect';
+import * as echarts from 'echarts';
 
 const options = [
   { value: '7d', label: '最近7天' },
@@ -29,6 +25,8 @@ const options = [
 ];
 
 const TableList: React.FC = () => {
+  const chartRefLine = useRef<any>(null);
+  const chartLine = useRef<any>(null);
   const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
   const [chartLoading, setChartLoading] = useState<boolean>(true);
   const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
@@ -77,57 +75,70 @@ const TableList: React.FC = () => {
     getAnalysisChart().then();
   }, [selectDate, selectedJobId]);
 
-  React.useEffect(() => {
-    let chart: Chart<
-      keyof ChartTypeRegistry,
-      (number | Point | [number, number] | BubbleDataPoint | null)[],
-      unknown
-    >;
+  useEffect(() => {
+    if (!data || !chartRefLine.current) return;
 
-    if (data) {
-      let config: any = {
-        type: 'line',
-        data: {
-          labels: data.labels,
-          datasets: [
-            {
-              label: '执行总次数',
-              borderColor: '#3080d0',
-              data: data.totalCount,
-              backgroundColor: '#9abde0',
-              pointRadius: 5,
-              fill: false,
-            },
-            {
-              label: '成功总次数',
-              borderColor: '#ed64a6',
-              data: data.successCount,
-              backgroundColor: '#de98ba',
-              pointRadius: 5,
-              fill: false,
-            },
-          ],
+    const myChartLine = echarts.init(chartRefLine.current);
+    const optionLine = {
+      tooltip: {
+        trigger: 'axis',
+      },
+      grid: {
+        containLabel: true,
+      },
+      legend: {
+        data: ['执行次数', '成功次数'],
+      },
+      xAxis: {
+        type: 'category',
+        data: data.labels,
+      },
+      yAxis: {
+        type: 'value',
+      },
+      series: [
+        {
+          name: '执行次数',
+          data: data.totalCount,
+          type: 'line',
+          color: '#3080d0',
         },
-        options: {
-          maintainAspectRatio: false,
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-          },
+        {
+          name: '成功次数',
+          data: data.successCount,
+          type: 'line',
+          color: '#ed64a6',
         },
-      };
-      let ctx = document.getElementById('line-chart') as HTMLCanvasElement;
-      chart = new Chart(ctx, config);
-    }
+      ],
+    };
+    myChartLine.setOption(optionLine);
+    chartLine.current = myChartLine;
+
+    const handleResizeListener = () => {
+      console.log('eeeeeeeeeee', myChartLine);
+      myChartLine.resize();
+    };
+
+    window.addEventListener('resize', handleResizeListener);
+
     return () => {
-      chart && chart.destroy();
+      window.removeEventListener('resize', handleResizeListener);
     };
   }, [data]);
 
+  const triggerResizeEvent = () => {
+    console.log('ssssssssssssss');
+    if (!chartRefLine.current || !chartLine.current) {
+      return;
+    }
+    const width = chartRefLine.current.offsetWidth;
+    console.log('wwwwwwwwwwwwwwww', width);
+
+    chartLine.current && chartLine.current.resize();
+  };
+
   return (
-    <BaseLayout>
+    <BaseLayout onCollapse={triggerResizeEvent}>
       <Row gutter={16}>
         <Col span={6}>
           <Card>
@@ -201,9 +212,10 @@ const TableList: React.FC = () => {
           </div>
         }
       >
-        <div style={{ minHeight: '550px' }}>
-          <canvas id='line-chart'></canvas>
-        </div>
+        <div
+          ref={chartRefLine}
+          style={{ minHeight: '450px' }}
+        ></div>
       </Card>
     </BaseLayout>
   );
