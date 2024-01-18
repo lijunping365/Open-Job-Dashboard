@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Col, Row, Select, Statistic } from 'antd';
-import { fetchAnalysisNumber, fetchAnalysisChart } from '@/services/api';
+import {
+  fetchAnalysisNumber,
+  fetchAnalysisChart,
+  fetchByJobName,
+} from '@/services/api';
 import BaseLayout from '@/components/Layout';
 import { AnalysisChart, StatisticNumber, TimeType } from '@/types/typings';
 import {
@@ -14,6 +18,9 @@ import Chart, {
   ChartTypeRegistry,
   Point,
 } from 'chart.js/auto';
+import DebounceSelect, {
+  SelectOptionsProps,
+} from '@/components/DebounceSelect';
 
 const options = [
   { value: '7d', label: '最近7天' },
@@ -44,6 +51,17 @@ const TableList: React.FC = () => {
     } finally {
       setChartLoading(false);
     }
+  };
+
+  const fetchJobList = async (name: string) => {
+    const res = await fetchByJobName(name);
+    const options: SelectOptionsProps[] = [];
+    if (res) {
+      res.forEach((item) => {
+        options.push({ label: item.jobName, value: item.id });
+      });
+    }
+    return options;
   };
 
   useEffect(() => {
@@ -162,11 +180,20 @@ const TableList: React.FC = () => {
         title='任务调度报表'
         style={{ marginTop: '20px' }}
         extra={
-          <Select
-            options={options}
-            defaultValue={selectDate}
-            onChange={(value: any) => setSelectDate(value)}
-          />
+          <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+            <DebounceSelect
+              placeholder='输入任务名称'
+              defaultActiveFirstOption={true}
+              fetchOptions={fetchJobList}
+              style={{ minWidth: 200 }}
+            />
+
+            <Select
+              options={options}
+              defaultValue={selectDate}
+              onChange={(value: any) => setSelectDate(value)}
+            />
+          </div>
         }
       >
         <div style={{ minHeight: '550px' }}>
