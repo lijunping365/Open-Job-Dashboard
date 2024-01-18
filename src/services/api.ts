@@ -195,12 +195,6 @@ export async function fetchAnalysisNumber() {
   return request.get('/analysis/statistic');
 }
 
-export async function fetchJobAnalysisNumber(jobId: string) {
-  return request.get('/analysis/jobStatistic', {
-    jobId,
-  });
-}
-
 export async function fetchAnalysisChart(params: ChartParam) {
   return request.get('/analysis/chart', params);
 }

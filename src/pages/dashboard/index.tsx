@@ -114,6 +114,19 @@ const TableList: React.FC = () => {
               title='任务总数量'
               value={statisticNumber?.taskTotalNum || 0}
               prefix={<CoffeeOutlined />}
+              suffix={`/ ${statisticNumber?.taskStartedNum}`}
+              valueStyle={{ fontSize: '20px' }}
+            />
+          </Card>
+        </Col>
+        <Col span={6}>
+          <Card>
+            <Statistic
+              loading={statisticLoading}
+              title='执行器总数量'
+              value={statisticNumber?.executorTotalNum}
+              prefix={<CloudServerOutlined />}
+              suffix={`/ ${statisticNumber?.executorOnlineNum}`}
               valueStyle={{ fontSize: '20px' }}
             />
           </Card>
@@ -125,18 +138,7 @@ const TableList: React.FC = () => {
               title='今日调度总次数'
               value={statisticNumber?.taskExecuteTotalNum}
               prefix={<FlagOutlined />}
-              valueStyle={{ fontSize: '20px' }}
-            />
-          </Card>
-        </Col>
-
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='执行器总数量'
-              value={statisticNumber?.executorTotalNum}
-              prefix={<CloudServerOutlined />}
+              suffix={`/ ${statisticNumber?.taskExecuteSuccessNum}`}
               valueStyle={{ fontSize: '20px' }}
             />
           </Card>

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Col, Row, Select, Statistic } from 'antd';
-import { fetchJobAnalysisNumber, fetchJobTimeChart } from '@/services/api';
-import {
-  BarChartOutlined,
-  DashboardOutlined,
-  FlagOutlined,
-} from '@ant-design/icons';
+import { Card, Select } from 'antd';
+import { fetchJobTimeChart } from '@/services/api';
 import BaseLayout from '@/components/Layout';
-import { JobTimeChart, StatisticNumber, TimeType } from '@/types/typings';
+import { JobTimeChart, TimeType } from '@/types/typings';
 import { InferGetServerSidePropsType } from 'next';
 import Chart, {
   BubbleDataPoint,
@@ -28,19 +23,8 @@ export default function MonitorPage({
   jobId,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const [loading, setLoading] = useState<boolean>(true);
-  const [statisticLoading, setStatisticLoading] = useState<boolean>(true);
-  const [statisticNumber, setStatisticNumber] = useState<StatisticNumber>();
   const [selectDate, setSelectDate] = useState<TimeType>('1m');
   const [data, setChartData] = useState<JobTimeChart>();
-
-  const getJobAnalysisNumber = async () => {
-    try {
-      const res: any = await fetchJobAnalysisNumber(jobId);
-      if (res) setStatisticNumber(res);
-    } finally {
-      setStatisticLoading(false);
-    }
-  };
 
   const onFetchJobChartData = async () => {
     try {
@@ -52,7 +36,6 @@ export default function MonitorPage({
   };
 
   useEffect(() => {
-    getJobAnalysisNumber().then();
     onFetchJobChartData().then();
   }, [jobId]);
 
@@ -103,63 +86,10 @@ export default function MonitorPage({
 
   return (
     <BaseLayout>
-      <Row
-        gutter={16}
-        style={{ marginTop: '20px' }}
-      >
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='下次执行时间'
-              value={statisticNumber?.taskNextExecuteTime || ''}
-              prefix={<DashboardOutlined />}
-              valueStyle={{ fontSize: '20px' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='调度次数'
-              value={statisticNumber?.taskExecuteTotalNum || ''}
-              prefix={<FlagOutlined />}
-              valueStyle={{ fontSize: '20px' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='任务状态'
-              value={
-                statisticNumber?.status === '1' ? '运行中' : '已停止' || ''
-              }
-              prefix={<BarChartOutlined />}
-              valueStyle={{ fontSize: '20px' }}
-            />
-          </Card>
-        </Col>
-        <Col span={6}>
-          <Card>
-            <Statistic
-              loading={statisticLoading}
-              title='今日报警次数'
-              value={statisticNumber?.alarmNum}
-              prefix={<BarChartOutlined />}
-              valueStyle={{ fontSize: '20px' }}
-            />
-          </Card>
-        </Col>
-      </Row>
-
       <Card
         loading={loading}
         bordered={false}
         title='任务耗时统计'
-        style={{ marginTop: '20px' }}
         extra={
           <Select
             options={options}
