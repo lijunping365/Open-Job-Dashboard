@@ -37,10 +37,6 @@ export default function MonitorPage({
 
   useEffect(() => {
     onFetchJobChartData().then();
-  }, [jobId]);
-
-  useEffect(() => {
-    onFetchJobChartData().then();
   }, [jobId, selectDate]);
 
   React.useEffect(() => {

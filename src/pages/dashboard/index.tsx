@@ -71,7 +71,6 @@ const TableList: React.FC = () => {
 
   useEffect(() => {
     getAnalysisNumber().then();
-    getAnalysisChart().then();
   }, []);
 
   useEffect(() => {
