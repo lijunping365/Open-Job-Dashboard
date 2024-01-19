@@ -96,6 +96,7 @@ const ChatModal = ({
         />
       ) : (
         <AIChat
+          chatConfig={chatConfig}
           cacheChatList={chatList}
           setCacheChatList={setChatList}
         />
