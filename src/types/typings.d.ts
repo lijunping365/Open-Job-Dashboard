@@ -181,3 +181,7 @@ export type ChatItem = {
   date: string;
   type: ChatType;
 };
+
+export interface ChatConfig {
+  prompt?: string;
+}

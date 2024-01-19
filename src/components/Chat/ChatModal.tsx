@@ -10,17 +10,20 @@ import {
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import ChatConfig from '@/components/Chat/ChatConfig';
 
 interface ChatModalProps {
   modalVisible: boolean;
   chatList: ChatItem[];
   setChatList: any;
   onClose: () => void;
+  chatConfig: ChatConfig;
 }
 
 const ChatModal = ({
   chatList,
   setChatList,
+  chatConfig,
   modalVisible,
   onClose,
 }: ChatModalProps) => {
@@ -82,12 +85,11 @@ const ChatModal = ({
       footer={null}
     >
       {open ? (
-        <Paragraph
-          style={{ minHeight: '406px', overflowY: 'scroll' }}
-          editable={{ onChange: setPrompt }}
-        >
-          {prompt}
-        </Paragraph>
+        <ChatConfig
+          onCancel={() => setOpen(false)}
+          onSubmit={(values) => console.log('ssssss')}
+          values={{}}
+        />
       ) : (
         <AIChat
           cacheChatList={chatList}
