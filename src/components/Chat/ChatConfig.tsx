@@ -13,6 +13,11 @@ interface ChatConfigProps {
 
 const ChatConfig = ({ onCancel, onSubmit, values }: ChatConfigProps) => {
   const [form] = Form.useForm();
+
+  const handleSaveConfig = () => {
+    const values = form.getFieldsValue();
+    onSubmit(values);
+  };
   return (
     <Form
       form={form}
@@ -39,7 +44,7 @@ const ChatConfig = ({ onCancel, onSubmit, values }: ChatConfigProps) => {
         </Button>
         <Button
           type='primary'
-          onClick={() => onSubmit({})}
+          onClick={() => handleSaveConfig()}
         >
           保存
         </Button>
