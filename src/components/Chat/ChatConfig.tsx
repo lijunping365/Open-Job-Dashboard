@@ -1,14 +1,14 @@
 import { Button, Form, Input } from 'antd';
 import React from 'react';
-import { ChatConfig } from '@/types/typings';
+import { ChatConfigType } from '@/types/typings';
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
 interface ChatConfigProps {
   onCancel: () => void;
-  onSubmit: (values: Partial<ChatConfig>) => void;
-  values?: Partial<ChatConfig>;
+  onSubmit: (values: Partial<ChatConfigType>) => void;
+  values?: Partial<ChatConfigType>;
 }
 
 const ChatConfig = ({ onCancel, onSubmit, values }: ChatConfigProps) => {

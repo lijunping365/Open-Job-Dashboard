@@ -1,35 +1,39 @@
-import { Button, Modal, Tag, Typography } from 'antd';
+import { Button, Modal, Tag } from 'antd';
 import AIChat from '@/components/Chat/ChatMain';
 import * as React from 'react';
 import { useState } from 'react';
-import { ChatItem } from '@/types/typings';
-const { Paragraph } = Typography;
+import { ChatConfigType, ChatItem } from '@/types/typings';
+import ChatConfig from '@/components/Chat/ChatConfig';
 import {
   ClearOutlined,
   CloseOutlined,
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
-import ChatConfig from '@/components/Chat/ChatConfig';
 
 interface ChatModalProps {
   modalVisible: boolean;
   chatList: ChatItem[];
   setChatList: any;
   onClose: () => void;
-  chatConfig: ChatConfig;
+  chatConfig: ChatConfigType;
+  saveChatConfig: any;
 }
 
 const ChatModal = ({
   chatList,
   setChatList,
   chatConfig,
+  saveChatConfig,
   modalVisible,
   onClose,
 }: ChatModalProps) => {
   const [open, setOpen] = useState(false);
-  const [prompt, setPrompt] = useState('This is an editable text.');
 
+  const handleSaveConfig = (values: any) => {
+    saveChatConfig(values);
+    setOpen(false);
+  };
   const Header = () => (
     <div
       style={{
@@ -87,8 +91,8 @@ const ChatModal = ({
       {open ? (
         <ChatConfig
           onCancel={() => setOpen(false)}
-          onSubmit={(values) => console.log('ssssss')}
-          values={{}}
+          onSubmit={handleSaveConfig}
+          values={chatConfig}
         />
       ) : (
         <AIChat

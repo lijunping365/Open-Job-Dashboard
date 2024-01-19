@@ -182,6 +182,6 @@ export type ChatItem = {
   type: ChatType;
 };
 
-export interface ChatConfig {
+export interface ChatConfigType {
   prompt?: string;
 }
