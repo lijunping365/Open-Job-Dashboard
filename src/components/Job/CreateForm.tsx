@@ -33,7 +33,17 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
 
-  const onChatComplete = (chatList: ChatItem[]) => {};
+  const onChatComplete = (chatList: ChatItem[]) => {
+    const chatResponse = chatList[chatList.length - 1];
+    console.log('dddddddddd', chatResponse);
+    // Find the special text that we need to fill the form
+    const script = '...';
+    const cronExpression = '...';
+    form.setFieldsValue({
+      cronExpression,
+      script,
+    });
+  };
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
