@@ -38,19 +38,23 @@ const ChatAI = ({ data, onReply, loading, latest }: ChatBotProps) => {
               {loading && latest && <Spin size={'small'} />}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}>
-              <Button
-                type={'text'}
-                size={'small'}
-                icon={<IconReload />}
-                onClick={() => onReply()}
-              />
-              <Button
-                type={'text'}
-                size={'small'}
-                icon={<IconSetting />}
-              />
-            </div>
+            {!loading && latest && (
+              <div
+                style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}
+              >
+                <Button
+                  type={'text'}
+                  size={'small'}
+                  icon={<IconReload />}
+                  onClick={() => onReply()}
+                />
+                <Button
+                  type={'text'}
+                  size={'small'}
+                  icon={<IconSetting />}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>
