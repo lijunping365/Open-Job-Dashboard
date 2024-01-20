@@ -67,9 +67,9 @@ export default function ClusterPage({
   const handlerChange = async (record: Instance) => {
     if (record.status === 1) {
       const confirm = await confirmModal('确定要下线吗？');
-      if (confirm) await handleUpdate({ ...record });
+      if (confirm) await handleUpdate({ ...record, status: 0 });
     } else {
-      await handleUpdate({ ...record });
+      await handleUpdate({ ...record, status: 1 });
     }
     fetchData().then();
   };
