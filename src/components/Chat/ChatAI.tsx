@@ -11,9 +11,10 @@ interface ChatBotProps {
   loading: boolean;
   data: ChatItem;
   onReply: () => void;
+  latest: boolean;
 }
 
-const ChatAI = ({ data, onReply, loading }: ChatBotProps) => {
+const ChatAI = ({ data, onReply, loading, latest }: ChatBotProps) => {
   const { theme } = useConfigContext();
 
   return (
@@ -34,7 +35,7 @@ const ChatAI = ({ data, onReply, loading }: ChatBotProps) => {
               }}
             >
               <Markdown content={data.content || ''} />
-              {loading && <Spin size={'small'} />}
+              {loading && latest && <Spin size={'small'} />}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'row', gap: '4px' }}>

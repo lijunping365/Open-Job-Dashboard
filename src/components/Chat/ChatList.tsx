@@ -44,6 +44,7 @@ const ChatList = ({
                 key={e.chatId}
                 data={e}
                 loading={loading}
+                latest={index === chatList.length - 1}
                 onReply={() => onReply(index)}
               />
             );
