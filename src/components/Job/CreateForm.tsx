@@ -164,7 +164,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
             <FormItem
               name='handlerName'
               label='输入handler'
-              rules={[{ required: true, message: '请输入 handlerName！' }]}
             >
               <Input placeholder='请输入jobHandler' />
             </FormItem>
