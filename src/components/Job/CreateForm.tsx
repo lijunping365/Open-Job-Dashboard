@@ -1,10 +1,28 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Button, Col, Form, Input, message, Modal, Row, Select } from 'antd';
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  message,
+  Modal,
+  Row,
+  Select,
+  Switch,
+} from 'antd';
 import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
 import { ChatConfigType, ChatItem, OpenJob } from '@/types/typings';
 import ChatModal from '@/components/Chat/ChatModal';
 import useLocalStorage from '@/hooks/useLocalStorage';
+
+const scriptOptions = [
+  { value: 'bash', label: 'Shell' },
+  { value: 'python', label: 'Python' },
+  { value: 'php', label: 'PHP' },
+  { value: 'node', label: 'Nodejs' },
+  { value: 'powershell', label: 'PowerShell' },
+];
 
 interface CreateFormProps {
   modalVisible: boolean;
@@ -15,7 +33,6 @@ interface CreateFormProps {
 
 const FormItem = Form.Item;
 const { TextArea } = Input;
-const { Option } = Select;
 
 const formLayout = {
   labelCol: { span: 7 },
@@ -164,6 +181,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
             <FormItem
               name='handlerName'
               label='输入handler'
+              rules={[{ required: true, message: '请输入 handlerName！' }]}
             >
               <Input placeholder='请输入jobHandler' />
             </FormItem>
@@ -174,13 +192,24 @@ const CreateForm: React.FC<CreateFormProps> = ({
           <Col span={12}>
             <FormItem
               name='routeStrategy'
-              label='路由策略'
+              label='是否分片'
             >
-              <Select defaultValue={0}>
-                <Option value={0}>故障转移</Option>
-                <Option value={1}>失败重试</Option>
-                <Option value={2}>分片广播</Option>
-              </Select>
+              <Switch
+                checkedChildren='是'
+                unCheckedChildren='否'
+              />
+            </FormItem>
+          </Col>
+
+          <Col span={12}>
+            <FormItem
+              name='routeStrategy'
+              label='脚本类型'
+            >
+              <Select
+                defaultValue={'bash'}
+                options={scriptOptions}
+              />
             </FormItem>
           </Col>
         </Row>
