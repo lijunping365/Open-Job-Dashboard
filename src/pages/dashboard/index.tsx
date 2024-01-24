@@ -58,9 +58,12 @@ const TableList: React.FC = () => {
   };
 
   const fetchJobList = async (name: string) => {
-    const res = await fetchByJobName(name);
     const options: SelectOptionsProps[] = [];
     options.push({ label: '全部', value: 'all' });
+    if (!name) {
+      return options;
+    }
+    const res = await fetchByJobName(name);
     if (res) {
       res.forEach((item) => {
         options.push({ label: item.jobName, value: item.id });
