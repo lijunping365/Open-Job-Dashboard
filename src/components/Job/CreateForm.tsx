@@ -191,7 +191,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
         <Row>
           <Col span={12}>
             <FormItem
-              name='routeStrategy'
+              name='sharding'
               label='是否分片'
             >
               <Switch
@@ -203,11 +203,11 @@ const CreateForm: React.FC<CreateFormProps> = ({
 
           <Col span={12}>
             <FormItem
-              name='routeStrategy'
+              name='scriptLang'
               label='脚本类型'
             >
               <Select
-                defaultValue={'bash'}
+                allowClear
                 options={scriptOptions}
               />
             </FormItem>

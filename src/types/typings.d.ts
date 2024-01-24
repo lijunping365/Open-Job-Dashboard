@@ -71,8 +71,8 @@ export interface OpenJob {
   jobName: string;
   handlerName: string;
   cronExpression: string;
-  shardingNodes: string;
-  routeStrategy: number;
+  sharding: number;
+  scriptLang: string;
   params: string;
   script: string;
   status: number;
