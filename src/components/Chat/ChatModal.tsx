@@ -38,11 +38,11 @@ const ChatModal = ({
     { usingContext: true }
   );
 
-  const handleSaveConfig = async (values: ChatConfigType) => {
-    saveChatConfig(values);
+  const handleSaveConfig = async (prompt: string, config: ChatConfigType) => {
+    saveChatConfig(config);
     const hide = message.loading('正在保存，请稍等');
     try {
-      await updatePrompt({ prompt: values.prompt });
+      await updatePrompt({ prompt: prompt });
       hide();
       message.success('配置保存成功');
       setOpen(false);
@@ -119,7 +119,8 @@ const ChatModal = ({
     >
       {open ? (
         <ChatConfig
-          values={chatConfig}
+          config={chatConfig}
+          prompt={prompt?.prompt}
           onSubmit={handleSaveConfig}
           onCancel={() => setOpen(false)}
         />

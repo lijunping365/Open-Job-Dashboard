@@ -189,6 +189,5 @@ export type ChatItem = {
 };
 
 export interface ChatConfigType {
-  prompt?: string;
   usingContext?: boolean;
 }

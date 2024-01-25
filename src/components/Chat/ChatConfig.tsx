@@ -6,24 +6,30 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 interface ChatConfigProps {
+  prompt?: string;
   onCancel: () => void;
-  onSubmit: (values: Partial<ChatConfigType>) => void;
-  values?: Partial<ChatConfigType>;
+  onSubmit: (prompt: string, config: Partial<ChatConfigType>) => void;
+  config?: Partial<ChatConfigType>;
 }
 
-const ChatConfig = ({ onCancel, onSubmit, values }: ChatConfigProps) => {
+const ChatConfig = ({
+  onCancel,
+  onSubmit,
+  config,
+  prompt,
+}: ChatConfigProps) => {
   const [form] = Form.useForm();
 
   const handleSaveConfig = () => {
-    const values = form.getFieldsValue();
-    onSubmit(values);
+    const prompt = form.getFieldValue('prompt');
+    onSubmit(prompt, { usingContext: true });
   };
   return (
     <Form
       form={form}
       className='chat-box'
       layout={'vertical'}
-      initialValues={{ ...values }}
+      initialValues={{ ...config, prompt: prompt }}
     >
       <FormItem
         name='prompt'
