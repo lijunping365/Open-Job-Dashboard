@@ -90,6 +90,10 @@ const AIChat = ({
   }, [generateLoading]);
 
   useEffect(() => {
+    setChatList(cacheChatList);
+  }, [cacheChatList]);
+
+  useEffect(() => {
     setChatConfigure(chatConfig);
   }, [chatConfig]);
 
