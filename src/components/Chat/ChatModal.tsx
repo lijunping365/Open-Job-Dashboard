@@ -1,8 +1,8 @@
-import { Button, Modal, Tag } from 'antd';
+import { Button, message, Modal, Tag } from 'antd';
 import AIChat from '@/components/Chat/ChatMain';
 import * as React from 'react';
-import { useState } from 'react';
-import { ChatConfigType, ChatItem } from '@/types/typings';
+import { useEffect, useState } from 'react';
+import { ChatConfigType, ChatItem, OpenJobPrompt } from '@/types/typings';
 import ChatConfig from '@/components/Chat/ChatConfig';
 import {
   ClearOutlined,
@@ -11,6 +11,7 @@ import {
   SyncOutlined,
 } from '@ant-design/icons';
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { queryPrompt, updatePrompt } from '@/services/api';
 
 interface ChatModalProps {
   modalVisible: boolean;
@@ -24,6 +25,7 @@ const ChatModal = ({
   onChatComplete,
 }: ChatModalProps) => {
   const [open, setOpen] = useState(false);
+  const [prompt, setPrompt] = useState<OpenJobPrompt>();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
@@ -38,8 +40,28 @@ const ChatModal = ({
 
   const handleSaveConfig = async (values: ChatConfigType) => {
     saveChatConfig(values);
-    setOpen(false);
+    const hide = message.loading('正在保存，请稍等');
+    try {
+      await updatePrompt({ prompt: values.prompt });
+      hide();
+      message.success('配置保存成功');
+      setOpen(false);
+    } catch (error) {
+      hide();
+      message.error('配置保存失败，请重试！');
+    }
   };
+
+  const onFetchPromptConfig = async () => {
+    const result = await queryPrompt();
+    if (result) {
+      setPrompt(result);
+    }
+  };
+
+  useEffect(() => {
+    onFetchPromptConfig().then();
+  }, []);
 
   const Header = () => (
     <div
