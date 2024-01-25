@@ -10,30 +10,37 @@ import {
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 interface ChatModalProps {
   modalVisible: boolean;
-  chatList: ChatItem[];
-  setChatList: any;
   onClose: () => void;
-  chatConfig: ChatConfigType;
-  saveChatConfig: any;
+  onChatComplete: (chatList: ChatItem[]) => void;
 }
 
 const ChatModal = ({
-  chatList,
-  setChatList,
-  chatConfig,
-  saveChatConfig,
   modalVisible,
   onClose,
+  onChatComplete,
 }: ChatModalProps) => {
   const [open, setOpen] = useState(false);
 
-  const handleSaveConfig = (values: any) => {
+  const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
+    'open-job-ai',
+    [],
+    onChatComplete
+  );
+
+  const [chatConfig, saveChatConfig] = useLocalStorage<ChatConfigType>(
+    'chat-config',
+    { usingContext: true }
+  );
+
+  const handleSaveConfig = async (values: ChatConfigType) => {
     saveChatConfig(values);
     setOpen(false);
   };
+
   const Header = () => (
     <div
       style={{
@@ -96,6 +103,7 @@ const ChatModal = ({
         />
       ) : (
         <AIChat
+          chatConfig={chatConfig}
           cacheChatList={chatList}
           setCacheChatList={setChatList}
         />

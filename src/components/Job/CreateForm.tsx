@@ -12,9 +12,8 @@ import {
 } from 'antd';
 import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
-import { ChatConfigType, ChatItem, OpenJob } from '@/types/typings';
+import { ChatItem, OpenJob } from '@/types/typings';
 import ChatModal from '@/components/Chat/ChatModal';
-import useLocalStorage from '@/hooks/useLocalStorage';
 
 const scriptOptions = [
   { value: 'bash', label: 'Shell' },
@@ -61,17 +60,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
       script,
     });
   };
-
-  const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
-    'open-job-ai',
-    [],
-    onChatComplete
-  );
-
-  const [chatConfig, saveChatConfig] = useLocalStorage<ChatConfigType>(
-    'chat-config',
-    { prompt: 'this is a prompt' }
-  );
 
   const onFetchOpenJobAppList = useCallback(async () => {
     const result = await fetchOpenJobAppList();
@@ -242,10 +230,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
 
         <ChatModal
           modalVisible={aiModalVisible}
-          chatList={chatList}
-          chatConfig={chatConfig}
-          saveChatConfig={saveChatConfig}
-          setChatList={setChatList}
+          onChatComplete={onChatComplete}
           onClose={() => handleAIModalVisible(false)}
         />
 

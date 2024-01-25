@@ -17,7 +17,7 @@ export const openAi = (
     onError: (error: Error, statusCode?: number) => void;
   }
 ) => {
-  const apiUrl = baseURL + '/chat/chatStream';
+  const apiUrl = baseURL + '/chat/completionStream';
 
   const evtSource = new SSE(apiUrl, {
     headers: { 'Content-Type': 'application/json' },

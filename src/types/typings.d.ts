@@ -80,6 +80,12 @@ export interface OpenJob {
   createUser: number;
 }
 
+export interface OpenJobPrompt {
+  id: number;
+  prompt: string;
+  updateTime: Date;
+}
+
 export interface CurrentUser {
   username?: string;
   avatar?: string;
@@ -170,7 +176,7 @@ export enum LangType {
 
 export interface ChatRequest {
   prompt?: string;
-  userKey?: string;
+  usingContext?: boolean;
 }
 
 export type ChatType = 'user' | 'assistant';
@@ -183,5 +189,5 @@ export type ChatItem = {
 };
 
 export interface ChatConfigType {
-  prompt?: string;
+  usingContext?: boolean;
 }

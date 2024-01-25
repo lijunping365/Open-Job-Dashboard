@@ -3,6 +3,7 @@ import { request, PageResult } from '@/lib/request';
 import {
   CaptchaParams,
   ChartParam,
+  ChatRequest,
   CurrentUser,
   Instance,
   JobChartParam,
@@ -12,6 +13,7 @@ import {
   OpenJobAlarm,
   OpenJobApp,
   OpenJobLog,
+  OpenJobPrompt,
   User,
 } from '@/types/typings';
 
@@ -237,4 +239,12 @@ export async function removeOpenJobApp(params: { ids: number[] }) {
 
 export async function fetchOpenJobAppList(appName?: string) {
   return request.get<OpenJobApp[]>('/app/list', { appName });
+}
+
+export async function queryPrompt() {
+  return request.get<OpenJobPrompt>('/prompt/query');
+}
+
+export async function updatePrompt(params: Partial<OpenJobPrompt>) {
+  return request.put('/prompt/update', params);
 }
