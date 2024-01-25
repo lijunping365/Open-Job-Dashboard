@@ -1,6 +1,6 @@
 import { Button, Input } from 'antd';
 import { useEffect, useState } from 'react';
-import { ChatConfigType, ChatItem, ChatRequest } from '@/types/typings';
+import { ChatItem, ChatRequest } from '@/types/typings';
 import ChatList from '@/components/Chat/ChatList';
 import { IconPush } from '@/components/Icon/IconPush';
 import { openAi } from '@/services/chat';
@@ -10,18 +10,12 @@ import { IconLogo } from '@/components/Icon/IconLogo';
 const { TextArea } = Input;
 
 interface AIChatProps {
-  chatConfig: ChatConfigType;
   cacheChatList: ChatItem[];
   setCacheChatList: any;
 }
 
-const AIChat = ({
-  cacheChatList,
-  setCacheChatList,
-  chatConfig,
-}: AIChatProps) => {
+const AIChat = ({ cacheChatList, setCacheChatList }: AIChatProps) => {
   const [generateLoading, setGenerateLoading] = useState<boolean>(false);
-  const [chatConfigure, setChatConfigure] = useState(chatConfig);
   const [inputText, setInputText] = useState('');
   const [chatList, setChatList] = useState<ChatItem[]>(cacheChatList);
   const [hitBottom, setHitBottom] = useState(true);
@@ -34,7 +28,6 @@ const AIChat = ({
 
     const date = new Date();
 
-    console.log('sssssssssssss', chatConfigure);
     const askData: ChatItem = {
       chatId: (date.getTime() / 1000) * Math.random(),
       content: askContent,
@@ -92,10 +85,6 @@ const AIChat = ({
   useEffect(() => {
     setChatList(cacheChatList);
   }, [cacheChatList]);
-
-  useEffect(() => {
-    setChatConfigure(chatConfig);
-  }, [chatConfig]);
 
   const handleKeyUp = async (event: any) => {
     if (event.keyCode === 13 && !event.shiftKey) {

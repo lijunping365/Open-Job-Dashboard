@@ -90,13 +90,12 @@ const ChatModal = ({
     >
       {open ? (
         <ChatConfig
-          onCancel={() => setOpen(false)}
-          onSubmit={handleSaveConfig}
           values={chatConfig}
+          onSubmit={handleSaveConfig}
+          onCancel={() => setOpen(false)}
         />
       ) : (
         <AIChat
-          chatConfig={chatConfig}
           cacheChatList={chatList}
           setCacheChatList={setChatList}
         />
