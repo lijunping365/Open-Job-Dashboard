@@ -119,7 +119,7 @@ const ChatModal = ({
     >
       {open ? (
         <ChatConfig
-          values={{ ...chatConfig, ...prompt }}
+          values={{ ...chatConfig, prompt: prompt?.prompt }}
           onSubmit={handleSaveConfig}
           onCancel={() => setOpen(false)}
         />
