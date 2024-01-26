@@ -33,7 +33,6 @@ const AIChat = ({
     if (!hitBottom) scrollDomToBottom();
 
     const date = new Date();
-    console.log('sssssssssssss', chatConfigure);
 
     const askData: ChatItem = {
       chatId: (date.getTime() / 1000) * Math.random(),

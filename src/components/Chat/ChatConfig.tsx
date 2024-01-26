@@ -15,8 +15,8 @@ const ChatConfig = ({ onCancel, onSubmit, values }: ChatConfigProps) => {
   const [form] = Form.useForm();
 
   const handleSaveConfig = () => {
-    const values = form.getFieldsValue();
-    onSubmit(values);
+    const fieldsValue = form.getFieldsValue();
+    onSubmit({ ...values, ...fieldsValue });
   };
   return (
     <Form

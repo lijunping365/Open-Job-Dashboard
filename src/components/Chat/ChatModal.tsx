@@ -42,7 +42,7 @@ const ChatModal = ({
     saveChatConfig(values);
     const hide = message.loading('正在保存，请稍等');
     try {
-      await updatePrompt({ prompt: values.prompt });
+      await updatePrompt({ id: prompt?.id, prompt: values.prompt });
       hide();
       message.success('配置保存成功');
       setOpen(false);
@@ -61,7 +61,7 @@ const ChatModal = ({
 
   useEffect(() => {
     onFetchPromptConfig().then();
-  }, []);
+  }, [open]);
 
   const Header = () => (
     <div
@@ -119,7 +119,7 @@ const ChatModal = ({
     >
       {open ? (
         <ChatConfig
-          values={chatConfig}
+          values={{ ...chatConfig, ...prompt }}
           onSubmit={handleSaveConfig}
           onCancel={() => setOpen(false)}
         />
