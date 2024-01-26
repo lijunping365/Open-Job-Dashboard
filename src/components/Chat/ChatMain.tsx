@@ -13,12 +13,14 @@ interface AIChatProps {
   chatConfig: ChatConfigType;
   cacheChatList: ChatItem[];
   setCacheChatList: any;
+  onApply: (chatItem: ChatItem) => void;
 }
 
 const AIChat = ({
   cacheChatList,
   setCacheChatList,
   chatConfig,
+  onApply,
 }: AIChatProps) => {
   const [generateLoading, setGenerateLoading] = useState<boolean>(false);
   const [chatConfigure, setChatConfigure] = useState(chatConfig);
@@ -125,6 +127,7 @@ const AIChat = ({
         chatList={chatList}
         onChange={onScrollChange}
         onReply={(index) => onReply(index)}
+        onApply={(index) => onApply(chatList[index])}
       />
       <div className='chat-input-box'>
         <TextArea

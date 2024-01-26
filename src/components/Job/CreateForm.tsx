@@ -49,9 +49,8 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
 
-  const onChatComplete = (chatList: ChatItem[]) => {
-    const chatResponse = chatList[chatList.length - 1];
-    console.log('dddddddddd', chatResponse);
+  const onApply = (chatList: ChatItem) => {
+    console.log('dddddddddd', chatList);
     // Find the special text that we need to fill the form
     const script = '...';
     const cronExpression = '...';
@@ -229,8 +228,8 @@ const CreateForm: React.FC<CreateFormProps> = ({
         </Row>
 
         <ChatModal
+          onApply={onApply}
           modalVisible={aiModalVisible}
-          onChatComplete={onChatComplete}
           onClose={() => handleAIModalVisible(false)}
         />
 

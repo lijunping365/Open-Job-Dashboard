@@ -16,21 +16,16 @@ import { queryPrompt, updatePrompt } from '@/services/api';
 interface ChatModalProps {
   modalVisible: boolean;
   onClose: () => void;
-  onChatComplete: (chatList: ChatItem[]) => void;
+  onApply: (chatItem: ChatItem) => void;
 }
 
-const ChatModal = ({
-  modalVisible,
-  onClose,
-  onChatComplete,
-}: ChatModalProps) => {
+const ChatModal = ({ modalVisible, onClose, onApply }: ChatModalProps) => {
   const [open, setOpen] = useState(false);
   const [prompt, setPrompt] = useState<OpenJobPrompt>();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
-    [],
-    onChatComplete
+    []
   );
 
   const [chatConfig, saveChatConfig] = useLocalStorage<ChatConfigType>(
@@ -125,6 +120,7 @@ const ChatModal = ({
         />
       ) : (
         <AIChat
+          onApply={onApply}
           chatConfig={chatConfig}
           cacheChatList={chatList}
           setCacheChatList={setChatList}

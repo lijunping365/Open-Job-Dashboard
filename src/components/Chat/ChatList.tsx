@@ -9,6 +9,7 @@ interface Props {
   scrollRef: React.Ref<HTMLDivElement>;
   onChange: (value: boolean) => void;
   onReply: (index: number) => void;
+  onApply: (index: number) => void;
 }
 const ChatList = ({
   chatList,
@@ -16,6 +17,7 @@ const ChatList = ({
   onChange,
   onReply,
   loading,
+  onApply,
 }: Props) => {
   const onChatBodyScroll = (e: HTMLElement) => {
     const bottomHeight = e.scrollTop + e.clientHeight;
@@ -46,6 +48,7 @@ const ChatList = ({
                 loading={loading}
                 latest={index === chatList.length - 1}
                 onReply={() => onReply(index)}
+                onApply={() => onApply(index)}
               />
             );
           }
