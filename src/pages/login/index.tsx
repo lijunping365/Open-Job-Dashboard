@@ -73,16 +73,16 @@ const Login: React.FC = () => {
             </div>
           </h1>
         </div>
-        {/*<div style={{ width: '328px', margin: '0 auto' }}>*/}
-        {/*  <Tabs*/}
-        {/*    defaultActiveKey='account'*/}
-        {/*    items={items}*/}
-        {/*    onChange={setType}*/}
-        {/*    centered*/}
-        {/*  />*/}
-        {/*  {type === 'account' && <AccountLogin redirect={redirect} />}*/}
-        {/*  {type === 'mobile' && <MobileLogin redirect={redirect} />}*/}
-        {/*</div>*/}
+        <div style={{ width: '328px', margin: '0 auto' }}>
+          <Tabs
+            defaultActiveKey='account'
+            items={items}
+            onChange={setType}
+            centered
+          />
+          {type === 'account' && <AccountLogin redirect={redirect} />}
+          {type === 'mobile' && <MobileLogin redirect={redirect} />}
+        </div>
       </div>
     </div>
   );
