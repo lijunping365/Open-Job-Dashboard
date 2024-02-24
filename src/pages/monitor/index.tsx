@@ -1,14 +1,16 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { Card, Select } from 'antd';
 import { fetchJobTimeChart } from '@/services/api';
 import BaseLayout from '@/components/Layout';
 import { ChartTimeType, JobTimeChart } from '@/types/typings';
-import { InferGetServerSidePropsType } from 'next';
 import Chart, {
   BubbleDataPoint,
   ChartTypeRegistry,
   Point,
 } from 'chart.js/auto';
+import { useSearchParams } from 'next/navigation';
 
 const options = [
   { value: 30, label: '最近30次运行' },
@@ -16,14 +18,14 @@ const options = [
   { value: 180, label: '最近180次运行' },
 ];
 
-export default function MonitorPage({
-  jobId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function MonitorPage() {
+  const searchParams = useSearchParams();
+  const jobId = searchParams.get('jobId');
   const [loading, setLoading] = useState<boolean>(true);
   const [selectDate, setSelectDate] = useState<ChartTimeType>(30);
   const [data, setChartData] = useState<JobTimeChart>();
 
-  const onFetchJobChartData = async () => {
+  const onFetchJobChartData = async (jobId: string) => {
     try {
       const res: any = await fetchJobTimeChart({ jobId, count: selectDate });
       if (res) setChartData(res);
@@ -33,7 +35,9 @@ export default function MonitorPage({
   };
 
   useEffect(() => {
-    onFetchJobChartData().then();
+    if (jobId) {
+      onFetchJobChartData(jobId).then();
+    }
   }, [jobId, selectDate]);
 
   const footer = (tooltipItems: any) => {
@@ -116,17 +120,3 @@ export default function MonitorPage({
     </BaseLayout>
   );
 }
-
-export const getServerSideProps = (context: any) => {
-  const jobId = context.query?.jobId as string;
-
-  if (!jobId) {
-    return { redirect: { destination: '/404', permanent: false } };
-  }
-
-  return {
-    props: {
-      jobId: jobId,
-    },
-  };
-};

@@ -1,3 +1,5 @@
+'use client';
+
 import {
   message,
   Divider,
@@ -23,20 +25,19 @@ import ProDescriptions from '@/components/ProDescriptions';
 import { DownOutlined } from '@ant-design/icons';
 import { OpenJobLog, PageParams } from '@/types/typings';
 import { processTime } from '@/lib/utils';
-import { InferGetServerSidePropsType } from 'next';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-export default function LoggerPage({
-  jobId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function LoggerPage() {
   const [form] = Form.useForm();
+  const searchParams = useSearchParams();
   const [showDetail, setShowDetail] = useState<boolean>(false);
   const [currentRow, setCurrentRow] = useState<OpenJobLog>();
 
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
     const searchForm: any = {};
-    searchForm.jobId = values.jobId ? values.jobId : jobId;
+    searchForm.jobId = values.jobId ? values.jobId : searchParams.get('jobId');
     processTime(searchForm, values);
     return await fetchTaskLogPage({
       ...searchForm,
@@ -222,12 +223,3 @@ export default function LoggerPage({
     </BaseLayout>
   );
 }
-
-export const getServerSideProps = (context: any) => {
-  const jobId = context.query?.jobId as string;
-  return {
-    props: {
-      jobId: jobId || '',
-    },
-  };
-};

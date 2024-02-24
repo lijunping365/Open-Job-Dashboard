@@ -1,3 +1,5 @@
+'use client';
+
 import { message, Form, Card, Button } from 'antd';
 import React, { useState } from 'react';
 import CreateForm from '@/components/Node/CreateForm';
@@ -15,18 +17,17 @@ import SearchForm from '@/components/Node/SearchForm';
 import { PlusOutlined } from '@ant-design/icons';
 import ProTable from '@/components/ProTable';
 import { Instance, PageParams } from '@/types/typings';
-import { InferGetServerSidePropsType } from 'next';
+import { useSearchParams } from 'next/navigation';
 
-export default function ClusterPage({
-  appId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function ClusterPage() {
   const [form] = Form.useForm();
+  const searchParams = useSearchParams();
   const [createModalVisible, setCreateModalVisible] = useState<boolean>(false);
 
   const request = async (params: PageParams) => {
     const values = form.getFieldsValue();
     return await fetchInstancePage({
-      appId: values.appId ? values.appId : appId,
+      appId: values.appId ? values.appId : searchParams.get('appId'),
       address: values.address,
       status: values.status,
       current: params.current,
@@ -171,12 +172,3 @@ export default function ClusterPage({
     </BaseLayout>
   );
 }
-
-export const getServerSideProps = (context: any) => {
-  const appId = context.query?.appId as string;
-  return {
-    props: {
-      appId: appId || '',
-    },
-  };
-};

@@ -1,26 +1,29 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { Card, message } from 'antd';
-import { InferGetServerSidePropsType } from 'next';
 import { catTaskLog } from '@/services/api';
 import BaseLayout from '@/components/Layout';
+import { useSearchParams } from 'next/navigation';
 
-export default function RollingLog({
-  logId,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function RollingLog() {
+  const searchParams = useSearchParams();
+  const logId = searchParams.get('logId');
   const [logContent, setLogContent] = useState<string>('');
   const [fromLineNum, setFromLineNum] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const loadRollingLog = async () => {
+  const loadRollingLog = async (logId: string) => {
     setLoading(true);
     try {
       const res: any = await catTaskLog(logId, fromLineNum);
-      if (res && res.fromLineNum !== res.toLineNum) {
-        setLogContent((prev) => {
-          return prev + res.logContent;
-        });
-        setFromLineNum(res.toLineNum);
+      if (!res || res.fromLineNum === res.toLineNum) {
+        return;
       }
+      setLogContent((prev) => {
+        return prev + res.logContent;
+      });
+      setFromLineNum(res.toLineNum);
     } catch (error) {
       message.error('加载任务日志失败' + error);
     } finally {
@@ -29,8 +32,10 @@ export default function RollingLog({
   };
 
   useEffect(() => {
-    loadRollingLog().then();
-  }, [fromLineNum]);
+    if (logId) {
+      loadRollingLog(logId).then();
+    }
+  }, [logId, fromLineNum]);
 
   return (
     <BaseLayout>
@@ -45,17 +50,3 @@ export default function RollingLog({
     </BaseLayout>
   );
 }
-
-export const getServerSideProps = (context: any) => {
-  const logId = context.query?.logId as string;
-
-  if (!logId) {
-    return { redirect: { destination: '/404', permanent: false } };
-  }
-
-  return {
-    props: {
-      logId: logId,
-    },
-  };
-};
