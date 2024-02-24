@@ -55,7 +55,9 @@ const ChatModal = ({ modalVisible, onClose, onApply }: ChatModalProps) => {
   };
 
   useEffect(() => {
-    onFetchPromptConfig().then();
+    if (modalVisible) {
+      onFetchPromptConfig().then();
+    }
   }, [open]);
 
   const Header = () => (

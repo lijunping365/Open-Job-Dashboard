@@ -92,7 +92,9 @@ const CreateForm: React.FC<CreateFormProps> = ({
   );
 
   useEffect(() => {
-    onFetchOpenJobAppList().then();
+    if (modalVisible) {
+      onFetchOpenJobAppList().then();
+    }
   }, []);
 
   const renderFooter = () => {
