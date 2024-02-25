@@ -224,7 +224,10 @@ const JobTableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       render: (_, record) => (
-        <Space size='middle'>
+        <Space
+          size='middle'
+          wrap={true}
+        >
           <a onClick={() => handleStartStop(record.id, record.status)}>
             {record.status === 0 ? '启动' : '停止'}
           </a>
