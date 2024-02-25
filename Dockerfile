@@ -11,15 +11,14 @@ RUN apk add --no-cache libc6-compat
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
-# RUN corepack prepare pnpm@latest --activate
+RUN npm config set registry https://registry.npmjs.org/
+RUN npm config list
 
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json ./
 
-# If you want to build docker in China
-RUN npm config set registry http://registry.npm.taobao.org
 RUN pnpm install
 
 COPY . .
