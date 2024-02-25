@@ -31,7 +31,7 @@ const SearchForm = ({ form, fetchData }: Props) => {
       layout='inline'
       form={form}
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      <div className='search-form-item-wrapper'>
         <FormItem name='address'>
           <Input
             allowClear

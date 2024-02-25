@@ -68,6 +68,15 @@ html.dark .no-bg-scrollbar::-webkit-scrollbar-thumb:active,html.dark .no-bg-scro
     align-items: center;
     justify-content: space-between;
     margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.search-form-item-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
 }
 
 /** chat begin **/
