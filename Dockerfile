@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS builder
@@ -10,18 +10,24 @@ RUN apk add --no-cache libc6-compat
 # https://depot.dev/docs/languages/node-pnpm-dockerfile
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+#ENV COREPACK_NPM_REGISTRY="https://registry.npmmirror.com"
 RUN corepack enable
-RUN npm config set registry https://registry.npmjs.org/
-RUN npm config list
+RUN corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY package.json ./
+COPY .npmrc package.json pnpm-lock.yaml* ./
 
-RUN pnpm install
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 COPY . .
+
+# Next.js collects completely anonymous telemetry data about general usage.
+# Learn more here: https://nextjs.org/telemetry
+# Uncomment the following line in case you want to disable telemetry during the build.
+ENV NEXT_TELEMETRY_DISABLED 1
+
 RUN pnpm run build
 
 # If using npm comment out above and use below instead
