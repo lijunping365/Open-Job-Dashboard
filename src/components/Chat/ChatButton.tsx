@@ -1,6 +1,5 @@
 import { Button, FloatButton, message, notification, Tag } from 'antd';
-import * as React from 'react';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ChatConfigType, ChatItem, OpenJobPrompt } from '@/types/typings';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { queryPrompt, updatePrompt } from '@/services/api';
@@ -14,9 +13,9 @@ import {
 } from '@ant-design/icons';
 
 const ChatButton = () => {
-  const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [open, setOpen] = useState(false);
   const [openConfig, setOpenConfig] = useState(false);
+  const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [prompt, setPrompt] = useState<OpenJobPrompt>();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
@@ -51,11 +50,10 @@ const ChatButton = () => {
   };
 
   useEffect(() => {
-    console.log('11111111111');
     if (openConfig) {
       onFetchPromptConfig().then();
     }
-  }, [openConfig]);
+  }, [open, openConfig]);
 
   const openModal = () => {
     api.open({
