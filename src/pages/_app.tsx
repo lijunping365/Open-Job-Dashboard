@@ -5,6 +5,7 @@ import '@/styles/prism.css';
 import { AppProps } from 'next/app';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { GlobalConfigProvider } from '@/components/Provider/GlobalConfigProvider';
+import { AIChatProvider } from '@/components/Provider/AIChatProvider';
 
 export default function App({
   Component,
@@ -14,7 +15,9 @@ export default function App({
     <>
       <GlobalConfigProvider>
         <AuthProvider>
-          <Component {...pageProps} />
+          <AIChatProvider>
+            <Component {...pageProps} />
+          </AIChatProvider>
         </AuthProvider>
       </GlobalConfigProvider>
     </>
