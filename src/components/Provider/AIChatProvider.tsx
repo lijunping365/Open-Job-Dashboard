@@ -69,6 +69,27 @@ export function AIChatProvider(props: AIChatProviderProps) {
     }
   }, [open, openConfig]);
 
+  const closeModal = () => {
+    api.destroy('chat');
+  };
+
+  const handlerOpen = () => {
+    setOpen((prevState) => {
+      if (prevState) {
+        closeModal();
+      } else {
+        openModal();
+      }
+      return !prevState;
+    });
+  };
+
+  const handlerOpenConfig = () => {
+    setOpenConfig((prevState) => {
+      return !prevState;
+    });
+  };
+
   const openModal = () => {
     api.open({
       key: 'chat',
@@ -104,27 +125,6 @@ export function AIChatProvider(props: AIChatProviderProps) {
         height: 480,
       },
       onClose: () => setOpen(false),
-    });
-  };
-
-  const closeModal = () => {
-    api.destroy('chat');
-  };
-
-  const handlerOpen = () => {
-    setOpen((prevState) => {
-      if (prevState) {
-        closeModal();
-      } else {
-        openModal();
-      }
-      return !prevState;
-    });
-  };
-
-  const handlerOpenConfig = () => {
-    setOpenConfig((prevState) => {
-      return !prevState;
     });
   };
 
