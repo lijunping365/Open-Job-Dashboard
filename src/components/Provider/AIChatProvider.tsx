@@ -100,9 +100,9 @@ export function AIChatProvider(props: AIChatProviderProps) {
             chatList,
             setChatList,
             chatConfig,
-            saveChatConfig,
+            handleSaveConfig,
             prompt,
-            setPrompt,
+            onApply,
           }) => (
             <ChatModal
               openConfig={openConfig}
@@ -110,9 +110,9 @@ export function AIChatProvider(props: AIChatProviderProps) {
               chatList={chatList}
               setChatList={setChatList}
               chatConfig={chatConfig}
-              saveChatConfig={saveChatConfig}
+              handleSaveConfig={handleSaveConfig}
               prompt={prompt}
-              setPrompt={setPrompt}
+              onApply={onApply}
             />
           )}
         </AIChatContext.Consumer>
@@ -171,19 +171,19 @@ export function AIChatProvider(props: AIChatProviderProps) {
     chatList,
     setChatList,
     chatConfig,
-    saveChatConfig,
+    handleSaveConfig,
     prompt,
-    setPrompt,
+    onApply,
   }: AIChatContextValue) => {
     return openConfig ? (
       <ChatConfig
         values={{ ...chatConfig, prompt: prompt?.prompt }}
-        onSubmit={handleSaveConfig}
-        onCancel={() => setOpenConfig(false)}
+        onSubmit={(values) => handleSaveConfig && handleSaveConfig(values)}
+        onCancel={() => setOpenConfig && setOpenConfig(false)}
       />
     ) : (
       <AIChat
-        onApply={() => console.log('ddddddddddd')}
+        onApply={(chatItem) => onApply && onApply(chatItem)}
         chatConfig={chatConfig}
         cacheChatList={chatList}
         setCacheChatList={setChatList}
@@ -200,11 +200,10 @@ export function AIChatProvider(props: AIChatProviderProps) {
             openConfig,
             setOpenConfig,
             prompt,
-            setPrompt,
             chatList,
             setChatList,
             chatConfig,
-            saveChatConfig,
+            handleSaveConfig,
           }}
         >
           {contextHolder}

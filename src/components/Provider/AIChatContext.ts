@@ -1,14 +1,18 @@
 import React from 'react';
+import { ChatConfigType, ChatItem, OpenJobPrompt } from '@/types/typings';
 
 export interface AIChatContextValue {
   openConfig?: boolean;
-  setOpenConfig?: any;
-  prompt?: any;
-  setPrompt?: any;
-  chatList?: any;
-  setChatList?: any;
-  chatConfig?: any;
-  saveChatConfig?: any;
+  setOpenConfig?: (status: boolean) => void;
+  prompt?: OpenJobPrompt;
+  chatList: ChatItem[];
+  setChatList?: (chatItems: ChatItem[]) => void;
+  chatConfig: ChatConfigType;
+  handleSaveConfig?: (values: ChatConfigType) => Promise<any>;
+  onApply?: (chatItems: ChatItem) => void;
 }
 
-export const AIChatContext = React.createContext<AIChatContextValue>({});
+export const AIChatContext = React.createContext<AIChatContextValue>({
+  chatList: [],
+  chatConfig: {},
+});
