@@ -99,8 +99,8 @@ export function AIChatProvider(props: AIChatProviderProps) {
       ),
       duration: null,
       style: {
-        width: 500,
-        height: 480,
+        width: 480,
+        height: 500,
       },
       onClose: () => setOpen(false),
     });
