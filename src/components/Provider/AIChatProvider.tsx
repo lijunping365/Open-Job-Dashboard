@@ -94,27 +94,7 @@ export function AIChatProvider(props: AIChatProviderProps) {
       message: <Header />,
       description: (
         <AIChatContext.Consumer>
-          {({
-            openConfig,
-            setOpenConfig,
-            chatList,
-            setChatList,
-            chatConfig,
-            handleSaveConfig,
-            prompt,
-            onApply,
-          }) => (
-            <ChatModal
-              openConfig={openConfig}
-              setOpenConfig={setOpenConfig}
-              chatList={chatList}
-              setChatList={setChatList}
-              chatConfig={chatConfig}
-              handleSaveConfig={handleSaveConfig}
-              prompt={prompt}
-              onApply={onApply}
-            />
-          )}
+          {(value) => <ChatModal {...value} />}
         </AIChatContext.Consumer>
       ),
       duration: null,
