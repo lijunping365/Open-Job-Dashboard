@@ -65,7 +65,7 @@ export function AIChatProvider(props: AIChatProviderProps) {
 
   useEffect(() => {
     onFetchPromptConfig().then();
-  }, []);
+  }, [open, openConfig]);
 
   const closeModal = () => {
     api.destroy('chat');
