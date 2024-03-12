@@ -1,6 +1,6 @@
 import { Button, FloatButton, message, notification, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { ChatConfigType, ChatItem, OpenJobPrompt } from '@/types/typings';
+import { ChatConfigType, ChatItem, OpenJobPrompt, User } from '@/types/typings';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { queryPrompt, updatePrompt } from '@/services/api';
 import ChatConfig from '@/components/Chat/ChatConfig';
@@ -11,6 +11,11 @@ import {
   SettingOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
+import {
+  AIChatContext,
+  AIChatContextValue,
+} from '@/components/Provider/AIChatContext';
+import ChatModal from '@/components/Chat/ChatModal';
 
 const ChatButton = () => {
   const [open, setOpen] = useState(false);
@@ -59,7 +64,31 @@ const ChatButton = () => {
     api.open({
       key: 'chat',
       message: <Header />,
-      description: <ChatModal />,
+      description: (
+        <AIChatContext.Consumer>
+          {({
+            openConfig,
+            setOpenConfig,
+            chatList,
+            setChatList,
+            chatConfig,
+            saveChatConfig,
+            prompt,
+            setPrompt,
+          }) => (
+            <ChatModal
+              openConfig={openConfig}
+              setOpenConfig={setOpenConfig}
+              chatList={chatList}
+              setChatList={setChatList}
+              chatConfig={chatConfig}
+              saveChatConfig={saveChatConfig}
+              prompt={prompt}
+              setPrompt={setPrompt}
+            />
+          )}
+        </AIChatContext.Consumer>
+      ),
       duration: null,
       style: {
         width: 500,
@@ -84,6 +113,12 @@ const ChatButton = () => {
     });
   };
 
+  const handlerOpenConfig = () => {
+    setOpenConfig((prevState) => {
+      return !prevState;
+    });
+  };
+
   const Header = () => (
     <div
       style={{
@@ -104,7 +139,7 @@ const ChatButton = () => {
           type={'text'}
           size={'small'}
           icon={<SettingOutlined />}
-          onClick={() => setOpenConfig(!openConfig)}
+          onClick={() => handlerOpenConfig()}
         />
 
         <Button
@@ -123,7 +158,16 @@ const ChatButton = () => {
     </div>
   );
 
-  const ChatModal = () => {
+  const ChatModal = ({
+    openConfig,
+    setOpenConfig,
+    chatList,
+    setChatList,
+    chatConfig,
+    saveChatConfig,
+    prompt,
+    setPrompt,
+  }: AIChatContextValue) => {
     return openConfig ? (
       <ChatConfig
         values={{ ...chatConfig, prompt: prompt?.prompt }}
@@ -141,7 +185,18 @@ const ChatButton = () => {
   };
 
   return (
-    <>
+    <AIChatContext.Provider
+      value={{
+        openConfig,
+        setOpenConfig,
+        prompt,
+        setPrompt,
+        chatList,
+        setChatList,
+        chatConfig,
+        saveChatConfig,
+      }}
+    >
       {contextHolder}
       <FloatButton.Group
         open={open}
@@ -153,7 +208,7 @@ const ChatButton = () => {
       >
         {''}
       </FloatButton.Group>
-    </>
+    </AIChatContext.Provider>
   );
 };
 
