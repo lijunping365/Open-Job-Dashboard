@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { ChatConfigType, ChatItem, OpenJobPrompt } from '@/types/typings';
 
 export interface AIChatContextValue {
@@ -16,3 +16,7 @@ export const AIChatContext = React.createContext<AIChatContextValue>({
   chatList: [],
   chatConfig: {},
 });
+
+export const useAIContext = () => {
+  return useContext(AIChatContext);
+};
