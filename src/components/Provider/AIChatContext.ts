@@ -9,7 +9,8 @@ export interface AIChatContextValue {
   setChatList?: (chatItems: ChatItem[]) => void;
   chatConfig: ChatConfigType;
   handleSaveConfig?: (values: ChatConfigType) => Promise<any>;
-  onApply?: (chatItems: ChatItem) => void;
+  onApply?: (chatItem: ChatItem) => void;
+  applyChatItem?: ChatItem;
 }
 
 export const AIChatContext = React.createContext<AIChatContextValue>({

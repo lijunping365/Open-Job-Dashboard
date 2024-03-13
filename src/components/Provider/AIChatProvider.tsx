@@ -31,6 +31,7 @@ export function AIChatProvider(props: AIChatProviderProps) {
   const [openConfig, setOpenConfig] = useState(false);
   const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [prompt, setPrompt] = useState<OpenJobPrompt>();
+  const [applyChatItem, setApplyChatItem] = useState<ChatItem>();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
@@ -184,6 +185,8 @@ export function AIChatProvider(props: AIChatProviderProps) {
             setChatList,
             chatConfig,
             handleSaveConfig,
+            onApply: setApplyChatItem,
+            applyChatItem,
           }}
         >
           {contextHolder}
