@@ -8,10 +8,16 @@ export interface AuthProviderProps {
 
 export function AIApplyProvider(props: AuthProviderProps) {
   const [applyChatItem, setApplyChatItem] = useState<ChatItem>();
+  const [openChatModal, setOpenChatModal] = useState<boolean>(false);
 
   return (
     <AIApplyContext.Provider
-      value={{ applyChatItem: applyChatItem, onApply: setApplyChatItem }}
+      value={{
+        applyChatItem: applyChatItem,
+        onApply: setApplyChatItem,
+        openChatModal,
+        setOpenChatModal,
+      }}
     >
       {props.children}
     </AIApplyContext.Provider>

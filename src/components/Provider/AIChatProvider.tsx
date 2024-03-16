@@ -28,11 +28,10 @@ export function AIChatProvider(props: AIChatProviderProps) {
   const router = useRouter();
   const cleanedPath = router.asPath.split(/[\?\#]/)[0];
 
-  const [open, setOpen] = useState(false);
   const [openConfig, setOpenConfig] = useState(false);
   const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [prompt, setPrompt] = useState<OpenJobPrompt>();
-  const { onApply } = useAIApplyContext();
+  const { openChatModal, setOpenChatModal, onApply } = useAIApplyContext();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
@@ -58,36 +57,8 @@ export function AIChatProvider(props: AIChatProviderProps) {
     }
   };
 
-  const onFetchPromptConfig = async () => {
-    const result = await queryPrompt();
-    if (result) {
-      setPrompt(result);
-    }
-  };
-
-  useEffect(() => {
-    onFetchPromptConfig().then();
-  }, [open, openConfig]);
-
   const closeModal = () => {
     api.destroy('chat');
-  };
-
-  const handlerOpen = () => {
-    setOpen((prevState) => {
-      if (prevState) {
-        closeModal();
-      } else {
-        openModal();
-      }
-      return !prevState;
-    });
-  };
-
-  const handlerOpenConfig = () => {
-    setOpenConfig((prevState) => {
-      return !prevState;
-    });
   };
 
   const openModal = () => {
@@ -104,9 +75,34 @@ export function AIChatProvider(props: AIChatProviderProps) {
         width: 480,
         height: 500,
       },
-      onClose: () => setOpen(false),
+      onClose: () => setOpenChatModal && setOpenChatModal(false),
     });
   };
+
+  const onFetchPromptConfig = async () => {
+    const result = await queryPrompt();
+    if (result) {
+      setPrompt(result);
+    }
+  };
+
+  const handlerOpenConfig = () => {
+    setOpenConfig((prevState) => {
+      return !prevState;
+    });
+  };
+
+  useEffect(() => {
+    onFetchPromptConfig().then();
+  }, [openConfig]);
+
+  useEffect(() => {
+    if (openChatModal) {
+      openModal();
+    } else {
+      closeModal();
+    }
+  }, [openChatModal]);
 
   const Header = () => (
     <div
@@ -189,12 +185,12 @@ export function AIChatProvider(props: AIChatProviderProps) {
         >
           {contextHolder}
           <FloatButton.Group
-            open={open}
+            open={openChatModal}
             trigger='click'
             type='primary'
             style={{ right: 24 }}
             icon={<CommentOutlined />}
-            onClick={() => handlerOpen()}
+            onClick={() => setOpenChatModal && setOpenChatModal(!openChatModal)}
           >
             {''}
           </FloatButton.Group>

@@ -13,7 +13,6 @@ import {
 import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
 import { ChatItem, OpenJob } from '@/types/typings';
-import ChatModal from '@/components/Chat/ChatModal';
 import { useAIApplyContext } from '@/components/Provider/AIApplyContext';
 
 const scriptOptions = [
@@ -46,11 +45,10 @@ const CreateForm: React.FC<CreateFormProps> = ({
   values,
 }: CreateFormProps) => {
   const [form] = Form.useForm();
-  const [aiModalVisible, handleAIModalVisible] = useState<boolean>(false);
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
 
-  const { applyChatItem } = useAIApplyContext();
+  const { applyChatItem, setOpenChatModal } = useAIApplyContext();
   const onApply = (chatList: ChatItem) => {
     console.log('dddddddddd', chatList);
     // Find the special text that we need to fill the form
@@ -117,7 +115,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
         </Button>
         <Button
           type='primary'
-          onClick={() => handleAIModalVisible(true)}
+          onClick={() => setOpenChatModal && setOpenChatModal(true)}
         >
           AI 生成
         </Button>
@@ -236,12 +234,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
             </FormItem>
           </Col>
         </Row>
-
-        <ChatModal
-          onApply={onApply}
-          modalVisible={aiModalVisible}
-          onClose={() => handleAIModalVisible(false)}
-        />
 
         <CronModal
           cronExpressValue={form.getFieldValue('cronExpression')}
