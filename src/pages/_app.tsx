@@ -6,6 +6,7 @@ import { AppProps } from 'next/app';
 import { AuthProvider } from '@/components/Provider/AuthProvider';
 import { GlobalConfigProvider } from '@/components/Provider/GlobalConfigProvider';
 import { AIChatProvider } from '@/components/Provider/AIChatProvider';
+import { AIApplyProvider } from '@/components/Provider/AIApplyProvider';
 
 export default function App({
   Component,
@@ -15,9 +16,11 @@ export default function App({
     <>
       <GlobalConfigProvider>
         <AuthProvider>
-          <AIChatProvider>
-            <Component {...pageProps} />
-          </AIChatProvider>
+          <AIApplyProvider>
+            <AIChatProvider>
+              <Component {...pageProps} />
+            </AIChatProvider>
+          </AIApplyProvider>
         </AuthProvider>
       </GlobalConfigProvider>
     </>

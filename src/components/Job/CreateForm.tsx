@@ -14,7 +14,7 @@ import CronModal from '@/components/CronModel';
 import { fetchOpenJobAppList, validateCronExpress } from '@/services/api';
 import { ChatItem, OpenJob } from '@/types/typings';
 import ChatModal from '@/components/Chat/ChatModal';
-import { useAIContext } from '@/components/Provider/AIChatContext';
+import { useAIApplyContext } from '@/components/Provider/AIApplyContext';
 
 const scriptOptions = [
   { value: 'bash', label: 'Shell' },
@@ -50,7 +50,7 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
 
-  const { chatList, applyChatItem } = useAIContext();
+  const { applyChatItem } = useAIApplyContext();
   const onApply = (chatList: ChatItem) => {
     console.log('dddddddddd', chatList);
     // Find the special text that we need to fill the form
@@ -64,7 +64,6 @@ const CreateForm: React.FC<CreateFormProps> = ({
 
   useEffect(() => {
     if (applyChatItem) {
-      console.log('ddddddddddddd', applyChatItem);
       onApply(applyChatItem);
     }
   }, [applyChatItem]);

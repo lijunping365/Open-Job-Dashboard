@@ -16,6 +16,7 @@ import {
 } from '@ant-design/icons';
 import ChatConfig from '@/components/Chat/ChatConfig';
 import AIChat from '@/components/Chat/ChatMain';
+import { useAIApplyContext } from '@/components/Provider/AIApplyContext';
 
 export interface AIChatProviderProps {
   children: React.ReactNode;
@@ -31,7 +32,7 @@ export function AIChatProvider(props: AIChatProviderProps) {
   const [openConfig, setOpenConfig] = useState(false);
   const [api, contextHolder] = notification.useNotification({ top: 88 });
   const [prompt, setPrompt] = useState<OpenJobPrompt>();
-  const [applyChatItem, setApplyChatItem] = useState<ChatItem>();
+  const { onApply } = useAIApplyContext();
 
   const [chatList, setChatList] = useLocalStorage<ChatItem[]>(
     'open-job-ai',
@@ -154,7 +155,6 @@ export function AIChatProvider(props: AIChatProviderProps) {
     chatConfig,
     handleSaveConfig,
     prompt,
-    onApply,
   }: AIChatContextValue) => {
     return openConfig ? (
       <ChatConfig
@@ -185,8 +185,6 @@ export function AIChatProvider(props: AIChatProviderProps) {
             setChatList,
             chatConfig,
             handleSaveConfig,
-            onApply: setApplyChatItem,
-            applyChatItem,
           }}
         >
           {contextHolder}
