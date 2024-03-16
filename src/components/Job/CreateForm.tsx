@@ -47,10 +47,14 @@ const CreateForm: React.FC<CreateFormProps> = ({
   const [form] = Form.useForm();
   const [cronModalVisible, handleCronModalVisible] = useState<boolean>(false);
   const [appOptions, setAppOptions] = useState<any[]>([]);
+  const { applyChatItem, setOpenChatModal, onApply } = useAIApplyContext();
 
-  const { applyChatItem, setOpenChatModal } = useAIApplyContext();
-  const onApply = (chatList: ChatItem) => {
-    console.log('dddddddddd', chatList);
+  const handleApply = (chatItem: ChatItem) => {
+    console.log('dddddddddd', chatItem);
+    if (!chatItem.content) {
+      return;
+    }
+
     // Find the special text that we need to fill the form
     const script = '...';
     const cronExpression = '...';
@@ -58,11 +62,13 @@ const CreateForm: React.FC<CreateFormProps> = ({
       cronExpression,
       script,
     });
+    // reset apply data
+    onApply && onApply(undefined);
   };
 
   useEffect(() => {
     if (applyChatItem) {
-      onApply(applyChatItem);
+      handleApply(applyChatItem);
     }
   }, [applyChatItem]);
 
