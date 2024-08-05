@@ -10,7 +10,7 @@ RUN apk add --no-cache libc6-compat
 # https://depot.dev/docs/languages/node-pnpm-dockerfile
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
-#ENV COREPACK_NPM_REGISTRY="https://registry.npmmirror.com"
+ENV COREPACK_NPM_REGISTRY="https://registry.npmmirror.com"
 RUN corepack enable
 RUN corepack prepare pnpm@latest --activate
 
